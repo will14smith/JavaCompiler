@@ -2,9 +2,9 @@
 
 namespace JavaCompiler.Reflection
 {
-    public class JavaMember
+    public class JavaField
     {
-        public JavaMember()
+        public JavaField()
         {
             Modifiers = new List<JavaModifier>();
         }

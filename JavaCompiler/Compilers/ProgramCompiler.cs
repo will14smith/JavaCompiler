@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using JavaCompiler.Compilation;
 using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Compilers
@@ -13,12 +15,20 @@ namespace JavaCompiler.Compilers
 
         public byte[] Compile()
         {
-            foreach(var type in program.Types)
+            var type = program.Types.First();
+
+            var manager = new CompileManager();
+
+            if (type is JavaClass)
             {
-                new TypeCompiler(type).Compile();
+                new ClassCompiler(type as JavaClass).Compile(manager);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
 
-            return null;
+            return manager.GetBytes();
         }
     }
 }

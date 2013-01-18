@@ -29,10 +29,8 @@ namespace JavaCompiler.Console
         static void Main(string[] args)
         {
             var compiler = new Compiler(File.ReadAllText("Exercise1.java"));
-            
-            compiler.Compile();
 
-            System.Console.ReadLine();
+            File.WriteAllBytes("Exercise1.class", compiler.Compile());
         }
     }
 }

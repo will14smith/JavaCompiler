@@ -47,7 +47,7 @@ namespace JavaCompiler.Translators
                 case JavaNodeType.VOLATILE:
                     return JavaModifier.Volatile;
                 case JavaNodeType.STRICTFP:
-                    return JavaModifier.Strictfp;
+                    return JavaModifier.Strict;
                 default:
                     throw new NotImplementedException();
             }

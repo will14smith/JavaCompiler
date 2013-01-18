@@ -49,11 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compilation\CompileAttribute.cs" />
     <Compile Include="Compilation\CompileConstant.cs" />
+    <Compile Include="Compilation\CompileFieldInfo.cs" />
     <Compile Include="Compilation\CompileManager.cs" />
+    <Compile Include="Compilation\CompileMethodInfo.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
-    <Compile Include="Compilers\TypeCompiler.cs" />
     <Compile Include="JavaLexer.cs" />
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
@@ -64,7 +66,7 @@
     <Compile Include="Reflection\JavaAnnotation.cs" />
     <Compile Include="Reflection\JavaLocalModifier.cs" />
     <Compile Include="Reflection\JavaClass.cs" />
-    <Compile Include="Reflection\JavaMember.cs" />
+    <Compile Include="Reflection\JavaField.cs" />
     <Compile Include="Reflection\JavaMethod.cs" />
     <Compile Include="Reflection\JavaModifier.cs" />
     <Compile Include="Reflection\JavaParameter.cs" />
@@ -80,6 +82,11 @@
     <Compile Include="Translators\TypeDeclarationTranslator.cs" />
     <Compile Include="Translators\TypeTranslator.cs" />
     <Compile Include="Translators\VarDeclaratorTranlator.cs" />
+    <Compile Include="Utilities\BigEndianBitConverter.cs" />
+    <Compile Include="Utilities\EndianBinaryWriter.cs" />
+    <Compile Include="Utilities\EndianBitConverter.cs" />
+    <Compile Include="Utilities\Endianness.cs" />
+    <Compile Include="Utilities\LittleEndianBitConverter.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

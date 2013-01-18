@@ -15,5 +15,10 @@
         {
             return new JavaTypeRef { Type = type };
         }
+
+        public static implicit operator string(JavaTypeRef type)
+        {
+            return type.TypeName;
+        }
     }
 }

@@ -74,7 +74,7 @@ namespace JavaCompiler.Translators
                     case JavaNodeType.CONSTRUCTOR_DECL:
                         throw new NotImplementedException();
                     case JavaNodeType.VAR_DECLARATION:
-                        @class.Members.Add(new VarDeclaratorTranlator(child).Walk());
+                        @class.Fields.Add(new VarDeclaratorTranlator(child).Walk());
                         break;
                     case JavaNodeType.CLASS:
                     case JavaNodeType.INTERFACE:

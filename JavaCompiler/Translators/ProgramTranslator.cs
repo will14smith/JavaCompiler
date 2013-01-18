@@ -37,7 +37,7 @@ namespace JavaCompiler.Translators
             }
 
             // type decl*
-            while(i < node.ChildCount)
+            while(i <= node.ChildCount)
             {
                 program.Types.Add(new TypeDeclarationTranslator(child).Walk());
 
