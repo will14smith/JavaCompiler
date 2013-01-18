@@ -65,15 +65,7 @@ namespace JavaCompiler.Compilers
         {
             foreach (var method in @class.Methods)
             {
-                var methodInfo = new CompileMethodInfo();
-
-                var nameIndex = manager.AddConstantUtf8(method.Name);
-                var descriptorIndex = manager.AddConstantUtf8(CompileManager.ProcessMethodDescriptor(method));
-
-                methodInfo.Modifiers = method.Modifiers;
-                methodInfo.Name = nameIndex;
-                methodInfo.Descriptor = descriptorIndex;
-                methodInfo.Attributes = new List<short>(); //TODO: Code, Exceptions, Synthetic, Deprecated
+                var methodInfo = new MethodCompiler(method).Compile(manager);
 
                 manager.AddMethod(methodInfo);
             }

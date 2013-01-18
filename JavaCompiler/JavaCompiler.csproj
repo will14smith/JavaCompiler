@@ -49,6 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compilation\ByteCode\ByteCodeGenerator.cs" />
+    <Compile Include="Compilation\ByteCode\Label.cs" />
+    <Compile Include="Compilation\ByteCode\OpCode.cs" />
+    <Compile Include="Compilation\ByteCode\OpCodes.cs" />
+    <Compile Include="Compilation\ByteCode\OpCodeValues.cs" />
     <Compile Include="Compilation\CompileAttribute.cs" />
     <Compile Include="Compilation\CompileConstant.cs" />
     <Compile Include="Compilation\CompileFieldInfo.cs" />
@@ -56,6 +61,7 @@
     <Compile Include="Compilation\CompileMethodInfo.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
+    <Compile Include="Compilers\MethodCompiler.cs" />
     <Compile Include="JavaLexer.cs" />
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
