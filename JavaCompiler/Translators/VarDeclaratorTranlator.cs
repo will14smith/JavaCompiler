@@ -15,7 +15,7 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public JavaField Walk()
+        public Field Walk()
         {
             throw new NotImplementedException();
         }

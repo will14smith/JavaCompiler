@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 
 namespace JavaCompiler.Translators
 {
@@ -16,7 +17,7 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public IEnumerable<JavaLocalModifier> Walk()
+        public IEnumerable<LocalModifier> Walk()
         {
             for (var i = 0; i < node.ChildCount; i++)
             {
@@ -24,12 +25,12 @@ namespace JavaCompiler.Translators
             }
         }
 
-        private static JavaLocalModifier ConvertNode(ITree node)
+        private static LocalModifier ConvertNode(ITree node)
         {
             switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.FINAL:
-                    return JavaLocalModifier.FINAL;
+                    return LocalModifier.FINAL;
                 case JavaNodeType.AT:
                 default:
                     throw new NotImplementedException();

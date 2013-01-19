@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilation
 {
     public class CompileMethodInfo
     {
-        public List<JavaModifier> Modifiers { get; set; }
+        public Modifier Modifiers { get; set; }
 
         public short Name { get; set; }
         public short Descriptor { get; set; }
 
-        public List<short> Attributes { get; set; }
+        public List<CompileAttribute> Attributes { get; set; }
 
         public void Write(EndianBinaryWriter writer)
         {
-            var modifierValue = (short)(Modifiers.Aggregate<JavaModifier, short>(0, (current, modifier) => (short)(current | (short)modifier)) & 0xD3F);
+            var modifierValue = (short)((int)Modifiers & 0xD3F);
 
             writer.Write(modifierValue);
             writer.Write(Name);
@@ -27,9 +24,12 @@ namespace JavaCompiler.Compilation
 
             writer.Write((short)Attributes.Count());
 
-            foreach (var attr in Attributes)
+            foreach (var attribute in Attributes)
             {
-                writer.Write(attr);
+                writer.Write(attribute.NameIndex);
+                writer.Write(attribute.Length);
+
+                attribute.Write(writer);
             }
         }
     }

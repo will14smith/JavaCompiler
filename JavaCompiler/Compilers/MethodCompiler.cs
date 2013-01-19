@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using Antlr.Runtime.Tree;
 using JavaCompiler.Compilation;
+using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection;
+using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Compilers
 {
     class MethodCompiler
     {
-        private readonly JavaMethod method;
-        public MethodCompiler(JavaMethod method)
+        private readonly Method method;
+        public MethodCompiler(Method method)
         {
             this.method = method;
         }
@@ -23,22 +23,47 @@ namespace JavaCompiler.Compilers
             var nameIndex = manager.AddConstantUtf8(method.Name);
             var descriptorIndex = manager.AddConstantUtf8(CompileManager.ProcessMethodDescriptor(method));
 
-            CompileBody(manager);
+            var attributes = CompileBody(manager);
 
             methodInfo.Modifiers = method.Modifiers;
             methodInfo.Name = nameIndex;
             methodInfo.Descriptor = descriptorIndex;
-            methodInfo.Attributes = new List<short>(); //TODO: Code, Exceptions, Synthetic, Deprecated
+            methodInfo.Attributes = attributes; //TODO: Code, Exceptions, Synthetic, Deprecated
 
             return methodInfo;
         }
 
-        private Dictionary<string, byte> variableIndex = new Dictionary<string, byte>();
-        private void CompileBody(CompileManager manager)
+        private List<CompileAttribute> attributes;
+        private ByteCodeGenerator generator;
+        private List<CompileAttribute> CompileBody(CompileManager manager)
         {
-            Debug.Assert(method.Body.Type == (int)JavaNodeType.BLOCK_SCOPE);
+            attributes = new List<CompileAttribute>();
+            generator = new ByteCodeGenerator();
 
-            
+            CompileBlockScope(method.Body);
+
+            attributes.Add(new CompileAttributeCode
+            {
+                NameIndex = manager.AddConstantUtf8(new CompileAttributeCode().Name),
+                Code = generator.GetBytes(),
+                Attributes = new List<short>(),
+                ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>()
+            });
+
+            return attributes;
+        }
+
+        private void CompileBlockScope(MethodTree node)
+        {
+        }
+
+        public bool IsLocalVariable(ITree node)
+        {
+            return node.Type == (int)JavaNodeType.VAR_DECLARATION;
+        }
+        public void CompileLocalVariable(ITree node)
+        {
+            // modifiers, type, name
         }
     }
 }

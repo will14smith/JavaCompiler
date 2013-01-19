@@ -2,72 +2,46 @@
 {
     public class OpCode
     {
-        private readonly OpCodeMode reg;
-        private readonly OpCodeModeWide wide;
-        private readonly NormalizedOpCodeValues normbc;
-        private readonly OpCodeFlags flags;
+        public OpCodeValues Value { get; private set; }
+
+        public OpCodeMode Mode { get; private set; }
+        public OpCodeModeWide WideMode { get; private set; }
+        public NormalizedOpCodeValues NormalizedValue { get; private set; }
+        public OpCodeFlags Flags { get; private set; }
+
         private readonly int arg;
 
         internal OpCode(OpCodeValues bc, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+            : this(bc, (NormalizedOpCodeValues) bc, 0, reg, wide, cannotThrow)
         {
-            this.reg = reg;
-            this.wide = wide;
-            this.normbc = (NormalizedOpCodeValues)bc;
-            this.arg = 0;
-            this.flags = OpCodeFlags.None;
-            if (cannotThrow)
-            {
-                this.flags |= OpCodeFlags.CannotThrow;
-            }
         }
 
-        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normbc, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normalizedValue, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+            : this(bc, normalizedValue, 0, reg, wide, cannotThrow)
         {
-            this.reg = reg;
-            this.wide = wide;
-            this.normbc = normbc;
-            this.arg = 0;
-            this.flags = OpCodeFlags.None;
-            if (cannotThrow)
-            {
-                this.flags |= OpCodeFlags.CannotThrow;
-            }
         }
 
-        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normbc, int arg, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normalizedValue, int arg, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
         {
-            this.reg = reg;
-            this.wide = wide;
-            this.normbc = normbc;
+            Value = bc;
+            Mode = reg;
+            WideMode = wide;
+            NormalizedValue = normalizedValue;
+
             this.arg = arg;
-            this.flags = OpCodeFlags.FixedArg;
+            this.Flags = OpCodeFlags.FixedArg;
             if (cannotThrow)
             {
-                this.flags |= OpCodeFlags.CannotThrow;
+                this.Flags |= OpCodeFlags.CannotThrow;
             }
-        }
-
-        public NormalizedOpCodeValues GetNormalizedOpCodeValues(OpCode bc)
-        {
-            return normbc;
         }
 
         internal int GetArg(OpCode bc, int defaultArg)
         {
-            return (flags & OpCodeFlags.FixedArg) != 0 ? arg : defaultArg;
+            return (Flags & OpCodeFlags.FixedArg) != 0 ? arg : defaultArg;
         }
 
-        internal OpCodeMode GetMode(OpCode bc)
-        {
-            return reg;
-        }
-
-        internal OpCodeModeWide GetWideMode(OpCode bc)
-        {
-            return wide;
-        }
-
-        internal OpCodeFlowControl GetFlowControl(NormalizedOpCodeValues bc)
+        internal static OpCodeFlowControl FlowControl(NormalizedOpCodeValues bc)
         {
             switch (bc)
             {
@@ -135,13 +109,13 @@
                 case NormalizedOpCodeValues.ldc_nothrow:
                     return false;
                 default:
-                    return (flags & OpCodeFlags.CannotThrow) == 0;
+                    return (Flags & OpCodeFlags.CannotThrow) == 0;
             }
         }
 
         internal bool IsBranch(NormalizedOpCodeValues bc)
         {
-            switch (reg)
+            switch (Mode)
             {
                 case OpCodeMode.Branch_2:
                 case OpCodeMode.Branch_4:

@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Internal;
+using JavaCompiler.Translators.Methods;
+using JavaCompiler.Translators.Methods.BlockStatements;
 
 namespace JavaCompiler.Translators
 {
     class MethodTranslator
     {
-        private JavaMethod method;
+        private Method method;
 
         private readonly ITree node;
         public MethodTranslator(ITree node)
@@ -18,13 +21,12 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public JavaMethod Walk()
+        public Method Walk()
         {
-            method = new JavaMethod();
+            method = new Method();
 
             // modifiers
-            method.Modifiers.Clear();
-            method.Modifiers.AddRange(new ModifierListTranslator(node.GetChild(0)).Walk());
+            method.Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk();
 
             var i = 1;
             var child = node.GetChild(i++);
@@ -44,7 +46,7 @@ namespace JavaCompiler.Translators
             }
             else
             {
-                method.ReturnType = "void";
+                method.ReturnType = new PlaceholderClass { Name = "void" };
             }
 
             // name
@@ -59,7 +61,7 @@ namespace JavaCompiler.Translators
             // arrayDeclaratorList
             if (child.Type == (int)JavaNodeType.ARRAY_DECLARATOR_LIST)
             {
-                method.ArrayLevels = TypeTranslator.ProcessArray(child);
+                //TODO; method.ArrayLevels = TypeTranslator.ProcessArray(child);
 
                 child = node.GetChild(i++);
             }

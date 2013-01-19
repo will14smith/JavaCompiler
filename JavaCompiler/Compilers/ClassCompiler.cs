@@ -7,8 +7,8 @@ namespace JavaCompiler.Compilers
 {
     class ClassCompiler
     {
-        private readonly JavaClass @class;
-        public ClassCompiler(JavaClass @class)
+        private readonly Class @class;
+        public ClassCompiler(Class @class)
         {
             this.@class = @class;
         }
@@ -20,7 +20,7 @@ namespace JavaCompiler.Compilers
             manager.SetThisClass(thisClass);
 
             // super class
-            var superClass = manager.AddConstantClass(@class.SuperType);
+            var superClass = manager.AddConstantClass(@class.Super.Name);
             manager.SetSuperClass(superClass);
 
             // modifiers

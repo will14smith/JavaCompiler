@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Internal;
 
 namespace JavaCompiler.Translators
 {
@@ -15,13 +16,13 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public JavaTypeRef Walk()
+        public Class Walk()
         {
-            var typeRef = new JavaTypeRef { TypeName = ProcessName(node.GetChild(0)) };
+            var typeRef = new PlaceholderClass { Name = ProcessName(node.GetChild(0)) };
 
             if (node.ChildCount > 1)
             {
-                typeRef.ArrayLevels = ProcessArray(node.GetChild(1));
+                //TODO: typeRef.PlaceholderArray = ProcessArray(node.GetChild(1));
             }
 
             return typeRef;

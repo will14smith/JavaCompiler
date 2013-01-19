@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
+using JavaCompiler.Translators.Methods;
 
 namespace JavaCompiler.Translators
 {
     public class ClassTranslator
     {
-        private JavaClass @class;
+        private Class @class;
 
         private readonly ITree node;
         public ClassTranslator(ITree node)
@@ -17,13 +18,12 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public JavaClass Walk()
+        public Class Walk()
         {
-            @class = new JavaClass();
+            @class = new Class();
 
             // modifiers
-            @class.Modifiers.Clear();
-            @class.Modifiers.AddRange(new ModifierListTranslator(node.GetChild(0)).Walk());
+            @class.Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk();
 
             // name
             @class.Name = new IdentifierTranslator(node.GetChild(1)).Walk();
@@ -69,18 +69,30 @@ namespace JavaCompiler.Translators
                         throw new NotImplementedException();
                     case JavaNodeType.FUNCTION_METHOD_DECL:
                     case JavaNodeType.VOID_METHOD_DECL:
-                        @class.Methods.Add(new MethodTranslator(child).Walk());
+                        var method = new MethodTranslator(child).Walk();
+
+                        method.DeclaringClass = @class;
+
+                        @class.Methods.Add(method);
                         break;
                     case JavaNodeType.CONSTRUCTOR_DECL:
                         throw new NotImplementedException();
                     case JavaNodeType.VAR_DECLARATION:
-                        @class.Fields.Add(new VarDeclaratorTranlator(child).Walk());
+                        var field = new VarDeclaratorTranlator(child).Walk();
+
+                        field.DeclaringClass = @class;
+
+                        @class.Fields.Add(field);
                         break;
                     case JavaNodeType.CLASS:
                     case JavaNodeType.INTERFACE:
                     case JavaNodeType.ENUM:
                     case JavaNodeType.AT:
-                        @class.NestedTypes.Add(new TypeDeclarationTranslator(child).Walk());
+                        var type = new TypeDeclarationTranslator(child).Walk();
+
+                        type.DeclaringClass = @class;
+
+                        @class.Types.Add(type);
                         break; 
                     default:
                         throw new NotImplementedException("Unimplemented node type: " + node.Type);

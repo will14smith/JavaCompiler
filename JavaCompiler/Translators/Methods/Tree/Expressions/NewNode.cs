@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JavaCompiler.Reflection
+namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    public class JavaType
+    class NewNode : ExpressionNode
     {
     }
 }

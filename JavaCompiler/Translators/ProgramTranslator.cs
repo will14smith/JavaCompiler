@@ -15,9 +15,9 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public JavaProgram Walk()
+        public Program Walk()
         {
-            var program = new JavaProgram();
+            var program = new Program();
 
             var annotationList = node.GetChild(0);
 

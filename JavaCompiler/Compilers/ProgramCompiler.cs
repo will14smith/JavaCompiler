@@ -7,8 +7,8 @@ namespace JavaCompiler.Compilers
 {
     class ProgramCompiler
     {
-        private readonly JavaProgram program;
-        public ProgramCompiler(JavaProgram program)
+        private readonly Program program;
+        public ProgramCompiler(Program program)
         {
             this.program = program;
         }
@@ -19,14 +19,16 @@ namespace JavaCompiler.Compilers
 
             var manager = new CompileManager();
 
-            if (type is JavaClass)
+            if (type is Class)
             {
-                new ClassCompiler(type as JavaClass).Compile(manager);
+                new ClassCompiler(type as Class).Compile(manager);
             }
             else
             {
                 throw new NotImplementedException();
             }
+
+            manager.AddAttribute(new CompileAttributeSourceFile { SourceFile = manager.AddConstantUtf8("Exercise1.java") });
 
             return manager.GetBytes();
         }

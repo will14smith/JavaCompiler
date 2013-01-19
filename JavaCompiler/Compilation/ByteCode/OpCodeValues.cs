@@ -379,7 +379,7 @@ namespace JavaCompiler.Compilation.ByteCode
         iconst = 255
     }
 
-    internal enum OpCodeMode : byte
+    public enum OpCodeMode : byte
     {
         Unused,
         Simple,
@@ -398,7 +398,7 @@ namespace JavaCompiler.Compilation.ByteCode
         WidePrefix
     }
 
-    internal enum OpCodeModeWide : byte
+    public enum OpCodeModeWide : byte
     {
         Unused,
         Local_2,
@@ -406,7 +406,7 @@ namespace JavaCompiler.Compilation.ByteCode
     }
 
     [Flags]
-    internal enum OpCodeFlags : byte
+    public enum OpCodeFlags : byte
     {
         None = 0,
         FixedArg = 1,

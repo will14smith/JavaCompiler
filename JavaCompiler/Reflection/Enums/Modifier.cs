@@ -1,7 +1,11 @@
-﻿namespace JavaCompiler.Reflection
+﻿using System;
+
+namespace JavaCompiler.Reflection.Enums
 {
-    public enum JavaModifier
+    [Flags]
+    public enum Modifier
     {
+        None = 0x0,
         Public = 0x1,
         Protected = 0x4,
         Private = 0x2,

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilation
@@ -13,13 +14,15 @@ namespace JavaCompiler.Compilation
         {
             ConstantPool = new List<CompileConstant>();
 
-            Modifiers = new List<JavaModifier>();
             Fields = new List<CompileFieldInfo>();
             Methods = new List<CompileMethodInfo>();
             Attributes = new List<CompileAttribute>();
+
+            nextConstantIndex = 1;
         }
 
         #region Constants
+        private short nextConstantIndex;
         public List<CompileConstant> ConstantPool { get; private set; }
 
         public short AddConstantClass(string className)
@@ -29,42 +32,42 @@ namespace JavaCompiler.Compilation
 
             if (classConst == null)
             {
-                classConst = new CompileConstantClass { NameIndex = nameIndex };
+                classConst = new CompileConstantClass { PoolIndex = nextConstantIndex++, NameIndex = nameIndex };
 
                 ConstantPool.Add(classConst);
             }
 
-            return (short)ConstantPool.IndexOf(classConst);
+            return classConst.PoolIndex;
         }
         public short AddConstantUtf8(string s)
         {
-            var value = Encoding.UTF8.GetBytes(s);
+            var value = new JavaTextEncoding().GetBytes(s);
             var utf8Const = ConstantPool.OfType<CompileConstantUtf8>().FirstOrDefault(x => x.Value == value);
 
             if (utf8Const == null)
             {
-                utf8Const = new CompileConstantUtf8 { Length = (short)value.Length, Value = value };
+                utf8Const = new CompileConstantUtf8 { PoolIndex = nextConstantIndex++, Value = value };
 
                 ConstantPool.Add(utf8Const);
             }
 
-            return (short)ConstantPool.IndexOf(utf8Const);
+            return utf8Const.PoolIndex;
         }
-        public short AddConstantUtf8Type(JavaTypeRef type)
+        public short AddConstantUtf8Type(Class type)
         {
             return AddConstantUtf8(ProcessTypeName(type));
         }
 
-        public static string ProcessTypeName(JavaTypeRef type)
+        public static string ProcessTypeName(Class type)
         {
             var name = "";
 
-            for (var i = 0; i < type.ArrayLevels; i++)
+            /*TODO: for (var i = 0; i < type.ArrayLevels; i++)
             {
                 name += "[";
-            }
+            }*/
 
-            switch (type)
+            switch (type.Name)
             {
                 case "byte":
                     name += "B";
@@ -94,20 +97,15 @@ namespace JavaCompiler.Compilation
                     name += "V";
                     break;
                 default:
-                    name += string.Format("L{0};", type.TypeName);
+                    name += string.Format("L{0};", type.Name);
                     break;
             }
 
             return name;
         }
-        public static string ProcessMethodDescriptor(JavaMethod method)
+        public static string ProcessMethodDescriptor(Method method)
         {
-            var descriptor = "(";
-
-            foreach (var parameter in method.Parameters)
-            {
-                descriptor += ProcessTypeName(parameter.Type);
-            }
+            var descriptor = method.Parameters.Aggregate("(", (current, parameter) => current + ProcessTypeName(parameter.Type));
 
             descriptor += ")";
 
@@ -119,11 +117,11 @@ namespace JavaCompiler.Compilation
 
         #region Modifiers
 
-        public List<JavaModifier> Modifiers { get; private set; }
+        public Modifier Modifiers { get; private set; }
 
-        public void SetModifiers(List<JavaModifier> modifiers)
+        public void SetModifiers(Modifier modifiers)
         {
-            Modifiers = modifiers ?? new List<JavaModifier>();
+            Modifiers = modifiers;
         }
 
         #endregion
@@ -187,11 +185,11 @@ namespace JavaCompiler.Compilation
         {
             var program = new MemoryStream();
             var writer = new EndianBinaryWriter(EndianBitConverter.Big, program);
-            
+
             // magic
             writer.Write(new byte[] { 0xCA, 0xFE, 0xBA, 0xBE });
             // version (minor, major)
-            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x33 });
+            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x31 });
             // const pool
             WriteConstBytes(writer);
             // access flags
@@ -211,11 +209,16 @@ namespace JavaCompiler.Compilation
 
             writer.Flush();
 
-            return program.ToArray();
+            var bytes = new byte[program.Length];
+            var programArray = program.ToArray();
+
+            Array.Copy(programArray, bytes, bytes.Length);
+
+            return bytes;
         }
         private void WriteConstBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)ConstantPool.Count());
+            writer.Write((short)(ConstantPool.Count() + 1));
 
             foreach (var constant in ConstantPool)
             {
@@ -225,7 +228,7 @@ namespace JavaCompiler.Compilation
         }
         private void WriteModiferBytes(EndianBinaryWriter writer)
         {
-            var modifierValue = (short)(Modifiers.Aggregate<JavaModifier, short>(0, (current, modifier) => (short)(current | (short)modifier)) & 0x631);
+            var modifierValue = (short)((int)Modifiers & 0x631);
 
             writer.Write(modifierValue);
         }
@@ -264,7 +267,7 @@ namespace JavaCompiler.Compilation
             {
                 writer.Write(attribute.NameIndex);
                 writer.Write(attribute.Length);
-                
+
                 attribute.Write(writer);
             }
         }

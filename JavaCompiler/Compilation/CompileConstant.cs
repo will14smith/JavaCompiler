@@ -23,6 +23,8 @@ namespace JavaCompiler.Compilation
 
     public abstract class CompileConstant
     {
+        public short PoolIndex { get; set; }
+
         public abstract byte Tag { get; }
 
         public abstract void Write(EndianBinaryWriter writer);
@@ -139,11 +141,10 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.Utf8; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write(Length);
+            writer.Write((short)Value.Length);
             writer.Write(Value);
         }
 
-        public short Length { get; set; }
         public byte[] Value { get; set; }
     }
     public class CompileConstantMethodHandle : CompileConstant

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 
 namespace JavaCompiler.Translators
 {
@@ -16,38 +15,42 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public IEnumerable<JavaModifier> Walk()
+        public Modifier Walk()
         {
+            var modifier = Modifier.None;
+
             for (var i = 0; i < node.ChildCount; i++)
             {
-                yield return ConvertNode(node.GetChild(i));
+                modifier |= ConvertNode(node.GetChild(i));
             }
+
+            return modifier;
         }
 
-        private static JavaModifier ConvertNode(ITree node)
+        private static Modifier ConvertNode(ITree node)
         {
             switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.PUBLIC:
-                    return JavaModifier.Public;
+                    return Modifier.Public;
                 case JavaNodeType.PROTECTED:
-                    return JavaModifier.Protected;
+                    return Modifier.Protected;
                 case JavaNodeType.PRIVATE:
-                    return JavaModifier.Private;
+                    return Modifier.Private;
                 case JavaNodeType.STATIC:
-                    return JavaModifier.Static;
+                    return Modifier.Static;
                 case JavaNodeType.ABSTRACT:
-                    return JavaModifier.Abstract;
+                    return Modifier.Abstract;
                 case JavaNodeType.NATIVE:
-                    return JavaModifier.Native;
+                    return Modifier.Native;
                 case JavaNodeType.SYNCHRONIZED:
-                    return JavaModifier.Syncronized;
+                    return Modifier.Syncronized;
                 case JavaNodeType.TRANSIENT:
-                    return JavaModifier.Transient;
+                    return Modifier.Transient;
                 case JavaNodeType.VOLATILE:
-                    return JavaModifier.Volatile;
+                    return Modifier.Volatile;
                 case JavaNodeType.STRICTFP:
-                    return JavaModifier.Strict;
+                    return Modifier.Strict;
                 default:
                     throw new NotImplementedException();
             }

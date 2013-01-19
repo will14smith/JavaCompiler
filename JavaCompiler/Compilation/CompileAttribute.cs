@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilation
@@ -38,7 +39,7 @@ namespace JavaCompiler.Compilation
         }
 
         public override string Name { get { return "Code"; } }
-        public override int Length { get { return 4 + 3 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Count() * 2; } }
+        public override int Length { get { return 11 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Count() * 2; } }
 
         public short MaxStack { get; set; }
         public short MaxLocals { get; set; }
@@ -55,7 +56,7 @@ namespace JavaCompiler.Compilation
             writer.Write(Code.Length);
             writer.Write(Code);
 
-            writer.Write(ExceptionTable.Count());
+            writer.Write((short)ExceptionTable.Count());
             foreach (var ex in ExceptionTable)
             {
                 writer.Write(ex.StartPC);
@@ -64,8 +65,7 @@ namespace JavaCompiler.Compilation
                 writer.Write(ex.CatchType);
             }
 
-            writer.Write(Attributes.Count());
-
+            writer.Write((short)Attributes.Count());
             foreach (var attr in Attributes)
             {
                 writer.Write(attr);
@@ -81,8 +81,7 @@ namespace JavaCompiler.Compilation
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write(ExceptionTable.Count());
-
+            writer.Write((short)ExceptionTable.Count());
             foreach (var ex in ExceptionTable)
             {
                 writer.Write(ex);
@@ -96,7 +95,7 @@ namespace JavaCompiler.Compilation
             public short InnerClassInfo;
             public short OuterClassInfo;
             public short InnerName;
-            public List<JavaModifier> InnerModifiers;
+            public List<Modifier> InnerModifiers;
         }
 
         public override string Name { get { return "InnerClasses"; } }
@@ -106,11 +105,10 @@ namespace JavaCompiler.Compilation
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write(Classes.Count());
-
+            writer.Write((short)Classes.Count());
             foreach (var c in Classes)
             {
-                var modifierValue = (short)(c.InnerModifiers.Aggregate<JavaModifier, short>(0, (current, modifier) => (short)(current | (short)modifier)) & 0x631);
+                var modifierValue = (short)(c.InnerModifiers.Aggregate<Modifier, short>(0, (current, modifier) => (short)(current | (short)modifier)) & 0x631);
 
                 writer.Write(c.InnerClassInfo);
                 writer.Write(c.OuterClassInfo);
@@ -156,7 +154,6 @@ namespace JavaCompiler.Compilation
         public override void Write(EndianBinaryWriter writer)
         {
             writer.Write((short)LineNumbers.Count());
-
             foreach (var ln in LineNumbers)
             {
                 writer.Write(ln.StartPC);
@@ -183,7 +180,6 @@ namespace JavaCompiler.Compilation
         public override void Write(EndianBinaryWriter writer)
         {
             writer.Write((short)Variables.Count());
-
             foreach (var ln in Variables)
             {
                 writer.Write(ln.StartPC);
