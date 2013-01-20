@@ -39,7 +39,7 @@ namespace JavaCompiler.Compilation
         }
 
         public override string Name { get { return "Code"; } }
-        public override int Length { get { return 11 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Count() * 2; } }
+        public override int Length { get { return 12 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Count() * 2; } }
 
         public short MaxStack { get; set; }
         public short MaxLocals { get; set; }

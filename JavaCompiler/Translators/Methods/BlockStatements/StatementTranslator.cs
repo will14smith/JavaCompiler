@@ -8,7 +8,7 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Translators.Methods.BlockStatements
 {
-    class StatementTranslator
+    public class StatementTranslator
     {
         private readonly ITree node;
         public StatementTranslator(ITree node)

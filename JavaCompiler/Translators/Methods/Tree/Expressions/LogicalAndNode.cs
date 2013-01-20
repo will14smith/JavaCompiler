@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JavaCompiler.Translators.Methods.Tree.Expressions
+﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    class LogicalAndNode : ExpressionNode
+    public class LogicalAndNode : ExpressionNode
     {
+        public override void ValidateType()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

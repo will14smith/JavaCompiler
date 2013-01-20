@@ -5,7 +5,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators
 {
-    class ProgramTranslator
+    public class ProgramTranslator
     {
         private readonly ITree node;
         public ProgramTranslator(ITree node)

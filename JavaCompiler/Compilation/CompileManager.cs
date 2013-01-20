@@ -25,9 +25,11 @@ namespace JavaCompiler.Compilation
         private short nextConstantIndex;
         public List<CompileConstant> ConstantPool { get; private set; }
 
-        public short AddConstantClass(string className)
+        public short AddConstantClass(Class c)
         {
-            var nameIndex = AddConstantUtf8(className);
+            if (c == null) return 0;
+
+            var nameIndex = AddConstantUtf8(c.Name);
             var classConst = ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
 
             if (classConst == null)
@@ -38,6 +40,19 @@ namespace JavaCompiler.Compilation
             }
 
             return classConst.PoolIndex;
+        }
+        public short AddConstantInteger(int value)
+        {
+            var intConst = ConstantPool.OfType<CompileConstantInteger>().FirstOrDefault(x => x.Value == value);
+
+            if (intConst == null)
+            {
+                intConst = new CompileConstantInteger { PoolIndex = nextConstantIndex++, Value = value };
+
+                ConstantPool.Add(intConst);
+            }
+
+            return intConst.PoolIndex;
         }
         public short AddConstantUtf8(string s)
         {

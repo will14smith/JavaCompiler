@@ -4,7 +4,7 @@ using Antlr.Runtime.Tree;
 
 namespace JavaCompiler.Console
 {
-    class Program
+    public class Program
     {
         public static void Preorder(ITree tree, int depth)
         {

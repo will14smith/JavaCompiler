@@ -91,7 +91,7 @@ namespace JavaCompiler.Compilation
             throw new System.NotImplementedException();
         }
 
-        public byte[] Value { get; set; }
+        public int Value { get; set; }
     }
     public class CompileConstantFloat : CompileConstant
     {

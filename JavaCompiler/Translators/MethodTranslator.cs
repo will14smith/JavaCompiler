@@ -7,7 +7,7 @@ using JavaCompiler.Translators.Methods.BlockStatements;
 
 namespace JavaCompiler.Translators
 {
-    class MethodTranslator
+    public class MethodTranslator
     {
         private Method method;
 

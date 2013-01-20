@@ -18,7 +18,7 @@ namespace JavaCompiler.Translators
 
         public Class Walk()
         {
-            var typeRef = new PlaceholderClass { Name = ProcessName(node.GetChild(0)) };
+            var typeRef = ProcessClass(node.GetChild(0));
 
             if (node.ChildCount > 1)
             {
@@ -28,33 +28,33 @@ namespace JavaCompiler.Translators
             return typeRef;
         }
 
-        private static string ProcessName(ITree node)
+        private static Class ProcessClass(ITree node)
         {
             switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.QUALIFIED_TYPE_IDENT:
                     return ProcessQualified(node);
                 case JavaNodeType.BOOLEAN:
-                    return "boolean";
+                    return PrimativeClasses.Boolean;
                 case JavaNodeType.CHAR:
-                    return "char";
+                    return PrimativeClasses.Char;
                 case JavaNodeType.BYTE:
-                    return "byte";
+                    return PrimativeClasses.Byte;
                 case JavaNodeType.SHORT:
-                    return "short";
+                    return PrimativeClasses.Short;
                 case JavaNodeType.INT:
-                    return "int";
+                    return PrimativeClasses.Int;
                 case JavaNodeType.LONG:
-                    return "long";
+                    return PrimativeClasses.Long;
                 case JavaNodeType.FLOAT:
-                    return "float";
+                    return PrimativeClasses.Float;
                 case JavaNodeType.DOUBLE:
-                    return "double";
+                    return PrimativeClasses.Double;
                 default:
                     throw new NotImplementedException();
             }
         }
-        private static string ProcessQualified(ITree node)
+        private static Class ProcessQualified(ITree node)
         {
             Debug.Assert(node.Type == (int)JavaNodeType.QUALIFIED_TYPE_IDENT);
 
@@ -69,7 +69,7 @@ namespace JavaCompiler.Translators
                 type += node.GetChild(i).Text;
             }
 
-            return type;
+            return new PlaceholderClass { Name = type };
         }
 
         public static int ProcessArray(ITree node)

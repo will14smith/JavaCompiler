@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class SyncronizedTranslator
+    public class SyncronizedTranslator
     {
         private readonly ITree node;
         public SyncronizedTranslator(ITree node)

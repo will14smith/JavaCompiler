@@ -5,7 +5,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators
 {
-    class VarDeclaratorTranlator
+    public class VarDeclaratorTranlator
     {
         private readonly ITree node;
         public VarDeclaratorTranlator(ITree node)

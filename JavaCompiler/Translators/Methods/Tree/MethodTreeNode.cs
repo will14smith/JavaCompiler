@@ -1,15 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators.Methods.Tree
 {
     public abstract class MethodTreeNode
     {
+        public Class ReturnType { get; set; }
 
+        public abstract void ValidateType();
     }
-    public class MethodTreeNode<T> : MethodTreeNode, IList<T> where T : MethodTreeNode
+    public abstract class MethodTreeNode<T> : MethodTreeNode, IList<T> where T : MethodTreeNode
     {
         private readonly List<T> backend = new List<T>();
+
+        public override void ValidateType()
+        {
+            foreach(var item in backend)
+            {
+                item.ValidateType();
+            }
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -72,6 +83,5 @@ namespace JavaCompiler.Translators.Methods.Tree
 
     public class MethodTree : MethodTreeNode<MethodTreeNode>
     {
-        
     }
 }

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using JavaCompiler.Translators.Methods.Tree;
+using JavaCompiler.Translators.Methods.Expressions;
+using JavaCompiler.Translators.Methods.Tree.Statements;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class ReturnTranslator
+    public class ReturnTranslator
     {
         private readonly ITree node;
         public ReturnTranslator(ITree node)
@@ -15,9 +15,16 @@ namespace JavaCompiler.Translators.Methods.Statements
             this.node = node;
         }
 
-        public MethodTree Walk()
+        public ReturnNode Walk()
         {
-            throw new NotImplementedException();
+            var returnNode = new ReturnNode();
+
+            if(node.ChildCount > 0)
+            {
+                returnNode.Value = new ExpressionTranslator(node.GetChild(0)).Walk();
+            }
+
+            return returnNode;
         }
     }
 }

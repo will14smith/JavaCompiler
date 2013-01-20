@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JavaCompiler.Translators.Methods.Tree.Expressions
+﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    class AssignmentNode : ExpressionNode
+    public class AssignmentNode : ExpressionNode
     {
+        public PrimaryNode Key { get; set; }
+        public ExpressionNode Value { get; set; }
+
+        public override void ValidateType()
+        {
+            Key.ValidateType();
+            Value.ValidateType();
+
+            ReturnType = Value.ReturnType;
+        }
     }
 }

@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class ForTranslator
+    public class ForTranslator
     {
         private readonly ITree node;
         public ForTranslator(ITree node)

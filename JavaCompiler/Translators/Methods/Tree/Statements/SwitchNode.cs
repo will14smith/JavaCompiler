@@ -1,8 +1,14 @@
-﻿using JavaCompiler.Translators.Methods.Tree.BlockStatements;
+﻿using System;
+using JavaCompiler.Reflection;
+using JavaCompiler.Translators.Methods.Tree.BlockStatements;
 
 namespace JavaCompiler.Translators.Methods.Tree.Statements
 {
-    class SwitchNode : StatementNode
+    public class SwitchNode : StatementNode
     {
+        public override void ValidateType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

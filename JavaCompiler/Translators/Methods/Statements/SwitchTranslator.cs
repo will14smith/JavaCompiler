@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class SwitchTranslator
+    public class SwitchTranslator
     {
         private readonly ITree node;
         public SwitchTranslator(ITree node)

@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class AssertTranslator
+    public class AssertTranslator
     {
         private readonly ITree node;
         public AssertTranslator(ITree node)

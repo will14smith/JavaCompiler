@@ -1,11 +1,12 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using JavaCompiler.Translators.Methods.Tree;
+using JavaCompiler.Translators.Methods.BlockStatements;
+using JavaCompiler.Translators.Methods.Expressions;
+using JavaCompiler.Translators.Methods.Tree.Statements;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class WhileTranslator
+    public class WhileTranslator
     {
         private readonly ITree node;
         public WhileTranslator(ITree node)
@@ -15,9 +16,16 @@ namespace JavaCompiler.Translators.Methods.Statements
             this.node = node;
         }
 
-        public MethodTree Walk()
+        public WhileNode Walk()
         {
-            throw new NotImplementedException();
+            var condition = new ExpressionTranslator(node.GetChild(0)).Walk();
+            var statement = new StatementTranslator(node.GetChild(1)).Walk();
+
+            return new WhileNode
+                       {
+                           Expression = condition,
+                           Statement = statement,
+                       };
         }
     }
 }

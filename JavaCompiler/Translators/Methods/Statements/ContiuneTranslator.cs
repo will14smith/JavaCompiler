@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class ContiuneTranslator
+    public class ContiuneTranslator
     {
         private readonly ITree node;
         public ContiuneTranslator(ITree node)

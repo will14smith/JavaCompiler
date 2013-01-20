@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    class InnerNewNode : ExpressionNode
+    public class InnerNewNode : ExpressionNode
     {
+        public override void ValidateType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

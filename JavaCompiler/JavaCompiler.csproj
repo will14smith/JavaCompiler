@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JavaCompiler</RootNamespace>
     <AssemblyName>JavaCompiler</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,26 +55,75 @@
     <Compile Include="Compilation\ByteCode\OpCode.cs" />
     <Compile Include="Compilation\ByteCode\OpCodes.cs" />
     <Compile Include="Compilation\ByteCode\OpCodeValues.cs" />
+    <Compile Include="Compilation\ByteCode\Variable.cs" />
     <Compile Include="Compilation\CompileAttribute.cs" />
     <Compile Include="Compilation\CompileConstant.cs" />
     <Compile Include="Compilation\CompileFieldInfo.cs" />
     <Compile Include="Compilation\CompileManager.cs" />
     <Compile Include="Compilation\CompileMethodInfo.cs" />
+    <Compile Include="Compilation\TypeValidator.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
     <Compile Include="Compilers\MethodCompiler.cs" />
+    <Compile Include="Compilers\Methods\BlockStatements\BlockCompiler.cs" />
+    <Compile Include="Compilers\Methods\BlockStatements\StatementCompiler.cs" />
+    <Compile Include="Compilers\Methods\BlockStatements\VarDeclarationCompiler.cs" />
+    <Compile Include="Compilers\Methods\Common.cs" />
+    <Compile Include="Compilers\Methods\Expressions\AdditiveCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\AndCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\ArrayInitialiserCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\AssignmentCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\ConditionalCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\EqualityCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\ExpressionCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\InnerNewCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\LogicalAndCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\LogicalOrCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\MultiplicativeCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\NewCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\OrCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\PrimaryCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\QualifiedCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\RelationCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\ShiftCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\UnaryCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\UnaryOtherCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\VariableInitialiserCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\XorCompiler.cs" />
     <Compile Include="JavaLexer.cs" />
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
     <Compile Include="Compilers\ProgramCompiler.cs" />
     <Compile Include="Reflection\AccessibleObject.cs" />
+    <Compile Include="Reflection\CommonTypeFinder.cs" />
     <Compile Include="Reflection\Constructor.cs" />
     <Compile Include="Reflection\Interfaces\IGenericDeclaration.cs" />
     <Compile Include="Reflection\Interfaces\IMember.cs" />
     <Compile Include="Reflection\Internal\PlaceholderClass.cs" />
     <Compile Include="Reflection\Package.cs" />
+    <Compile Include="Reflection\PrimativeClasses.cs" />
     <Compile Include="Reflection\Program.cs" />
     <Compile Include="Reflection\TypeVariable.cs" />
+    <Compile Include="Translators\Methods\Expressions\AdditiveTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\AndTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\ArrayInitialiserTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\AssignmentTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\ConditionalTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\EqualityTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\InnerNewTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\LogicalAndTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\LogicalOrTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\MultiplicativeTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\NewTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\OrTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\PrimaryTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\QualifiedTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\RelationTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\ShiftTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\UnaryTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\UnaryOtherTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\VariableInitialiserTranslator.cs" />
+    <Compile Include="Translators\Methods\Expressions\XorTranslator.cs" />
     <Compile Include="Translators\Methods\Statements\AssertTranslator.cs" />
     <Compile Include="Translators\Methods\Statements\BreakTranslator.cs" />
     <Compile Include="Translators\Methods\Statements\ContiuneTranslator.cs" />
@@ -118,7 +168,6 @@
     <Compile Include="Translators\Methods\Tree\Expressions\MultiplicativeNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\NewNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\OrNode.cs" />
-    <Compile Include="Translators\Methods\Tree\Expressions\PostfixedNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\PrimaryNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\QualifiedNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\RelationNode.cs" />
@@ -127,7 +176,7 @@
     <Compile Include="Translators\Methods\Tree\Expressions\UnaryOtherNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\XorNode.cs" />
     <Compile Include="Translators\Methods\Tree\BlockStatements\StatementNode.cs" />
-    <Compile Include="Translators\Methods\Tree\ExpressionNode.cs" />
+    <Compile Include="Translators\Methods\Tree\Expressions\ExpressionNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\VariableInitialiserNode.cs" />
     <Compile Include="Translators\Methods\Tree\BlockStatementNode.cs" />
     <Compile Include="Translators\Methods\Tree\MethodTreeNode.cs" />
@@ -158,7 +207,9 @@
     <Compile Include="Utilities\JavaTextEncoding.cs" />
     <Compile Include="Utilities\LittleEndianBitConverter.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Compilers\Methods\Statements\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>

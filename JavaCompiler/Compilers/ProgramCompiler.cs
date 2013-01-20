@@ -5,7 +5,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Compilers
 {
-    class ProgramCompiler
+    public class ProgramCompiler
     {
         private readonly Program program;
         public ProgramCompiler(Program program)

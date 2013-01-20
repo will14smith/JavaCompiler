@@ -45,7 +45,6 @@ namespace JavaCompiler.Utilities
                 IsMultiplicativeExpression(child) ||
                 IsUnaryExpression(child) ||
                 IsUnaryOtherExpression(child) ||
-                IsPostfixedExpression(child) ||
                 IsPrimaryExpression(child) ||
                 IsQualifiedExpression(child) ||
                 IsNewExpression(child) ||
@@ -119,18 +118,11 @@ namespace JavaCompiler.Utilities
                 child.Type == (int)JavaNodeType.LOGICAL_NOT ||
                 child.Type == (int)JavaNodeType.CAST_EXPR;
         }
-        public static bool IsPostfixedExpression(this ITree child)
-        {
-            return
-                child.Type == (int)JavaNodeType.DOT || // TODO: Check this
-                child.Type == (int)JavaNodeType.METHOD_CALL ||
-                child.Type == (int)JavaNodeType.ARRAY_ELEMENT_ACCESS ||
-                child.Type == (int)JavaNodeType.POST_INC ||
-                child.Type == (int)JavaNodeType.POST_DEC;
-        }
         public static bool IsPrimaryExpression(this ITree child)
         {
+            //TODO!!
             return
+                child.Type == (int)JavaNodeType.IDENT ||
                 child.Type == (int)JavaNodeType.PARENTESIZED_EXPR ||
                 child.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL ||
                 child.Type == (int)JavaNodeType.METHOD_CALL ||

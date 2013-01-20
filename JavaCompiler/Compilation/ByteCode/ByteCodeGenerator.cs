@@ -1,22 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Compilation.ByteCode
 {
     public class ByteCodeGenerator
     {
+        public CompileManager Manager { get; set; }
+
         private int length;
         private byte[] byteCodeStream;
 
-        public ByteCodeGenerator()
+        public ByteCodeGenerator(CompileManager manager)
         {
             byteCodeStream = new byte[64];
             length = 0;
 
             labelCount = 0;
             labelList = null;
+
+            variableCount = 0;
+            variableList = new Variable[256];
+            variableListStack = new Stack<Tuple<int, Variable[]>>();
         }
-        
+
         #region Labels
         private int labelCount;
         private int[] labelList;
@@ -52,6 +61,71 @@ namespace JavaCompiler.Compilation.ByteCode
             labelList[labelValue] = length;
         }
 
+        #endregion
+        #region Variables
+        private int variableCount;
+        private Variable[] variableList;
+        private Stack<Tuple<int, Variable[]>> variableListStack;
+
+        public void PushVariables()
+        {
+            variableListStack.Push(new Tuple<int, Variable[]>(variableCount, variableList));
+
+            variableList = (Variable[])variableList.Clone();
+        }
+        public void PopVariables()
+        {
+            var vars = variableListStack.Pop();
+
+            variableCount = vars.Item1;
+            variableList = vars.Item2;
+        }
+
+        public Variable GetVariable(string name)
+        {
+            return variableList.First(x => x != null && x.Name == name);
+        }
+
+        public Variable DefineVariable(string name, Class type)
+        {
+            if (variableCount >= variableList.Length) throw new StackOverflowException("Cannot define any more local variables!");
+
+            var index = FindFreeVariableIndex();
+
+            variableList[index] = new Variable(index, name, type);
+            variableCount++;
+
+            return variableList[index];
+        }
+        private short FindFreeVariableIndex()
+        {
+            // starts at 1 because variable 0 is usually "this"
+            for (short i = 1; i < variableList.Length; i++)
+            {
+                if (variableList[i] != null) continue;
+
+                return i;
+            }
+
+            throw new StackOverflowException("Cannot find a free variable index!");
+        }
+
+        public void UndefineVariable(string name)
+        {
+            UndefineVariable(GetVariable(name).Index);
+        }
+        public void UndefineVariable(Variable variable)
+        {
+            UndefineVariable(variable.Index);
+        }
+        public void UndefineVariable(int index)
+        {
+            if (index < 0 && index > variableList.Length) throw new ArgumentException("index is greater than max", "index");
+
+            variableList[index] = null;
+
+            variableCount--;
+        }
         #endregion
 
         #region Emit
@@ -136,8 +210,8 @@ namespace JavaCompiler.Compilation.ByteCode
             InternalEmit(opcode);
             if (opcode.Mode == OpCodeMode.Branch_4)
             {
-                byteCodeStream[length++] = (byte) ((i >> 24) & 0xff);
-                byteCodeStream[length++] = (byte) ((i >> 16) & 0xff);
+                byteCodeStream[length++] = (byte)((i >> 24) & 0xff);
+                byteCodeStream[length++] = (byte)((i >> 16) & 0xff);
             }
             byteCodeStream[length++] = (byte)((i >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(i & 0xff);
@@ -168,7 +242,7 @@ namespace JavaCompiler.Compilation.ByteCode
             byteCodeStream[length++] = (byte)((s2 >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s2 & 0xff);
         }
-        
+
         internal void InternalEmit(OpCode opcode)
         {
             byteCodeStream[length++] = (byte)opcode.Value;
@@ -258,6 +332,5 @@ namespace JavaCompiler.Compilation.ByteCode
         }
 
         #endregion
-
     }
 }

@@ -5,7 +5,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Compilers
 {
-    class ClassCompiler
+    public class ClassCompiler
     {
         private readonly Class @class;
         public ClassCompiler(Class @class)
@@ -16,11 +16,11 @@ namespace JavaCompiler.Compilers
         public void Compile(CompileManager manager)
         {
             // this class
-            var thisClass = manager.AddConstantClass(@class.Name);
+            var thisClass = manager.AddConstantClass(@class);
             manager.SetThisClass(thisClass);
 
             // super class
-            var superClass = manager.AddConstantClass(@class.Super.Name);
+            var superClass = manager.AddConstantClass(@class.Super);
             manager.SetSuperClass(superClass);
 
             // modifiers
@@ -40,7 +40,7 @@ namespace JavaCompiler.Compilers
 
         private void CompileInterfaces(CompileManager manager)
         {
-            var interfaces = @class.Interfaces.Select(i => manager.AddConstantClass(i.Name)).ToList();
+            var interfaces = @class.Interfaces.Select(manager.AddConstantClass).ToList();
 
             manager.SetInterfaces(interfaces);
         }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JavaCompiler.Translators.Methods.Tree.Expressions
+namespace JavaCompiler.Translators.Methods.Expressions
 {
-    class PostfixedNode : ExpressionNode
+    public class NewTranslator
     {
     }
 }

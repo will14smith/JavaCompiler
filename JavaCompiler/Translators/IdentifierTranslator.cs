@@ -3,7 +3,7 @@ using Antlr.Runtime.Tree;
 
 namespace JavaCompiler.Translators
 {
-    class IdentifierTranslator
+    public class IdentifierTranslator
     {
         private readonly ITree node;
         public IdentifierTranslator(ITree node)

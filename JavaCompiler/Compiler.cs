@@ -11,7 +11,7 @@ using JavaCompiler.Translators;
 
 namespace JavaCompiler
 {
-    public partial class Compiler
+    public class Compiler
     {
         private readonly string document;
 

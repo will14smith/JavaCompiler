@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class BreakTranslator
+    public class BreakTranslator
     {
         private readonly ITree node;
         public BreakTranslator(ITree node)

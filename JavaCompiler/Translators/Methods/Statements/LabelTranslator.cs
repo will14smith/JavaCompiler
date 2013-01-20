@@ -5,7 +5,7 @@ using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class LabelTranslator
+    public class LabelTranslator
     {
         private readonly ITree node;
         public LabelTranslator(ITree node)

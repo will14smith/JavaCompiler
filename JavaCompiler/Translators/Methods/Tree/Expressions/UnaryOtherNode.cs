@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    class UnaryOtherNode : ExpressionNode
+    abstract class UnaryOtherNode : ExpressionNode
     {
+
+        public class UnaryCastNode : UnaryOtherNode
+        {
+            public Class Type { get; set; }
+            public ExpressionNode Expression { get; set; }
+
+            public override void ValidateType()
+            {
+                ReturnType = Type;
+            }
+        }
     }
 }

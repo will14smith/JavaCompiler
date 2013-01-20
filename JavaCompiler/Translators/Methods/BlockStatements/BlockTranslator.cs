@@ -6,7 +6,7 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Translators.Methods.BlockStatements
 {
-    class BlockTranslator
+    public class BlockTranslator
     {
         private readonly ITree node;
         public BlockTranslator(ITree node)
@@ -35,7 +35,12 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
                 }
                 else if (child.IsVarDeclaration())
                 {
-                    method.Add(new VarDeclarationTranslator(child).Walk());
+                    var decls = new VarDeclarationTranslator(child).Walk();
+
+                    foreach (var decl in decls)
+                    {
+                        method.Add(decl);
+                    }
                 }
                 else
                 {

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using JavaCompiler.Translators.Methods.Tree;
+using JavaCompiler.Translators.Methods.BlockStatements;
+using JavaCompiler.Translators.Methods.Expressions;
+using JavaCompiler.Translators.Methods.Tree.Statements;
 
 namespace JavaCompiler.Translators.Methods.Statements
 {
-    class IfTranslator
+    public class IfTranslator
     {
         private readonly ITree node;
         public IfTranslator(ITree node)
@@ -15,9 +16,20 @@ namespace JavaCompiler.Translators.Methods.Statements
             this.node = node;
         }
 
-        public MethodTree Walk()
+        public IfNode Walk()
         {
-            throw new NotImplementedException();
+            var ifNode = new IfNode
+            {
+                Condition = new ExpressionTranslator(node.GetChild(0)).Walk(),
+                TrueBranch = new StatementTranslator(node.GetChild(1)).Walk()
+            };
+
+            if(node.ChildCount > 2)
+            {
+                ifNode.FalseBranch = new StatementTranslator(node.GetChild(2)).Walk();
+            }
+
+            return ifNode;
         }
     }
 }

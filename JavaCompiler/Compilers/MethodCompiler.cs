@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using Antlr.Runtime.Tree;
 using JavaCompiler.Compilation;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Methods.BlockStatements;
 using JavaCompiler.Reflection;
 using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Compilers
 {
-    class MethodCompiler
+    public class MethodCompiler
     {
         private readonly Method method;
         public MethodCompiler(Method method)
@@ -23,7 +22,7 @@ namespace JavaCompiler.Compilers
             var nameIndex = manager.AddConstantUtf8(method.Name);
             var descriptorIndex = manager.AddConstantUtf8(CompileManager.ProcessMethodDescriptor(method));
 
-            var attributes = CompileBody(manager);
+            CompileBody(manager);
 
             methodInfo.Modifiers = method.Modifiers;
             methodInfo.Name = nameIndex;
@@ -35,35 +34,30 @@ namespace JavaCompiler.Compilers
 
         private List<CompileAttribute> attributes;
         private ByteCodeGenerator generator;
-        private List<CompileAttribute> CompileBody(CompileManager manager)
+        private void CompileBody(CompileManager manager)
         {
             attributes = new List<CompileAttribute>();
-            generator = new ByteCodeGenerator();
+            generator = new ByteCodeGenerator(manager);
 
-            CompileBlockScope(method.Body);
+            method.Body.ValidateType();
+
+            new BlockCompiler(method.Body).Compile(generator);
 
             attributes.Add(new CompileAttributeCode
             {
                 NameIndex = manager.AddConstantUtf8(new CompileAttributeCode().Name),
                 Code = generator.GetBytes(),
                 Attributes = new List<short>(),
-                ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>()
+                ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
+
+                MaxLocals = 4,
+                MaxStack = 2
             });
-
-            return attributes;
         }
 
-        private void CompileBlockScope(MethodTree node)
+        private void CompileMethodTree(MethodTree node)
         {
-        }
 
-        public bool IsLocalVariable(ITree node)
-        {
-            return node.Type == (int)JavaNodeType.VAR_DECLARATION;
-        }
-        public void CompileLocalVariable(ITree node)
-        {
-            // modifiers, type, name
         }
     }
 }
