@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace JavaCompiler.Utilities
 {
-    internal class JavaTextEncoding : Encoding
+    public class JavaTextEncoding : Encoding
     {
         public override int GetByteCount(char[] chars, int charIndex, int charCount)
         {

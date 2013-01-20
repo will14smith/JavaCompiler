@@ -4,9 +4,9 @@ using JavaCompiler.Reflection.Interfaces;
 namespace JavaCompiler.Reflection
 {
     //TODO
-    public class JavaTypeVariable<T> where T : IGenericDeclaration<T>
+    public class TypeVariable<T> where T : IGenericDeclaration<T>
     {
-        public JavaTypeVariable()
+        public TypeVariable()
         {
             Bounds = new List<IType>();
         }

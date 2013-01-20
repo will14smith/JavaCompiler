@@ -81,22 +81,6 @@ namespace JavaCompiler.Tests
         }
 
         /// <summary>
-        ///A test for BuildAst
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("JavaCompiler.dll")]
-        public void BuildAstTest()
-        {
-            PrivateObject param0 = null; // TODO: Initialize to an appropriate value
-            Compiler_Accessor target = new Compiler_Accessor(param0); // TODO: Initialize to an appropriate value
-            CommonTree expected = null; // TODO: Initialize to an appropriate value
-            CommonTree actual;
-            actual = target.BuildAst();
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
         ///A test for Compiler Constructor
         ///</summary>
         [TestMethod()]

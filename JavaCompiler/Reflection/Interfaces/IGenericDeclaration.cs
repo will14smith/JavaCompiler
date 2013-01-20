@@ -4,6 +4,6 @@ namespace JavaCompiler.Reflection.Interfaces
 {
     public interface IGenericDeclaration<T> where T : IGenericDeclaration<T>
     {
-        List<JavaTypeVariable<T>> TypeParameters { get; }
+        List<TypeVariable<T>> TypeParameters { get; }
     }
 }

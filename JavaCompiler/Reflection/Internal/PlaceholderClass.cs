@@ -1,6 +1,6 @@
 ﻿namespace JavaCompiler.Reflection.Internal
 {
-    internal class PlaceholderClass : Class
+    public class PlaceholderClass : Class
     {
     }
 }

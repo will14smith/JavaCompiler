@@ -12,7 +12,7 @@ namespace JavaCompiler.Compilation.ByteCode
             this.label = label;
         }
 
-        internal int GetLabelValue()
+        public int GetLabelValue()
         {
             return label;
         }

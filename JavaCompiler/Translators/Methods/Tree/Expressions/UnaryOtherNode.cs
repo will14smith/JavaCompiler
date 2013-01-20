@@ -2,7 +2,7 @@
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    abstract class UnaryOtherNode : ExpressionNode
+    public abstract class UnaryOtherNode : ExpressionNode
     {
 
         public class UnaryCastNode : UnaryOtherNode

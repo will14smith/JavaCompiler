@@ -20,7 +20,7 @@ namespace JavaCompiler.Reflection
             Interfaces = new List<Class>();
             GenericInterfaces = new List<IType>();
 
-            TypeParameters = new List<JavaTypeVariable<Class>>();
+            TypeParameters = new List<TypeVariable<Class>>();
         }
 
         public virtual string Name { get; set; }
@@ -52,7 +52,7 @@ namespace JavaCompiler.Reflection
         public List<Class> Interfaces { get; private set; }
         public List<IType> GenericInterfaces { get; private set; }
 
-        public List<JavaTypeVariable<Class>> TypeParameters { get; private set; }
+        public List<TypeVariable<Class>> TypeParameters { get; private set; }
 
         public virtual bool IsAssignableTo(Class c)
         {

@@ -8,7 +8,7 @@ namespace JavaCompiler.Reflection
     {
         public Constructor()
         {
-            TypeParameters = new List<JavaTypeVariable<Constructor>>();
+            TypeParameters = new List<TypeVariable<Constructor>>();
 
             ParameterTypes = new List<Class>();
             GenericParameterTypes = new List<IType>();
@@ -23,7 +23,7 @@ namespace JavaCompiler.Reflection
         public string Name { get; set; }
         public Modifier Modifiers { get; set; }
 
-        public List<JavaTypeVariable<Constructor>> TypeParameters { get; private set; }
+        public List<TypeVariable<Constructor>> TypeParameters { get; private set; }
 
         public List<Class> ParameterTypes { get; private set; }
         public List<IType> GenericParameterTypes { get; private set; }

@@ -2,7 +2,7 @@
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    abstract class MultiplicativeNode : ExpressionNode
+    public abstract class MultiplicativeNode : ExpressionNode
     {
         public ExpressionNode LeftChild { get; set; }
         public ExpressionNode RightChild { get; set; }

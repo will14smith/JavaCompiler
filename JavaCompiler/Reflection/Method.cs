@@ -23,7 +23,7 @@ namespace JavaCompiler.Reflection
 
         public Method()
         {
-            TypeParameters = new List<JavaTypeVariable<Method>>();
+            TypeParameters = new List<TypeVariable<Method>>();
 
             Parameters = new List<Parameter>();
             GenericParameterTypes = new List<IType>();
@@ -39,7 +39,7 @@ namespace JavaCompiler.Reflection
         public string Name { get; set; }
         public Modifier Modifiers { get;  set; }
 
-        public List<JavaTypeVariable<Method>> TypeParameters { get; private set; }
+        public List<TypeVariable<Method>> TypeParameters { get; private set; }
 
         public Class ReturnType { get; set; }
         public IType GenericReturnType { get; set; }

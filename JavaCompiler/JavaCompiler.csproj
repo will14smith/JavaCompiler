@@ -61,7 +61,6 @@
     <Compile Include="Compilation\CompileFieldInfo.cs" />
     <Compile Include="Compilation\CompileManager.cs" />
     <Compile Include="Compilation\CompileMethodInfo.cs" />
-    <Compile Include="Compilation\TypeValidator.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
     <Compile Include="Compilers\MethodCompiler.cs" />
@@ -198,7 +197,7 @@
     <Compile Include="Translators\ModifierListTranslator.cs" />
     <Compile Include="Translators\TypeDeclarationTranslator.cs" />
     <Compile Include="Translators\TypeTranslator.cs" />
-    <Compile Include="Translators\VarDeclaratorTranlator.cs" />
+    <Compile Include="Translators\VarDeclaratorTranslator.cs" />
     <Compile Include="Utilities\BigEndianBitConverter.cs" />
     <Compile Include="Utilities\EndianBinaryWriter.cs" />
     <Compile Include="Utilities\EndianBitConverter.cs" />

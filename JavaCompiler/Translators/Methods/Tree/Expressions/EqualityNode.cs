@@ -3,7 +3,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    abstract class EqualityNode : ExpressionNode
+    public abstract class EqualityNode : ExpressionNode
     {
         public ExpressionNode LeftChild { get; set; }
         public ExpressionNode RightChild { get; set; }

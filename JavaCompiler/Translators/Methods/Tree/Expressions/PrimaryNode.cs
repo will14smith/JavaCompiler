@@ -6,7 +6,7 @@ using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    abstract class PrimaryNode : ExpressionNode
+    public abstract class PrimaryNode : ExpressionNode
     {
         // Valid types are below classes and AllocationNode
         public ExpressionNode Child { get; set; }
