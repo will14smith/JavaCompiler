@@ -1,11 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler", "JavaCompiler\JavaCompiler.csproj", "{60278769-F389-4390-A4D7-DFDC34757AB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler.Console", "JavaCompiler.Console\JavaCompiler.Console.csproj", "{EE24CB0E-95B9-4F2C-9AC1-582B9B4AA1C7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{672CA0FF-E873-4F70-AD92-7FEA4869EA3E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6324AFD-1277-4177-8CDE-5C808E5C14F6}"
+	ProjectSection(SolutionItems) = preProject
+		JavaCompiler.vsmdi = JavaCompiler.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = JavaCompiler.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -22,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B6324AFD-1277-4177-8CDE-5C808E5C14F6} = {672CA0FF-E873-4F70-AD92-7FEA4869EA3E}
 	EndGlobalSection
 EndGlobal

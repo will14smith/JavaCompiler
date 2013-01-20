@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F0C2153-6889-4CC2-B9D6-04353C548513}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JavaCompiler.Tests</RootNamespace>
+    <AssemblyName>JavaCompiler.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime.Debug">
+      <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime.JavaExtensions">
+      <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.JavaExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdditiveCompilerTest.cs" />
+    <Compile Include="AdditiveNodeTest.cs" />
+    <Compile Include="AdditiveNode_AdditiveMinusNodeTest.cs" />
+    <Compile Include="AdditiveNode_AdditivePlusNodeTest.cs" />
+    <Compile Include="AdditiveTranslatorTest.cs" />
+    <Compile Include="AndCompilerTest.cs" />
+    <Compile Include="AndNodeTest.cs" />
+    <Compile Include="AndTranslatorTest.cs" />
+    <Compile Include="ArrayInitialiserCompilerTest.cs" />
+    <Compile Include="ArrayInitialiserNodeTest.cs" />
+    <Compile Include="ArrayInitialiserTranslatorTest.cs" />
+    <Compile Include="AssertNodeTest.cs" />
+    <Compile Include="AssertTranslatorTest.cs" />
+    <Compile Include="AssignmentCompilerTest.cs" />
+    <Compile Include="AssignmentNodeTest.cs" />
+    <Compile Include="AssignmentTranslatorTest.cs" />
+    <Compile Include="BigEndianBitConverterTest.cs" />
+    <Compile Include="BlockCompilerTest.cs" />
+    <Compile Include="BlockTranslatorTest.cs" />
+    <Compile Include="BreakNodeTest.cs" />
+    <Compile Include="BreakTranslatorTest.cs" />
+    <Compile Include="ByteCodeGeneratorTest.cs" />
+    <Compile Include="ClassCompilerTest.cs" />
+    <Compile Include="ClassTest.cs" />
+    <Compile Include="ClassTranslatorTest.cs" />
+    <Compile Include="CommonTest.cs" />
+    <Compile Include="CommonTypeFinderTest.cs" />
+    <Compile Include="CompileAttributeCodeTest.cs" />
+    <Compile Include="CompileAttributeConstantValueTest.cs" />
+    <Compile Include="CompileAttributeDeprecatedTest.cs" />
+    <Compile Include="CompileAttributeExceptionsTest.cs" />
+    <Compile Include="CompileAttributeInnerClassesTest.cs" />
+    <Compile Include="CompileAttributeLineLocalVariableTableTest.cs" />
+    <Compile Include="CompileAttributeLineLocalVariableTable_VariableTableEntryTest.cs" />
+    <Compile Include="CompileAttributeLineNumberTableTest.cs" />
+    <Compile Include="CompileAttributeLineNumberTable_LineNumberTableEntryTest.cs" />
+    <Compile Include="CompileAttributeSourceFileTest.cs" />
+    <Compile Include="CompileAttributeSyntheticTest.cs" />
+    <Compile Include="CompileAttributeTest.cs" />
+    <Compile Include="CompileConstantClassTest.cs" />
+    <Compile Include="CompileConstantDoubleTest.cs" />
+    <Compile Include="CompileConstantFieldrefTest.cs" />
+    <Compile Include="CompileConstantFloatTest.cs" />
+    <Compile Include="CompileConstantIntegerTest.cs" />
+    <Compile Include="CompileConstantInterfaceMethodrefTest.cs" />
+    <Compile Include="CompileConstantInvokeDynamicTest.cs" />
+    <Compile Include="CompileConstantLongTest.cs" />
+    <Compile Include="CompileConstantMethodHandleTest.cs" />
+    <Compile Include="CompileConstantMethodrefTest.cs" />
+    <Compile Include="CompileConstantMethodTypeTest.cs" />
+    <Compile Include="CompileConstantNameAndTypeTest.cs" />
+    <Compile Include="CompileConstantStringTest.cs" />
+    <Compile Include="CompileConstantTest.cs" />
+    <Compile Include="CompileConstantUtf8Test.cs" />
+    <Compile Include="CompileFieldInfoTest.cs" />
+    <Compile Include="CompileManagerTest.cs" />
+    <Compile Include="CompileMethodInfoTest.cs" />
+    <Compile Include="CompilerTest.cs" />
+    <Compile Include="ConditionalCompilerTest.cs" />
+    <Compile Include="ConditionalNodeTest.cs" />
+    <Compile Include="ConditionalTranslatorTest.cs" />
+    <Compile Include="ConstructorTest.cs" />
+    <Compile Include="ContinueNodeTest.cs" />
+    <Compile Include="ContiuneTranslatorTest.cs" />
+    <Compile Include="DoNodeTest.cs" />
+    <Compile Include="DoTranslatorTest.cs" />
+    <Compile Include="EndianBinaryWriterTest.cs" />
+    <Compile Include="EndianBitConverterTest.cs" />
+    <Compile Include="EndianBitConverter_Int32SingleUnionTest.cs" />
+    <Compile Include="EqualityCompilerTest.cs" />
+    <Compile Include="EqualityNodeTest.cs" />
+    <Compile Include="EqualityNode_EqualityEqualNodeTest.cs" />
+    <Compile Include="EqualityNode_EqualityNotEqualNodeTest.cs" />
+    <Compile Include="EqualityTranslatorTest.cs" />
+    <Compile Include="ExpressionBlockNodeTest.cs" />
+    <Compile Include="ExpressionCompilerTest.cs" />
+    <Compile Include="ExpressionTranslatorTest.cs" />
+    <Compile Include="FieldTest.cs" />
+    <Compile Include="ForEachTranslatorTest.cs" />
+    <Compile Include="ForNodeTest.cs" />
+    <Compile Include="ForTranslatorTest.cs" />
+    <Compile Include="IdentifierTranslatorTest.cs" />
+    <Compile Include="IfNodeTest.cs" />
+    <Compile Include="IfTranslatorTest.cs" />
+    <Compile Include="IGenericDeclarationTest.cs" />
+    <Compile Include="IMemberTest.cs" />
+    <Compile Include="InnerNewCompilerTest.cs" />
+    <Compile Include="InnerNewNodeTest.cs" />
+    <Compile Include="InnerNewTranslatorTest.cs" />
+    <Compile Include="ITypeTest.cs" />
+    <Compile Include="JavaLexerTest.cs" />
+    <Compile Include="JavaLexer_DFA28Test.cs" />
+    <Compile Include="JavaParserTest.cs" />
+    <Compile Include="JavaTextEncodingTest.cs" />
+    <Compile Include="JavaTypeVariableTest.cs" />
+    <Compile Include="LabelNodeTest.cs" />
+    <Compile Include="LabelTest.cs" />
+    <Compile Include="LabelTranslatorTest.cs" />
+    <Compile Include="LittleEndianBitConverterTest.cs" />
+    <Compile Include="LocalModifierListTranslatorTest.cs" />
+    <Compile Include="LocalModifierTest.cs" />
+    <Compile Include="LogicalAndCompilerTest.cs" />
+    <Compile Include="LogicalAndNodeTest.cs" />
+    <Compile Include="LogicalAndTranslatorTest.cs" />
+    <Compile Include="LogicalOrCompilerTest.cs" />
+    <Compile Include="LogicalOrNodeTest.cs" />
+    <Compile Include="LogicalOrTranslatorTest.cs" />
+    <Compile Include="MethodCompilerTest.cs" />
+    <Compile Include="MethodParameterTranslatorTest.cs" />
+    <Compile Include="MethodTest.cs" />
+    <Compile Include="MethodTranslatorTest.cs" />
+    <Compile Include="MethodTreeNodeTest.cs" />
+    <Compile Include="MethodTreeTest.cs" />
+    <Compile Include="Method_ParameterTest.cs" />
+    <Compile Include="ModifierListTranslatorTest.cs" />
+    <Compile Include="MultiplicativeCompilerTest.cs" />
+    <Compile Include="MultiplicativeNodeTest.cs" />
+    <Compile Include="MultiplicativeNode_MultiplicativeDivideNodeTest.cs" />
+    <Compile Include="MultiplicativeNode_MultiplicativeModNodeTest.cs" />
+    <Compile Include="MultiplicativeNode_MultiplicativeMultiplyNodeTest.cs" />
+    <Compile Include="MultiplicativeTranslatorTest.cs" />
+    <Compile Include="NewCompilerTest.cs" />
+    <Compile Include="NewNodeTest.cs" />
+    <Compile Include="NewTranslatorTest.cs" />
+    <Compile Include="OpCodesTest.cs" />
+    <Compile Include="OpCodeTest.cs" />
+    <Compile Include="OrCompilerTest.cs" />
+    <Compile Include="OrNodeTest.cs" />
+    <Compile Include="OrTranslatorTest.cs" />
+    <Compile Include="PackageTest.cs" />
+    <Compile Include="PlaceholderClassTest.cs" />
+    <Compile Include="PrimaryCompilerTest.cs" />
+    <Compile Include="PrimaryNodeTest.cs" />
+    <Compile Include="PrimaryNode_TermBoolLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermCharLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermClassLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermDecimalLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermFieldExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermFloatLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermIdentifierExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermMethodCallExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermNullExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermStringLiteralExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermSuperExpressionTest.cs" />
+    <Compile Include="PrimaryNode_TermThisExpressionTest.cs" />
+    <Compile Include="PrimaryTranslatorTest.cs" />
+    <Compile Include="PrimativeClasses_BooleanClassTest.cs" />
+    <Compile Include="PrimativeClasses_ByteClassTest.cs" />
+    <Compile Include="PrimativeClasses_CharClassTest.cs" />
+    <Compile Include="PrimativeClasses_CompileTimeClassTest.cs" />
+    <Compile Include="PrimativeClasses_DoubleClassTest.cs" />
+    <Compile Include="PrimativeClasses_FloatClassTest.cs" />
+    <Compile Include="PrimativeClasses_IntClassTest.cs" />
+    <Compile Include="PrimativeClasses_LongClassTest.cs" />
+    <Compile Include="PrimativeClasses_ShortClassTest.cs" />
+    <Compile Include="PrimativeClasses_VoidClassTest.cs" />
+    <Compile Include="ProgramCompilerTest.cs" />
+    <Compile Include="ProgramTest.cs" />
+    <Compile Include="ProgramTranslatorTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QualifiedCompilerTest.cs" />
+    <Compile Include="QualifiedNodeTest.cs" />
+    <Compile Include="QualifiedTranslatorTest.cs" />
+    <Compile Include="RelationCompilerTest.cs" />
+    <Compile Include="RelationNodeTest.cs" />
+    <Compile Include="RelationTranslatorTest.cs" />
+    <Compile Include="ReturnNodeTest.cs" />
+    <Compile Include="ReturnTranslatorTest.cs" />
+    <Compile Include="ShiftCompilerTest.cs" />
+    <Compile Include="ShiftNodeTest.cs" />
+    <Compile Include="ShiftTranslatorTest.cs" />
+    <Compile Include="StatementCompilerTest.cs" />
+    <Compile Include="StatementTranslatorTest.cs" />
+    <Compile Include="SwitchNodeTest.cs" />
+    <Compile Include="SwitchTranslatorTest.cs" />
+    <Compile Include="SynchronizedNodeTest.cs" />
+    <Compile Include="SyncronizedTranslatorTest.cs" />
+    <Compile Include="ThrowNodeTest.cs" />
+    <Compile Include="ThrowTranslatorTest.cs" />
+    <Compile Include="TreeExtensionsTest.cs" />
+    <Compile Include="TryNodeTest.cs" />
+    <Compile Include="TryTranslatorTest.cs" />
+    <Compile Include="TypeDeclarationNodeTest.cs" />
+    <Compile Include="TypeDeclarationTranslatorTest.cs" />
+    <Compile Include="TypeTranslatorTest.cs" />
+    <Compile Include="TypeValidatorTest.cs" />
+    <Compile Include="UnaryCompilerTest.cs" />
+    <Compile Include="UnaryNodeTest.cs" />
+    <Compile Include="UnaryOtherCompilerTest.cs" />
+    <Compile Include="UnaryOtherNode_UnaryCastNodeTest.cs" />
+    <Compile Include="UnaryOtherTranslatorTest.cs" />
+    <Compile Include="UnaryTranslatorTest.cs" />
+    <Compile Include="VarDeclarationCompilerTest.cs" />
+    <Compile Include="VarDeclarationNodeTest.cs" />
+    <Compile Include="VarDeclarationTranslatorTest.cs" />
+    <Compile Include="VarDeclaratorTranlatorTest.cs" />
+    <Compile Include="VariableInitialiserCompilerTest.cs" />
+    <Compile Include="VariableInitialiserNodeTest.cs" />
+    <Compile Include="VariableInitialiserTranslatorTest.cs" />
+    <Compile Include="VariableTest.cs" />
+    <Compile Include="WhileNodeTest.cs" />
+    <Compile Include="WhileTranslatorTest.cs" />
+    <Compile Include="XorCompilerTest.cs" />
+    <Compile Include="XorNodeTest.cs" />
+    <Compile Include="XorTranslatorTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Shadow Include="Test References\JavaCompiler.accessor" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JavaCompiler\JavaCompiler.csproj">
+      <Project>{60278769-F389-4390-A4D7-DFDC34757AB7}</Project>
+      <Name>JavaCompiler</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
