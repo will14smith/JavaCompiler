@@ -97,11 +97,16 @@
     <Compile Include="JavaParser.cs" />
     <Compile Include="Compilers\ProgramCompiler.cs" />
     <Compile Include="Reflection\AccessibleObject.cs" />
+    <Compile Include="Reflection\Loaders\ClassLoader.cs" />
+    <Compile Include="Reflection\Loaders\ClassLocator.cs" />
     <Compile Include="Reflection\CommonTypeFinder.cs" />
     <Compile Include="Reflection\Constructor.cs" />
     <Compile Include="Reflection\Interfaces\IGenericDeclaration.cs" />
     <Compile Include="Reflection\Interfaces\IMember.cs" />
     <Compile Include="Reflection\Internal\PlaceholderClass.cs" />
+    <Compile Include="Reflection\Loaders\DirectoryClassLocator.cs" />
+    <Compile Include="Reflection\Loaders\IClassLocator.cs" />
+    <Compile Include="Reflection\Loaders\JarClassLocator.cs" />
     <Compile Include="Reflection\Package.cs" />
     <Compile Include="Reflection\PrimativeTypes.cs" />
     <Compile Include="Reflection\Program.cs" />
