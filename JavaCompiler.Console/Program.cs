@@ -30,6 +30,8 @@ namespace JavaCompiler.Console
         {
             var compiler = new Compiler(File.ReadAllText("Exercise1.java"));
 
+            compiler.ClassPath.Add(Directory.GetCurrentDirectory());
+
             File.WriteAllBytes("Exercise1.class", compiler.Compile());
         }
     }

@@ -5,7 +5,7 @@ using JavaCompiler.Reflection.Interfaces;
 
 namespace JavaCompiler.Reflection
 {
-    public class Class : IType, IGenericDeclaration<Class>
+    public class Class : Type, IGenericDeclaration<Class>
     {
         public Class()
         {
@@ -15,21 +15,21 @@ namespace JavaCompiler.Reflection
             Methods = new List<Method>();
             Fields = new List<Field>();
 
-            Types = new List<IType>();
+            Types = new List<Type>();
 
             Interfaces = new List<Class>();
-            GenericInterfaces = new List<IType>();
+            GenericInterfaces = new List<Type>();
 
             TypeParameters = new List<TypeVariable<Class>>();
         }
 
-        public virtual string Name { get; set; }
+        // Name
         public Modifier Modifiers { get; set; }
 
         public Package Package { get; set; }
 
         public Class Super { get; set; }
-        public IType GenericSuperclass { get; set; }
+        public Type GenericSuperclass { get; set; }
 
         public Class DeclaringClass { get; set; }
         public Class ComponentType { get; set; }
@@ -38,7 +38,6 @@ namespace JavaCompiler.Reflection
         public bool Annotation { get; set; }
         public bool Enum { get; set; }
         public bool Interface { get; set; }
-        public virtual bool Primitive { get { return false; } }
         public bool Synthetic { get; set; }
 
         public List<object> EnumConstants { get; private set; }
@@ -47,20 +46,16 @@ namespace JavaCompiler.Reflection
         public List<Field> Fields { get; private set; }
         public List<Method> Methods { get; private set; }
 
-        public List<IType> Types { get; private set; }
+        public List<Type> Types { get; private set; }
 
         public List<Class> Interfaces { get; private set; }
-        public List<IType> GenericInterfaces { get; private set; }
+        public List<Type> GenericInterfaces { get; private set; }
 
         public List<TypeVariable<Class>> TypeParameters { get; private set; }
 
-        public virtual bool IsAssignableTo(Class c)
+        public override bool IsAssignableTo(Type c)
         {
             throw new NotImplementedException();
-        }
-        public bool CanAssignTo(Class c)
-        {
-            return c.IsAssignableTo(this);
         }
     }
 }

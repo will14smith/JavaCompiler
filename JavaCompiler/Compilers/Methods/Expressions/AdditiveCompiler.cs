@@ -2,6 +2,7 @@
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -13,7 +14,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Class Compile(ByteCodeGenerator generator)
+        public Type Compile(ByteCodeGenerator generator)
         {
             var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
             var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
@@ -44,35 +45,35 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             return resultType;
         }
 
-        private static void CompileAdd(ByteCodeGenerator generator, Class returnType)
+        private static void CompileAdd(ByteCodeGenerator generator, Type returnType)
         {
-            if (returnType == PrimativeClasses.Byte)
+            if (returnType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.iadd);
                 generator.Emit(OpCodes.i2b);
             }
-            else if (returnType == PrimativeClasses.Short)
+            else if (returnType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.iadd);
                 generator.Emit(OpCodes.i2s);
             }
-            else if (returnType == PrimativeClasses.Int)
+            else if (returnType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.iadd);
             }
-            else if (returnType == PrimativeClasses.Long)
+            else if (returnType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.ladd);
             }
-            else if (returnType == PrimativeClasses.Float)
+            else if (returnType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.fadd);
             }
-            else if (returnType == PrimativeClasses.Double)
+            else if (returnType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.dadd);
             }
-            else if (returnType == PrimativeClasses.Char)
+            else if (returnType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.iadd);
                 generator.Emit(OpCodes.i2c);
@@ -82,35 +83,35 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 throw new NotImplementedException();
             }
         }
-        private static void CompileSub(ByteCodeGenerator generator, Class returnType)
+        private static void CompileSub(ByteCodeGenerator generator, Type returnType)
         {
-            if (returnType == PrimativeClasses.Byte)
+            if (returnType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.isub);
                 generator.Emit(OpCodes.i2b);
             }
-            else if (returnType == PrimativeClasses.Short)
+            else if (returnType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.isub);
                 generator.Emit(OpCodes.i2s);
             }
-            else if (returnType == PrimativeClasses.Int)
+            else if (returnType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.isub);
             }
-            else if (returnType == PrimativeClasses.Long)
+            else if (returnType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.lsub);
             }
-            else if (returnType == PrimativeClasses.Float)
+            else if (returnType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.fsub);
             }
-            else if (returnType == PrimativeClasses.Double)
+            else if (returnType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.dsub);
             }
-            else if (returnType == PrimativeClasses.Char)
+            else if (returnType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.isub);
                 generator.Emit(OpCodes.i2c);

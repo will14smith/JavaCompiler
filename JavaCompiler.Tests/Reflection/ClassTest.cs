@@ -188,8 +188,8 @@ namespace JavaCompiler.Tests.Reflection
         public void GenericSuperclassTest()
         {
             Class target = new Class(); // TODO: Initialize to an appropriate value
-            IType expected = null; // TODO: Initialize to an appropriate value
-            IType actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             target.GenericSuperclass = expected;
             actual = target.GenericSuperclass;
             Assert.AreEqual(expected, actual);

@@ -87,36 +87,6 @@ namespace JavaCompiler.Tests.Compilation
         }
 
         /// <summary>
-        ///A test for HValue
-        ///</summary>
-        [TestMethod()]
-        public void HValueTest()
-        {
-            CompileConstantDouble target = new CompileConstantDouble(); // TODO: Initialize to an appropriate value
-            byte[] expected = null; // TODO: Initialize to an appropriate value
-            byte[] actual;
-            target.HValue = expected;
-            actual = target.HValue;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for LValue
-        ///</summary>
-        [TestMethod()]
-        public void LValueTest()
-        {
-            CompileConstantDouble target = new CompileConstantDouble(); // TODO: Initialize to an appropriate value
-            byte[] expected = null; // TODO: Initialize to an appropriate value
-            byte[] actual;
-            target.LValue = expected;
-            actual = target.LValue;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
         ///A test for Tag
         ///</summary>
         [TestMethod()]

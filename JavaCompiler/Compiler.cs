@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Compilers;
+using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Translators;
 
 namespace JavaCompiler
@@ -14,6 +11,8 @@ namespace JavaCompiler
     public class Compiler
     {
         private readonly string document;
+
+        public List<string> ClassPath { get { return ClassLocator.SearchPaths; } } 
 
         public Compiler(string document)
         {

@@ -69,10 +69,10 @@ namespace JavaCompiler.Tests.Reflection
         [TestMethod()]
         public void FindCommonTypeTest()
         {
-            Class c1 = null; // TODO: Initialize to an appropriate value
-            Class c2 = null; // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type c1 = null; // TODO: Initialize to an appropriate value
+            Type c2 = null; // TODO: Initialize to an appropriate value
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             actual = CommonTypeFinder.FindCommonType(c1, c2);
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");

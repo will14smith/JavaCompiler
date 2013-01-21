@@ -11,6 +11,6 @@ namespace JavaCompiler.Reflection
         public string Name { get; set; }
         public Modifier Modifiers { get; set; }
 
-        public Class Type { get; set; }
+        public Type Type { get; set; }
     }
 }

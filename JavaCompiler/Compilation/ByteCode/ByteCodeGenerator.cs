@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JavaCompiler.Reflection;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
 {
@@ -86,7 +86,7 @@ namespace JavaCompiler.Compilation.ByteCode
             return variableList.First(x => x != null && x.Name == name);
         }
 
-        public Variable DefineVariable(string name, Class type)
+        public Variable DefineVariable(string name, Type type)
         {
             if (variableCount >= variableList.Length) throw new StackOverflowException("Cannot define any more local variables!");
 

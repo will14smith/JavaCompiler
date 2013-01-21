@@ -56,7 +56,7 @@ namespace JavaCompiler.Compilers
                 fieldInfo.Modifiers = field.Modifiers;
                 fieldInfo.Name = nameIndex;
                 fieldInfo.Descriptor = descriptorIndex;
-                fieldInfo.Attributes = new List<short>(); //TODO: ConstantValue, Synthetic, Deprecated 
+                fieldInfo.Attributes = new List<CompileAttribute>(); //TODO: ConstantValue, Synthetic, Deprecated 
 
                 manager.AddField(fieldInfo);
             }

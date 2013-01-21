@@ -98,8 +98,8 @@ namespace JavaCompiler.Tests.Translators
         {
             ITree node = null; // TODO: Initialize to an appropriate value
             TypeTranslator target = new TypeTranslator(node); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             actual = target.Walk();
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");

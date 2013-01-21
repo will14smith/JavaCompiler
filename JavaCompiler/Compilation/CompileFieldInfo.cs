@@ -7,12 +7,17 @@ namespace JavaCompiler.Compilation
 {
     public class CompileFieldInfo
     {
+        public CompileFieldInfo()
+        {
+            Attributes = new List<CompileAttribute>();
+        }
+
         public Modifier Modifiers { get; set; }
 
         public short Name { get; set; }
         public short Descriptor { get; set; }
 
-        public List<short> Attributes { get; set; }
+        public List<CompileAttribute> Attributes { get; set; }
 
         public void Write(EndianBinaryWriter writer)
         {
@@ -26,7 +31,7 @@ namespace JavaCompiler.Compilation
 
             foreach (var attr in Attributes)
             {
-                writer.Write(attr);
+                attr.Write(writer);
             }
         }
     }

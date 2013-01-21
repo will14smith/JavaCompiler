@@ -90,8 +90,6 @@ namespace JavaCompiler.Translators
                     case JavaNodeType.AT:
                         var type = new TypeDeclarationTranslator(child).Walk();
 
-                        type.DeclaringClass = @class;
-
                         @class.Types.Add(type);
                         break; 
                     default:

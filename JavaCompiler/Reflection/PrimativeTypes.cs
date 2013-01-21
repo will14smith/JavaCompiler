@@ -1,25 +1,25 @@
 ﻿namespace JavaCompiler.Reflection
 {
-    public static class PrimativeClasses
+    public static class PrimativeTypes
     {
-        public static Class Byte = new ByteClass();
-        public static Class Short = new ShortClass();
-        public static Class Int = new IntClass();
-        public static Class Long = new LongClass();
-        public static Class Float = new FloatClass();
-        public static Class Double = new DoubleClass();
-        public static Class Boolean = new BooleanClass();
-        public static Class Char = new CharClass();
+        public static Type Byte = new ByteClass();
+        public static Type Short = new ShortClass();
+        public static Type Int = new IntClass();
+        public static Type Long = new LongClass();
+        public static Type Float = new FloatClass();
+        public static Type Double = new DoubleClass();
+        public static Type Boolean = new BooleanClass();
+        public static Type Char = new CharClass();
 
-        public static Class Void = new VoidClass();
-        public static Class CompileTime = new CompileTimeClass();
+        public static Type Void = new VoidClass();
+        public static Type CompileTime = new CompileTimeClass();
 
-        private class ByteClass : Class
+        private class ByteClass : Type
         {
             public override string Name { get { return "byte"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Byte
                 if (!c.Primitive) return false;
@@ -30,12 +30,12 @@
                 return true;
             }
         }
-        private class ShortClass : Class
+        private class ShortClass : Type
         {
             public override string Name { get { return "short"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Short
                 if (!c.Primitive) return false;
@@ -47,12 +47,12 @@
                 return true;
             }
         }
-        private class IntClass : Class
+        private class IntClass : Type
         {
             public override string Name { get { return "int"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Integer
                 if (!c.Primitive) return false;
@@ -65,12 +65,12 @@
                 return true;
             }
         }
-        private class LongClass : Class
+        private class LongClass : Type
         {
             public override string Name { get { return "long"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Long
                 if (!c.Primitive) return false;
@@ -84,12 +84,12 @@
                 return true;
             }
         }
-        private class FloatClass : Class
+        private class FloatClass : Type
         {
             public override string Name { get { return "float"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Float
                 if (!c.Primitive) return false;
@@ -104,12 +104,12 @@
                 return true;
             }
         }
-        private class DoubleClass : Class
+        private class DoubleClass : Type
         {
             public override string Name { get { return "double"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Double
                 if (!c.Primitive) return false;
@@ -125,12 +125,12 @@
                 return true;
             }
         }
-        private class BooleanClass : Class
+        private class BooleanClass : Type
         {
             public override string Name { get { return "boolean"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Boolean
                 if (!c.Primitive) return false;
@@ -146,12 +146,12 @@
                 return true;
             }
         }
-        private class CharClass : Class
+        private class CharClass : Type
         {
             public override string Name { get { return "char"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 //TODO: Char
                 if (!c.Primitive) return false;
@@ -164,22 +164,22 @@
             }
         }
 
-        private class VoidClass : Class
+        private class VoidClass : Type
         {
             public override string Name { get { return "void"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 return false;
             }
         }
-        internal class CompileTimeClass : Class
+        internal class CompileTimeClass : Type
         {
             public override string Name { get { return "COMPILE TIME"; } }
             public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Class c)
+            public override bool IsAssignableTo(Type c)
             {
                 return false;
             }

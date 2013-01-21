@@ -1,13 +1,14 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Compilers.Methods
 {
     public static class Common
     {
         #region Casting
-        public static void Cast(Class stackType, Class requiredType, ByteCodeGenerator generator, bool force = false)
+        public static void Cast(Type stackType, Type requiredType, ByteCodeGenerator generator, bool force = false)
         {
             if (stackType == requiredType) return;
 
@@ -27,33 +28,33 @@ namespace JavaCompiler.Compilers.Methods
             }
         }
 
-        private static void CastPrimative(Class stackType, Class requiredType, ByteCodeGenerator generator)
+        private static void CastPrimative(Type stackType, Type requiredType, ByteCodeGenerator generator)
         {
-            if (requiredType == PrimativeClasses.Byte)
+            if (requiredType == PrimativeTypes.Byte)
             {
                 CastByte(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Short)
+            else if (requiredType == PrimativeTypes.Short)
             {
                 CastShort(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Int)
+            else if (requiredType == PrimativeTypes.Int)
             {
                 CastInt(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Long)
+            else if (requiredType == PrimativeTypes.Long)
             {
                 CastLong(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Float)
+            else if (requiredType == PrimativeTypes.Float)
             {
                 CastFloat(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Double)
+            else if (requiredType == PrimativeTypes.Double)
             {
                 CastDouble(stackType, generator);
             }
-            else if (requiredType == PrimativeClasses.Char)
+            else if (requiredType == PrimativeTypes.Char)
             {
                 CastChar(stackType, generator);
             }
@@ -63,35 +64,35 @@ namespace JavaCompiler.Compilers.Methods
             }
         }
 
-        private static void CastByte(Class stackType, ByteCodeGenerator generator)
+        private static void CastByte(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
             }
-            if (stackType == PrimativeClasses.Short)
-            {
-                generator.Emit(OpCodes.i2b);
-            }
-            else if (stackType == PrimativeClasses.Int)
+            if (stackType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.i2b);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Int)
+            {
+                generator.Emit(OpCodes.i2b);
+            }
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2i);
                 generator.Emit(OpCodes.i2b);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2i);
                 generator.Emit(OpCodes.i2b);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2i);
                 generator.Emit(OpCodes.i2b);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.i2b);
             }
@@ -100,35 +101,35 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastShort(Class stackType, ByteCodeGenerator generator)
+        private static void CastShort(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.i2s);
             }
-            else if (stackType == PrimativeClasses.Short)
+            else if (stackType == PrimativeTypes.Short)
             {
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.i2s);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2i);
                 generator.Emit(OpCodes.i2s);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2i);
                 generator.Emit(OpCodes.i2s);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2i);
                 generator.Emit(OpCodes.i2s);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.i2s);
             }
@@ -137,30 +138,30 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastInt(Class stackType, ByteCodeGenerator generator)
+        private static void CastInt(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
             }
-            else if (stackType == PrimativeClasses.Short)
+            else if (stackType == PrimativeTypes.Short)
             {
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2i);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2i);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2i);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
             }
             else
@@ -168,32 +169,32 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastLong(Class stackType, ByteCodeGenerator generator)
+        private static void CastLong(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.i2l);
             }
-            else if (stackType == PrimativeClasses.Short)
+            else if (stackType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.i2l);
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.i2l);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2l);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2l);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.i2l);
             }
@@ -202,32 +203,32 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastFloat(Class stackType, ByteCodeGenerator generator)
+        private static void CastFloat(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.i2f);
             }
-            else if (stackType == PrimativeClasses.Short)
+            else if (stackType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.i2f);
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.i2f);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2f);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2f);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.i2f);
             }
@@ -236,32 +237,32 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastDouble(Class stackType, ByteCodeGenerator generator)
+        private static void CastDouble(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.i2d);
             }
-            else if (stackType == PrimativeClasses.Short)
+            else if (stackType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.i2d);
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.i2d);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2d);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2d);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
                 generator.Emit(OpCodes.i2d);
             }
@@ -270,36 +271,36 @@ namespace JavaCompiler.Compilers.Methods
                 throw new NotImplementedException();
             }
         }
-        private static void CastChar(Class stackType, ByteCodeGenerator generator)
+        private static void CastChar(Type stackType, ByteCodeGenerator generator)
         {
-            if (stackType == PrimativeClasses.Byte)
+            if (stackType == PrimativeTypes.Byte)
             {
                 generator.Emit(OpCodes.i2c);
             }
-            if (stackType == PrimativeClasses.Short)
+            if (stackType == PrimativeTypes.Short)
             {
                 generator.Emit(OpCodes.i2c);
             }
-            else if (stackType == PrimativeClasses.Int)
+            else if (stackType == PrimativeTypes.Int)
             {
                 generator.Emit(OpCodes.i2c);
             }
-            else if (stackType == PrimativeClasses.Long)
+            else if (stackType == PrimativeTypes.Long)
             {
                 generator.Emit(OpCodes.l2i);
                 generator.Emit(OpCodes.i2c);
             }
-            else if (stackType == PrimativeClasses.Float)
+            else if (stackType == PrimativeTypes.Float)
             {
                 generator.Emit(OpCodes.f2i);
                 generator.Emit(OpCodes.i2c);
             }
-            else if (stackType == PrimativeClasses.Double)
+            else if (stackType == PrimativeTypes.Double)
             {
                 generator.Emit(OpCodes.d2i);
                 generator.Emit(OpCodes.i2c);
             }
-            else if (stackType == PrimativeClasses.Char)
+            else if (stackType == PrimativeTypes.Char)
             {
             }
             else
@@ -312,35 +313,35 @@ namespace JavaCompiler.Compilers.Methods
         #region Store
         public static void StorePrimative(Variable variable, ByteCodeGenerator generator)
         {
-            if (variable.Type == PrimativeClasses.Byte)
+            if (variable.Type == PrimativeTypes.Byte)
             {
                 StoreInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Short)
+            else if (variable.Type == PrimativeTypes.Short)
             {
                 StoreInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Int)
+            else if (variable.Type == PrimativeTypes.Int)
             {
                 StoreInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Long)
+            else if (variable.Type == PrimativeTypes.Long)
             {
                 StoreLong(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Float)
+            else if (variable.Type == PrimativeTypes.Float)
             {
                 StoreFloat(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Double)
+            else if (variable.Type == PrimativeTypes.Double)
             {
                 StoreDouble(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Boolean)
+            else if (variable.Type == PrimativeTypes.Boolean)
             {
                 StoreInt(variable, generator); //TODO Check!
             }
-            else if (variable.Type == PrimativeClasses.Char)
+            else if (variable.Type == PrimativeTypes.Char)
             {
                 StoreInt(variable, generator);
             }
@@ -443,35 +444,35 @@ namespace JavaCompiler.Compilers.Methods
         #region Load
         public static void LoadPrimative(Variable variable, ByteCodeGenerator generator)
         {
-            if (variable.Type == PrimativeClasses.Byte)
+            if (variable.Type == PrimativeTypes.Byte)
             {
                 LoadInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Short)
+            else if (variable.Type == PrimativeTypes.Short)
             {
                 LoadInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Int)
+            else if (variable.Type == PrimativeTypes.Int)
             {
                 LoadInt(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Long)
+            else if (variable.Type == PrimativeTypes.Long)
             {
                 LoadLong(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Float)
+            else if (variable.Type == PrimativeTypes.Float)
             {
                 LoadFloat(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Double)
+            else if (variable.Type == PrimativeTypes.Double)
             {
                 LoadDouble(variable, generator);
             }
-            else if (variable.Type == PrimativeClasses.Boolean)
+            else if (variable.Type == PrimativeTypes.Boolean)
             {
                 LoadInt(variable, generator); //TODO Check!
             }
-            else if (variable.Type == PrimativeClasses.Char)
+            else if (variable.Type == PrimativeTypes.Char)
             {
                 LoadInt(variable, generator);
             }

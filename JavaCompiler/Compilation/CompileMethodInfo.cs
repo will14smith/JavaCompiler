@@ -7,6 +7,11 @@ namespace JavaCompiler.Compilation
 {
     public class CompileMethodInfo
     {
+        public CompileMethodInfo()
+        {
+            Attributes = new List<CompileAttribute>();
+        }
+
         public Modifier Modifiers { get; set; }
 
         public short Name { get; set; }

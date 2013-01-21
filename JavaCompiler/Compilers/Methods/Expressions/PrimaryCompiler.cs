@@ -86,7 +86,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 generator.Emit(OpCodes.ldc, generator.Manager.AddConstantInteger(value));
             }
 
-            return new Variable(PrimativeClasses.Int);
+            return new Variable(PrimativeTypes.Int);
         }
         private static Variable CompileMethodCall(ByteCodeGenerator generator, PrimaryNode.TermMethodCallExpression termMethodCallExpression)
         {

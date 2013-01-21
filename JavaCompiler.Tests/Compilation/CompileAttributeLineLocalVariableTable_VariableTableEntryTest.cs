@@ -69,7 +69,7 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void CompileAttributeLineLocalVariableTable_VariableTableEntryConstructorTest()
         {
-            CompileAttributeLineLocalVariableTable.VariableTableEntry target = new CompileAttributeLineLocalVariableTable.VariableTableEntry();
+            CompileAttributeLocalVariableTable.VariableTableEntry target = new CompileAttributeLocalVariableTable.VariableTableEntry();
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
     }

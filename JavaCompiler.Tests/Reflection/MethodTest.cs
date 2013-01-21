@@ -114,8 +114,8 @@ namespace JavaCompiler.Tests.Reflection
         public void GenericReturnTypeTest()
         {
             Method target = new Method(); // TODO: Initialize to an appropriate value
-            IType expected = null; // TODO: Initialize to an appropriate value
-            IType actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             target.GenericReturnType = expected;
             actual = target.GenericReturnType;
             Assert.AreEqual(expected, actual);
@@ -159,8 +159,8 @@ namespace JavaCompiler.Tests.Reflection
         public void ReturnTypeTest()
         {
             Method target = new Method(); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             target.ReturnType = expected;
             actual = target.ReturnType;
             Assert.AreEqual(expected, actual);

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using JavaCompiler.Utilities;
+﻿using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilation
 {
@@ -14,7 +13,7 @@ namespace JavaCompiler.Compilation
         Float = 4,
         Long = 5,
         Double = 6,
-        NameAndType =12,
+        NameAndType = 12,
         Utf8 = 1,
         MethodHandle = 15,
         MethodType = 16,
@@ -28,6 +27,7 @@ namespace JavaCompiler.Compilation
         public abstract byte Tag { get; }
 
         public abstract void Write(EndianBinaryWriter writer);
+        public abstract CompileConstant Read(EndianBinaryReader reader);
     }
 
     public class CompileConstantClass : CompileConstant
@@ -37,6 +37,12 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(NameIndex);
         }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            NameIndex = reader.ReadInt16();
+
+            return this;
+        }
 
         public short NameIndex { get; set; }
     }
@@ -45,7 +51,15 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.Fieldref; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(ClassIndex);
+            writer.Write(NameAndTypeIndex);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            ClassIndex = reader.ReadInt16();
+            NameAndTypeIndex = reader.ReadInt16();
+
+            return this;
         }
 
         public short ClassIndex { get; set; }
@@ -56,7 +70,15 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.Methodref; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(ClassIndex);
+            writer.Write(NameAndTypeIndex);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            ClassIndex = reader.ReadInt16();
+            NameAndTypeIndex = reader.ReadInt16();
+
+            return this;
         }
 
         public short ClassIndex { get; set; }
@@ -67,7 +89,15 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.InterfaceMethodref; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(ClassIndex);
+            writer.Write(NameAndTypeIndex);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            ClassIndex = reader.ReadInt16();
+            NameAndTypeIndex = reader.ReadInt16();
+
+            return this;
         }
 
         public short ClassIndex { get; set; }
@@ -78,7 +108,13 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.String; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(StringIndex);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            StringIndex = reader.ReadInt16();
+
+            return this;
         }
 
         public short StringIndex { get; set; }
@@ -88,7 +124,13 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.Integer; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(Value);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            Value = reader.ReadInt32();
+
+            return this;
         }
 
         public int Value { get; set; }
@@ -98,39 +140,63 @@ namespace JavaCompiler.Compilation
         public override byte Tag { get { return (byte)CompileConstants.Float; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(Value);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            Value = reader.ReadSingle();
+
+            return this;
         }
 
-        public byte[] Value { get; set; }
+        public float Value { get; set; }
     }
     public class CompileConstantLong : CompileConstant
     {
         public override byte Tag { get { return (byte)CompileConstants.Long; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(Value);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            Value = reader.ReadInt64();
+
+            return this;
         }
 
-        public byte[] HValue { get; set; }
-        public byte[] LValue { get; set; }
+        public long Value { get; set; }
     }
     public class CompileConstantDouble : CompileConstant
     {
         public override byte Tag { get { return (byte)CompileConstants.Double; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(Value);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            Value = reader.ReadDouble();
+
+            return this;
         }
 
-        public byte[] HValue { get; set; }
-        public byte[] LValue { get; set; }
+        public double Value { get; set; }
     }
     public class CompileConstantNameAndType : CompileConstant
     {
         public override byte Tag { get { return (byte)CompileConstants.NameAndType; } }
         public override void Write(EndianBinaryWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(NameIndex);
+            writer.Write(DescriptorIndex);
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            NameIndex = reader.ReadInt16();
+            DescriptorIndex = reader.ReadInt16();
+
+            return this;
         }
 
         public short NameIndex { get; set; }
@@ -145,12 +211,30 @@ namespace JavaCompiler.Compilation
             writer.Write(Value);
         }
 
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            var length = reader.ReadInt16();
+
+            Value = reader.ReadBytes(length);
+
+            return this;
+        }
+
         public byte[] Value { get; set; }
+
+        public override string ToString()
+        {
+            return new string(new JavaTextEncoding().GetChars(Value));
+        }
     }
     public class CompileConstantMethodHandle : CompileConstant
     {
         public override byte Tag { get { return (byte)CompileConstants.MethodHandle; } }
         public override void Write(EndianBinaryWriter writer)
+        {
+            throw new System.NotImplementedException();
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
         {
             throw new System.NotImplementedException();
         }
@@ -165,6 +249,10 @@ namespace JavaCompiler.Compilation
         {
             throw new System.NotImplementedException();
         }
+        public override CompileConstant Read(EndianBinaryReader reader)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public short DescriptorIndex { get; set; }
     }
@@ -172,6 +260,10 @@ namespace JavaCompiler.Compilation
     {
         public override byte Tag { get { return (byte)CompileConstants.InvokeDynamic; } }
         public override void Write(EndianBinaryWriter writer)
+        {
+            throw new System.NotImplementedException();
+        }
+        public override CompileConstant Read(EndianBinaryReader reader)
         {
             throw new System.NotImplementedException();
         }

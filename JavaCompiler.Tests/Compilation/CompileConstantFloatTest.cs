@@ -97,20 +97,5 @@ namespace JavaCompiler.Tests.Compilation
             actual = target.Tag;
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
-
-        /// <summary>
-        ///A test for Value
-        ///</summary>
-        [TestMethod()]
-        public void ValueTest()
-        {
-            CompileConstantFloat target = new CompileConstantFloat(); // TODO: Initialize to an appropriate value
-            byte[] expected = null; // TODO: Initialize to an appropriate value
-            byte[] actual;
-            target.Value = expected;
-            actual = target.Value;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
     }
 }

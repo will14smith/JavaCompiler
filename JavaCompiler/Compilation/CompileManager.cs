@@ -5,6 +5,7 @@ using System.Linq;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Utilities;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Compilation
 {
@@ -68,65 +69,9 @@ namespace JavaCompiler.Compilation
 
             return utf8Const.PoolIndex;
         }
-        public short AddConstantUtf8Type(Class type)
+        public short AddConstantUtf8Type(Type type)
         {
-            return AddConstantUtf8(ProcessTypeName(type));
-        }
-
-        public static string ProcessTypeName(Class type)
-        {
-            var name = "";
-
-            /*TODO: for (var i = 0; i < type.ArrayLevels; i++)
-            {
-                name += "[";
-            }*/
-
-            switch (type.Name)
-            {
-                case "byte":
-                    name += "B";
-                    break;
-                case "char":
-                    name += "C";
-                    break;
-                case "double":
-                    name += "D";
-                    break;
-                case "float":
-                    name += "F";
-                    break;
-                case "int":
-                    name += "I";
-                    break;
-                case "long":
-                    name += "J";
-                    break;
-                case "short":
-                    name += "S";
-                    break;
-                case "boolean":
-                    name += "Z";
-                    break;
-                case "void":
-                    name += "V";
-                    break;
-                default:
-                    name += string.Format("L{0};", type.Name);
-                    break;
-            }
-
-            return name;
-        }
-        public static string ProcessMethodDescriptor(Method method)
-        {
-            var descriptor = method.Parameters.Aggregate("(", (current, parameter) => current + ProcessTypeName(parameter.Type));
-
-            descriptor += ")";
-
-            descriptor += ProcessTypeName(method.ReturnType);
-
-            return descriptor;
+            return AddConstantUtf8(type.GetDescriptor());
         }
         #endregion
 

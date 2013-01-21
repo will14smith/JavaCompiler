@@ -7,7 +7,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         public class UnaryCastNode : UnaryOtherNode
         {
-            public Class Type { get; set; }
+            public Type Type { get; set; }
             public ExpressionNode Expression { get; set; }
 
             public override void ValidateType()

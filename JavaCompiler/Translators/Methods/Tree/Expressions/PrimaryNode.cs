@@ -20,7 +20,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public override string ToString()
@@ -32,7 +32,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public override string ToString()
@@ -44,7 +44,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public override string ToString()
@@ -56,7 +56,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.Int;
+                ReturnType = PrimativeTypes.Int;
             }
 
             public int Value { get; set; }
@@ -70,7 +70,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.Float;
+                ReturnType = PrimativeTypes.Float;
             }
 
             public float Value { get; set; }
@@ -84,7 +84,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.Char;
+                ReturnType = PrimativeTypes.Char;
             }
 
             public char Value { get; set; }
@@ -112,7 +112,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.Boolean;
+                ReturnType = PrimativeTypes.Boolean;
             }
 
             public bool Value { get; set; }
@@ -126,7 +126,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public ExpressionNode SecondChild { get; set; }
@@ -140,7 +140,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public string Identifier { get; set; }
@@ -162,7 +162,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         {
             public override void ValidateType()
             {
-                ReturnType = PrimativeClasses.CompileTime;
+                ReturnType = PrimativeTypes.CompileTime;
             }
 
             public List<ExpressionNode> Arguments { get; set; }

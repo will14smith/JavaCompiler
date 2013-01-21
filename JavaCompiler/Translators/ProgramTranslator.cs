@@ -36,13 +36,8 @@ namespace JavaCompiler.Translators
                 child = node.GetChild(i);
             }
 
-            // type decl*
-            while(i <= node.ChildCount)
-            {
-                program.Types.Add(new TypeDeclarationTranslator(child).Walk());
-
-                child = node.GetChild(i++);
-            }
+            // type decl
+            program.Type = new TypeDeclarationTranslator(child).Walk();
 
             return program;
         }

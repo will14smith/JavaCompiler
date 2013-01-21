@@ -15,7 +15,7 @@ namespace JavaCompiler.Compilers
 
         public byte[] Compile()
         {
-            var type = program.Types.First();
+            var type = program.Type;
 
             var manager = new CompileManager();
 

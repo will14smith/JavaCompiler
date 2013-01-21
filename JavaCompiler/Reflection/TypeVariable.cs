@@ -8,12 +8,12 @@ namespace JavaCompiler.Reflection
     {
         public TypeVariable()
         {
-            Bounds = new List<IType>();
+            Bounds = new List<Type>();
         }
 
         public string Name { get; set; }
 
-        public List<IType> Bounds { get; private set; }
+        public List<Type> Bounds { get; private set; }
         public T GenericDeclaration { get; set; }
     }
 }

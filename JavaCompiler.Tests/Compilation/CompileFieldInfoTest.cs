@@ -89,21 +89,6 @@ namespace JavaCompiler.Tests.Compilation
         }
 
         /// <summary>
-        ///A test for Attributes
-        ///</summary>
-        [TestMethod()]
-        public void AttributesTest()
-        {
-            CompileFieldInfo target = new CompileFieldInfo(); // TODO: Initialize to an appropriate value
-            List<short> expected = null; // TODO: Initialize to an appropriate value
-            List<short> actual;
-            target.Attributes = expected;
-            actual = target.Attributes;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
         ///A test for Descriptor
         ///</summary>
         [TestMethod()]

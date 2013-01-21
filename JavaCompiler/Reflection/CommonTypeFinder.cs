@@ -2,10 +2,10 @@
 {
     public static class CommonTypeFinder
     {
-        public static Class FindCommonType(this Class c1, Class c2)
+        public static Type FindCommonType(this Type c1, Type c2)
         {
-            if (c1 is PrimativeClasses.CompileTimeClass) return PrimativeClasses.CompileTime;
-            if (c2 is PrimativeClasses.CompileTimeClass) return PrimativeClasses.CompileTime;
+            if (c1 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
+            if (c2 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
 
             if (!(c1.IsAssignableTo(c2) || c2.CanAssignTo(c1)))
             {

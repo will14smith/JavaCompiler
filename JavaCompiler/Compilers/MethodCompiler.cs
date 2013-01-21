@@ -20,7 +20,7 @@ namespace JavaCompiler.Compilers
             var methodInfo = new CompileMethodInfo();
 
             var nameIndex = manager.AddConstantUtf8(method.Name);
-            var descriptorIndex = manager.AddConstantUtf8(CompileManager.ProcessMethodDescriptor(method));
+            var descriptorIndex = manager.AddConstantUtf8(method.GetDescriptor());
 
             CompileBody(manager);
 
@@ -47,7 +47,7 @@ namespace JavaCompiler.Compilers
             {
                 NameIndex = manager.AddConstantUtf8(new CompileAttributeCode().Name),
                 Code = generator.GetBytes(),
-                Attributes = new List<short>(),
+                Attributes = new List<CompileAttribute>(),
                 ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
 
                 MaxLocals = 4,

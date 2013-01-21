@@ -141,8 +141,8 @@ namespace JavaCompiler.Tests.Reflection
         public void TypeTest()
         {
             Field target = new Field(); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             target.Type = expected;
             actual = target.Type;
             Assert.AreEqual(expected, actual);

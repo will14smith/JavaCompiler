@@ -9,13 +9,13 @@ namespace JavaCompiler.Translators.Methods.Tree.BlockStatements
         public Modifier Modifiers { get; set; }
 
         public string Name { get; set; }
-        public Class Type { get; set; }
+        public Type Type { get; set; }
 
         public ExpressionNode Initialiser { get; set; }
 
         public override void ValidateType()
         {
-            ReturnType = PrimativeClasses.Void;
+            ReturnType = PrimativeTypes.Void;
 
             Initialiser.ValidateType();
 

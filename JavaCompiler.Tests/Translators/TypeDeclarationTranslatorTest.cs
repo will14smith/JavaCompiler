@@ -1,4 +1,5 @@
-﻿using JavaCompiler.Translators;
+﻿using JavaCompiler.Reflection;
+using JavaCompiler.Translators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection.Interfaces;
@@ -84,8 +85,8 @@ namespace JavaCompiler.Tests.Translators
         {
             ITree node = null; // TODO: Initialize to an appropriate value
             TypeDeclarationTranslator target = new TypeDeclarationTranslator(node); // TODO: Initialize to an appropriate value
-            IType expected = null; // TODO: Initialize to an appropriate value
-            IType actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             actual = target.Walk();
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");

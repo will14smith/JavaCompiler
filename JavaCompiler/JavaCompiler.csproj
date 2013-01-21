@@ -41,6 +41,9 @@
     <Reference Include="Antlr3.Runtime.JavaExtensions">
       <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.JavaExtensions.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -100,8 +103,9 @@
     <Compile Include="Reflection\Interfaces\IMember.cs" />
     <Compile Include="Reflection\Internal\PlaceholderClass.cs" />
     <Compile Include="Reflection\Package.cs" />
-    <Compile Include="Reflection\PrimativeClasses.cs" />
+    <Compile Include="Reflection\PrimativeTypes.cs" />
     <Compile Include="Reflection\Program.cs" />
+    <Compile Include="Reflection\Type.cs" />
     <Compile Include="Reflection\TypeVariable.cs" />
     <Compile Include="Translators\Methods\Expressions\AdditiveTranslator.cs" />
     <Compile Include="Translators\Methods\Expressions\AndTranslator.cs" />
@@ -187,7 +191,6 @@
     <Compile Include="Reflection\Field.cs" />
     <Compile Include="Reflection\Method.cs" />
     <Compile Include="Reflection\Enums\Modifier.cs" />
-    <Compile Include="Reflection\Interfaces\IType.cs" />
     <Compile Include="Translators\Methods\BlockStatements\BlockTranslator.cs" />
     <Compile Include="Translators\ClassTranslator.cs" />
     <Compile Include="Translators\LocalModifierListTranslator.cs" />
@@ -199,6 +202,7 @@
     <Compile Include="Translators\TypeTranslator.cs" />
     <Compile Include="Translators\VarDeclaratorTranslator.cs" />
     <Compile Include="Utilities\BigEndianBitConverter.cs" />
+    <Compile Include="Utilities\EndianBinaryReader.cs" />
     <Compile Include="Utilities\EndianBinaryWriter.cs" />
     <Compile Include="Utilities\EndianBitConverter.cs" />
     <Compile Include="Utilities\Endianness.cs" />
@@ -210,7 +214,7 @@
     <Folder Include="Compilers\Methods\Statements\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

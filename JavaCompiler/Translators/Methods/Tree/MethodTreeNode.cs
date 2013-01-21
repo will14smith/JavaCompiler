@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JavaCompiler.Reflection;
 
 namespace JavaCompiler.Translators.Methods.Tree
 {
     public abstract class MethodTreeNode
     {
-        public Class ReturnType { get; set; }
+        public Type ReturnType { get; set; }
 
         public abstract void ValidateType();
     }
@@ -78,6 +79,11 @@ namespace JavaCompiler.Translators.Methods.Tree
         {
             get { return backend[index]; }
             set { backend[index] = value; }
+        }
+
+        public override string ToString()
+        {
+            return backend.Aggregate("", (current, item) => current + (item.ToString() + "; "));
         }
     }
 

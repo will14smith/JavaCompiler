@@ -1,4 +1,5 @@
-﻿using JavaCompiler.Reflection;
+﻿using System;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
 {
@@ -6,16 +7,16 @@ namespace JavaCompiler.Compilation.ByteCode
     {
         internal short Index { get; private set; }
         internal string Name { get; private set; }
-        internal Class Type { get; private set; }
+        internal Type Type { get; private set; }
 
-        internal Variable(short index, string name, Class type)
+        internal Variable(short index, string name, Type type)
         {
             Index = index;
             Name = name;
             Type = type;
         }
 
-        public Variable(Class type)
+        public Variable(Type type)
         {
             Type = type;
 
@@ -23,15 +24,13 @@ namespace JavaCompiler.Compilation.ByteCode
             Name = string.Empty;
         }
 
-        public bool IsAssignableTo(Class c)
+        public bool IsAssignableTo(Type c)
         {
-            // TODO
-            return true;
+            throw new NotImplementedException();
         }
-        public bool CanAssign(Class c)
+        public bool CanAssign(Type c)
         {
-            // TODO
-            return true;
+            throw new NotImplementedException();
         }
     }
 }

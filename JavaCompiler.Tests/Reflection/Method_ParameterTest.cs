@@ -97,8 +97,8 @@ namespace JavaCompiler.Tests.Reflection
         public void TypeTest()
         {
             Method.Parameter target = new Method.Parameter(); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             target.Type = expected;
             actual = target.Type;
             Assert.AreEqual(expected, actual);

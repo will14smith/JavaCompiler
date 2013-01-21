@@ -71,7 +71,7 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void CompileAttributeLineLocalVariableTableConstructorTest()
         {
-            CompileAttributeLineLocalVariableTable target = new CompileAttributeLineLocalVariableTable();
+            CompileAttributeLocalVariableTable target = new CompileAttributeLocalVariableTable();
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
 
@@ -81,7 +81,7 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void WriteTest()
         {
-            CompileAttributeLineLocalVariableTable target = new CompileAttributeLineLocalVariableTable(); // TODO: Initialize to an appropriate value
+            CompileAttributeLocalVariableTable target = new CompileAttributeLocalVariableTable(); // TODO: Initialize to an appropriate value
             EndianBinaryWriter writer = null; // TODO: Initialize to an appropriate value
             target.Write(writer);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -93,7 +93,7 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void LengthTest()
         {
-            CompileAttributeLineLocalVariableTable target = new CompileAttributeLineLocalVariableTable(); // TODO: Initialize to an appropriate value
+            CompileAttributeLocalVariableTable target = new CompileAttributeLocalVariableTable(); // TODO: Initialize to an appropriate value
             int actual;
             actual = target.Length;
             Assert.Inconclusive("Verify the correctness of this test method.");
@@ -105,7 +105,7 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void NameTest()
         {
-            CompileAttributeLineLocalVariableTable target = new CompileAttributeLineLocalVariableTable(); // TODO: Initialize to an appropriate value
+            CompileAttributeLocalVariableTable target = new CompileAttributeLocalVariableTable(); // TODO: Initialize to an appropriate value
             string actual;
             actual = target.Name;
             Assert.Inconclusive("Verify the correctness of this test method.");
@@ -117,9 +117,9 @@ namespace JavaCompiler.Tests.Compilation
         [TestMethod()]
         public void VariablesTest()
         {
-            CompileAttributeLineLocalVariableTable target = new CompileAttributeLineLocalVariableTable(); // TODO: Initialize to an appropriate value
-            List<CompileAttributeLineLocalVariableTable.VariableTableEntry> expected = null; // TODO: Initialize to an appropriate value
-            List<CompileAttributeLineLocalVariableTable.VariableTableEntry> actual;
+            CompileAttributeLocalVariableTable target = new CompileAttributeLocalVariableTable(); // TODO: Initialize to an appropriate value
+            List<CompileAttributeLocalVariableTable.VariableTableEntry> expected = null; // TODO: Initialize to an appropriate value
+            List<CompileAttributeLocalVariableTable.VariableTableEntry> actual;
             target.Variables = expected;
             actual = target.Variables;
             Assert.AreEqual(expected, actual);

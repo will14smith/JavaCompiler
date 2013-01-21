@@ -188,34 +188,6 @@ namespace JavaCompiler.Tests.Compilation
         }
 
         /// <summary>
-        ///A test for ProcessMethodDescriptor
-        ///</summary>
-        [TestMethod()]
-        public void ProcessMethodDescriptorTest()
-        {
-            Method method = null; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = CompileManager.ProcessMethodDescriptor(method);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for ProcessTypeName
-        ///</summary>
-        [TestMethod()]
-        public void ProcessTypeNameTest()
-        {
-            Class type = null; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = CompileManager.ProcessTypeName(type);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
         ///A test for SetInterfaces
         ///</summary>
         [TestMethod()]

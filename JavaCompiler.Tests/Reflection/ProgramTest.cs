@@ -74,20 +74,5 @@ namespace JavaCompiler.Tests.Reflection
             Program target = new Program();
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
-
-        /// <summary>
-        ///A test for Types
-        ///</summary>
-        [TestMethod()]
-        public void TypesTest()
-        {
-            Program target = new Program(); // TODO: Initialize to an appropriate value
-            List<IType> expected = null; // TODO: Initialize to an appropriate value
-            List<IType> actual;
-            target.Types = expected;
-            actual = target.Types;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
     }
 }

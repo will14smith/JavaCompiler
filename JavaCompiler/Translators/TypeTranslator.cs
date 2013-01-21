@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Internal;
+using Type = JavaCompiler.Reflection.Type;
 
 namespace JavaCompiler.Translators
 {
@@ -16,7 +17,7 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public Class Walk()
+        public Type Walk()
         {
             var typeRef = ProcessClass(node.GetChild(0));
 
@@ -28,28 +29,28 @@ namespace JavaCompiler.Translators
             return typeRef;
         }
 
-        private static Class ProcessClass(ITree node)
+        private static Type ProcessClass(ITree node)
         {
             switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.QUALIFIED_TYPE_IDENT:
                     return ProcessQualified(node);
                 case JavaNodeType.BOOLEAN:
-                    return PrimativeClasses.Boolean;
+                    return PrimativeTypes.Boolean;
                 case JavaNodeType.CHAR:
-                    return PrimativeClasses.Char;
+                    return PrimativeTypes.Char;
                 case JavaNodeType.BYTE:
-                    return PrimativeClasses.Byte;
+                    return PrimativeTypes.Byte;
                 case JavaNodeType.SHORT:
-                    return PrimativeClasses.Short;
+                    return PrimativeTypes.Short;
                 case JavaNodeType.INT:
-                    return PrimativeClasses.Int;
+                    return PrimativeTypes.Int;
                 case JavaNodeType.LONG:
-                    return PrimativeClasses.Long;
+                    return PrimativeTypes.Long;
                 case JavaNodeType.FLOAT:
-                    return PrimativeClasses.Float;
+                    return PrimativeTypes.Float;
                 case JavaNodeType.DOUBLE:
-                    return PrimativeClasses.Double;
+                    return PrimativeTypes.Double;
                 default:
                     throw new NotImplementedException();
             }

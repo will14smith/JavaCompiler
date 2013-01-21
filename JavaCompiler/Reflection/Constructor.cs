@@ -11,10 +11,10 @@ namespace JavaCompiler.Reflection
             TypeParameters = new List<TypeVariable<Constructor>>();
 
             ParameterTypes = new List<Class>();
-            GenericParameterTypes = new List<IType>();
+            GenericParameterTypes = new List<Type>();
 
             ExceptionTypes = new List<Class>();
-            GenericExceptionTypes = new List<IType>();
+            GenericExceptionTypes = new List<Type>();
         }
 
         public bool Synthetic { get; set; }
@@ -26,9 +26,9 @@ namespace JavaCompiler.Reflection
         public List<TypeVariable<Constructor>> TypeParameters { get; private set; }
 
         public List<Class> ParameterTypes { get; private set; }
-        public List<IType> GenericParameterTypes { get; private set; }
+        public List<Type> GenericParameterTypes { get; private set; }
 
         public List<Class> ExceptionTypes { get; private set; }
-        public List<IType> GenericExceptionTypes { get; private set; }
+        public List<Type> GenericExceptionTypes { get; private set; }
     }
 }

@@ -88,8 +88,8 @@ namespace JavaCompiler.Tests.Compilers.Methods.Expressions
 
             AdditiveCompiler target = new AdditiveCompiler(null); // TODO: Initialize to an appropriate value
             ByteCodeGenerator generator = null; // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             actual = target.Compile(generator);
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");
