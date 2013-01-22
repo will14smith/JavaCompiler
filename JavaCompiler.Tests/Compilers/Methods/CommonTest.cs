@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Compilers.Methods;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Reflection;
 using JavaCompiler.Compilation.ByteCode;

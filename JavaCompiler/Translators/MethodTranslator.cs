@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Internal;
+using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods;
 using JavaCompiler.Translators.Methods.BlockStatements;
 
@@ -21,12 +22,13 @@ namespace JavaCompiler.Translators
             this.node = node;
         }
 
-        public Method Walk()
+        public Method Walk(Class c)
         {
             method = new Method();
 
             // modifiers
             method.Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk();
+            method.DeclaringType = c;
 
             var i = 1;
             var child = node.GetChild(i++);
@@ -46,7 +48,7 @@ namespace JavaCompiler.Translators
             }
             else
             {
-                method.ReturnType = new PlaceholderClass { Name = "void" };
+                method.ReturnType = PrimativeTypes.Void;
             }
 
             // name
@@ -54,7 +56,6 @@ namespace JavaCompiler.Translators
             child = node.GetChild(i++);
 
             // parameters
-            method.Parameters.Clear();
             method.Parameters.AddRange(new MethodParameterTranslator(child).Walk());
             child = node.GetChild(i++);
 

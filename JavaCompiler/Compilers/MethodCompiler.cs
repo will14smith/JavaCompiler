@@ -17,6 +17,8 @@ namespace JavaCompiler.Compilers
 
         public CompileMethodInfo Compile(CompileManager manager)
         {
+            method.Resolve(manager.Imports);
+
             var methodInfo = new CompileMethodInfo();
 
             var nameIndex = manager.AddConstantUtf8(method.Name);
@@ -37,9 +39,14 @@ namespace JavaCompiler.Compilers
         private void CompileBody(CompileManager manager)
         {
             attributes = new List<CompileAttribute>();
-            generator = new ByteCodeGenerator(manager);
+            generator = new ByteCodeGenerator(manager, method);
 
             method.Body.ValidateType();
+
+            foreach(var parameter in method.Parameters)
+            {
+                generator.DefineVariable(parameter.Name, parameter.Type);
+            }
 
             new BlockCompiler(method.Body).Compile(generator);
 

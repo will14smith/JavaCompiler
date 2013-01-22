@@ -1,4 +1,6 @@
-﻿namespace JavaCompiler.Reflection
+﻿using JavaCompiler.Reflection.Types;
+
+namespace JavaCompiler.Reflection
 {
     public static class CommonTypeFinder
     {

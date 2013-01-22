@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Internal;
-using Type = JavaCompiler.Reflection.Type;
+using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Translators
 {
@@ -70,7 +71,7 @@ namespace JavaCompiler.Translators
                 type += node.GetChild(i).Text;
             }
 
-            return new PlaceholderClass { Name = type };
+            return new PlaceholderType { Name = type };
         }
 
         public static int ProcessArray(ITree node)

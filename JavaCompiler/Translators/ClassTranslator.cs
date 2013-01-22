@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
-using JavaCompiler.Translators.Methods;
+using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
+using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators
 {
@@ -23,7 +25,7 @@ namespace JavaCompiler.Translators
             @class = new Class();
 
             // modifiers
-            @class.Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk();
+            @class.Modifiers = new ClassModifierListTranslator(node.GetChild(0)).Walk();
 
             // name
             @class.Name = new IdentifierTranslator(node.GetChild(1)).Walk();
@@ -31,17 +33,21 @@ namespace JavaCompiler.Translators
             var i = 2;
             var child = node.GetChild(i++);
 
-            if ((JavaNodeType)node.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
+            if ((JavaNodeType)child.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
             {
                 child = node.GetChild(i++);
             }
 
-            if ((JavaNodeType)node.Type == JavaNodeType.EXTENDS_CLAUSE)
+            if ((JavaNodeType)child.Type == JavaNodeType.EXTENDS_CLAUSE)
             {
                 child = node.GetChild(i++);
             }
+            else
+            {
+                @class.Super = new PlaceholderType { Name = "java.lang.Object" };
+            }
 
-            if ((JavaNodeType)node.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
+            if ((JavaNodeType)child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
             {
                 child = node.GetChild(i);
             }
@@ -49,7 +55,12 @@ namespace JavaCompiler.Translators
             var body = child;
 
             WalkBody(body);
-            
+
+            if (@class.Constructors.Count == 0)
+            {
+                @class.Constructors.Add(new Constructor { DeclaringType = @class, Body = new MethodTree() });
+            }
+
             return @class;
         }
 
@@ -69,20 +80,13 @@ namespace JavaCompiler.Translators
                         throw new NotImplementedException();
                     case JavaNodeType.FUNCTION_METHOD_DECL:
                     case JavaNodeType.VOID_METHOD_DECL:
-                        var method = new MethodTranslator(child).Walk();
-
-                        method.DeclaringClass = @class;
-
-                        @class.Methods.Add(method);
+                        @class.Methods.Add(new MethodTranslator(child).Walk(@class));
                         break;
                     case JavaNodeType.CONSTRUCTOR_DECL:
-                        throw new NotImplementedException();
+                        @class.Constructors.Add(new ConstructorTranslator(child).Walk(@class));
+                        break;
                     case JavaNodeType.VAR_DECLARATION:
-                        var field = new VarDeclaratorTranslator(child).Walk();
-
-                        field.DeclaringClass = @class;
-
-                        @class.Fields.Add(field);
+                        @class.Fields.AddRange(new FieldDeclarationTranslator(child).Walk(@class));
                         break;
                     case JavaNodeType.CLASS:
                     case JavaNodeType.INTERFACE:
@@ -91,7 +95,7 @@ namespace JavaCompiler.Translators
                         var type = new TypeDeclarationTranslator(child).Walk();
 
                         @class.Types.Add(type);
-                        break; 
+                        break;
                     default:
                         throw new NotImplementedException("Unimplemented node type: " + node.Type);
                 }

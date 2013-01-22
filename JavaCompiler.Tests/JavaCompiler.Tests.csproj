@@ -175,7 +175,6 @@
     <Compile Include="Translators\Methods\Expressions\UnaryTranslatorTest.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\VarDeclarationCompilerTest.cs" />
     <Compile Include="Translators\Methods\BlockStatements\VarDeclarationTranslatorTest.cs" />
-    <Compile Include="Translators\VarDeclaratorTranlatorTest.cs" />
     <Compile Include="Compilers\Methods\Expressions\VariableInitialiserCompilerTest.cs" />
     <Compile Include="Translators\Methods\Expressions\VariableInitialiserTranslatorTest.cs" />
     <Compile Include="Translators\Methods\Statements\WhileTranslatorTest.cs" />

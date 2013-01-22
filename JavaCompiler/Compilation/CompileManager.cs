@@ -4,8 +4,9 @@ using System.IO;
 using System.Linq;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
-using Type = JavaCompiler.Reflection.Type;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation
 {
@@ -26,7 +27,7 @@ namespace JavaCompiler.Compilation
         private short nextConstantIndex;
         public List<CompileConstant> ConstantPool { get; private set; }
 
-        public short AddConstantClass(Class c)
+        public short AddConstantClass(DefinedType c)
         {
             if (c == null) return 0;
 
@@ -77,9 +78,9 @@ namespace JavaCompiler.Compilation
 
         #region Modifiers
 
-        public Modifier Modifiers { get; private set; }
+        public ClassModifier Modifiers { get; private set; }
 
-        public void SetModifiers(Modifier modifiers)
+        public void SetModifiers(ClassModifier modifiers)
         {
             Modifiers = modifiers;
         }
@@ -131,6 +132,8 @@ namespace JavaCompiler.Compilation
 
         public List<CompileAttribute> Attributes { get; private set; }
 
+        public List<Package> Imports { get; private set; }
+
         public void AddAttribute(CompileAttribute attribute)
         {
             attribute.NameIndex = AddConstantUtf8(attribute.Name);
@@ -149,7 +152,7 @@ namespace JavaCompiler.Compilation
             // magic
             writer.Write(new byte[] { 0xCA, 0xFE, 0xBA, 0xBE });
             // version (minor, major)
-            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x31 });
+            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x33 });
             // const pool
             WriteConstBytes(writer);
             // access flags

@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using JavaCompiler.Reflection.Interfaces;
@@ -106,35 +107,6 @@ namespace JavaCompiler.Tests.Reflection
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for Annotation
-        ///</summary>
-        [TestMethod()]
-        public void AnnotationTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            bool expected = false; // TODO: Initialize to an appropriate value
-            bool actual;
-            target.Annotation = expected;
-            actual = target.Annotation;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Array
-        ///</summary>
-        [TestMethod()]
-        public void ArrayTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            bool expected = false; // TODO: Initialize to an appropriate value
-            bool actual;
-            target.Array = expected;
-            actual = target.Array;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
         /// <summary>
         ///A test for ComponentType
@@ -166,20 +138,6 @@ namespace JavaCompiler.Tests.Reflection
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for Enum
-        ///</summary>
-        [TestMethod()]
-        public void EnumTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            bool expected = false; // TODO: Initialize to an appropriate value
-            bool actual;
-            target.Enum = expected;
-            actual = target.Enum;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
         /// <summary>
         ///A test for GenericSuperclass
@@ -192,36 +150,6 @@ namespace JavaCompiler.Tests.Reflection
             Type actual;
             target.GenericSuperclass = expected;
             actual = target.GenericSuperclass;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Interface
-        ///</summary>
-        [TestMethod()]
-        public void InterfaceTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            bool expected = false; // TODO: Initialize to an appropriate value
-            bool actual;
-            target.Interface = expected;
-            actual = target.Interface;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Modifiers
-        ///</summary>
-        [TestMethod()]
-        public void ModifiersTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            Modifier expected = new Modifier(); // TODO: Initialize to an appropriate value
-            Modifier actual;
-            target.Modifiers = expected;
-            actual = target.Modifiers;
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");
         }

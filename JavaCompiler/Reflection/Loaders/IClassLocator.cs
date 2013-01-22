@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection.Loaders
 {
     internal interface IClassLocator
     {
-        List<Class> Search(string s, List<string> imports);
+        List<Type> Search(string s, List<string> imports);
     }
 }

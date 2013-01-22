@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Antlr.Runtime.Tree;

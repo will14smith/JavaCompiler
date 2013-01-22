@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators.Methods.Tree
 {

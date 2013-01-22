@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection.Loaders
 {
@@ -12,14 +13,14 @@ namespace JavaCompiler.Reflection.Loaders
             Directory = baseDirectory;
         }
 
-        public List<Class> Search(string s, List<string> imports)
+        public List<Type> Search(string s, List<string> imports)
         {
             if (s.Contains("."))
             {
                 return SearchAbsolute(s);
             }
-            
-            var classes = new List<Class>();
+
+            var classes = new List<Type>();
 
             {
                 var path = Path.Combine(Directory, s + ".class");
@@ -48,9 +49,9 @@ namespace JavaCompiler.Reflection.Loaders
             return classes;
         }
 
-        private List<Class> SearchAbsolute(string s)
+        private List<Type> SearchAbsolute(string s)
         {
-            var classes = new List<Class>();
+            var classes = new List<Type>();
 
             var path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
 

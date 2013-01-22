@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection.Loaders
 {
@@ -13,7 +14,7 @@ namespace JavaCompiler.Reflection.Loaders
             JarFile = jarFile;
         }
 
-        public List<Class> Search(string s, List<string> imports)
+        public List<Type> Search(string s, List<string> imports)
         {
             var zf = new ZipFile(JarFile);
 
@@ -23,7 +24,7 @@ namespace JavaCompiler.Reflection.Loaders
 
             var isAbsolute = !string.IsNullOrEmpty(classFolder);
 
-            var classes = new List<Class>();
+            var types = new List<Type>();
             foreach (ZipEntry ze in zf)
             {
                 if (!ze.IsFile) continue;
@@ -36,14 +37,14 @@ namespace JavaCompiler.Reflection.Loaders
                     // absolute
                     if (directoryName == classFolder && fileName == className)
                     {
-                        classes.Add(ClassLoader.Load(zf.GetInputStream(ze)));
+                        types.Add(ClassLoader.Load(zf.GetInputStream(ze)));
                     }
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(directoryName) && fileName == className)
                     {
-                        classes.Add(ClassLoader.Load(zf.GetInputStream(ze)));
+                        types.Add(ClassLoader.Load(zf.GetInputStream(ze)));
                     }
                     else
                     {
@@ -57,14 +58,14 @@ namespace JavaCompiler.Reflection.Loaders
 
                             if (importFolder == directoryName && fileName == className)
                             {
-                                classes.Add(ClassLoader.Load(zf.GetInputStream(ze)));
+                                types.Add(ClassLoader.Load(zf.GetInputStream(ze)));
                             }
                         }
                     }
                 }
             }
 
-            return classes;
+            return types;
         }
     }
 }

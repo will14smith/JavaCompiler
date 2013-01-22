@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using Type = JavaCompiler.Reflection.Type;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators
 {
@@ -14,14 +14,14 @@ namespace JavaCompiler.Translators
                 node.Type == (int)JavaNodeType.CLASS ||
                 node.Type == (int)JavaNodeType.INTERFACE ||
                 node.Type == (int)JavaNodeType.ENUM ||
-                node.Type == (int)JavaNodeType.AT );
+                node.Type == (int)JavaNodeType.AT);
 
             this.node = node;
         }
 
-        public Type Walk()
+        public DefinedType Walk()
         {
-            switch((JavaNodeType)node.Type)
+            switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.CLASS:
                     return new ClassTranslator(node).Walk();

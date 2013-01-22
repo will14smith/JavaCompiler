@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JavaCompiler.Tests.Reflection

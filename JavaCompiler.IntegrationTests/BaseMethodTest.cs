@@ -1,5 +1,6 @@
 ﻿using JavaCompiler.Compilers;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators;
 using JavaCompiler.Translators.Methods.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

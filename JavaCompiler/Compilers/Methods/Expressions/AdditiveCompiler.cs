@@ -1,8 +1,9 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Type;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {

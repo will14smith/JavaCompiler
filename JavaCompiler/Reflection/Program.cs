@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JavaCompiler.Reflection.Interfaces;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection
 {
@@ -13,6 +14,6 @@ namespace JavaCompiler.Reflection
         public Package Package { get; set; }
         public List<Package> Imports { get; private set; }
 
-        public Type Type { get; set; }
+        public DefinedType Type { get; set; }
     }
 }

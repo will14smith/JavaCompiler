@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using JavaCompiler.Reflection.Interfaces;
@@ -76,20 +77,6 @@ namespace JavaCompiler.Tests.Reflection
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
 
-        /// <summary>
-        ///A test for DeclaringClass
-        ///</summary>
-        [TestMethod()]
-        public void DeclaringClassTest()
-        {
-            Constructor target = new Constructor(); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
-            target.DeclaringClass = expected;
-            actual = target.DeclaringClass;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
         /// <summary>
         ///A test for Modifiers

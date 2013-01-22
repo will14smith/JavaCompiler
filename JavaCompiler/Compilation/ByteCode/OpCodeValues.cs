@@ -208,7 +208,6 @@ namespace JavaCompiler.Compilation.ByteCode
         goto_w = 200,
         jsr_w = 201
     }
-
     public enum NormalizedOpCodeValues : byte
     {
         nop = 0,

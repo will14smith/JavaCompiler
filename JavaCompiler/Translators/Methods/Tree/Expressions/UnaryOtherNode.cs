@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {

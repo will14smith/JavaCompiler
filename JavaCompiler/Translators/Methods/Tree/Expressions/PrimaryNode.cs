@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr.Runtime.Tree;
 using System.Linq;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
@@ -129,7 +130,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 ReturnType = PrimativeTypes.CompileTime;
             }
 
-            public ExpressionNode SecondChild { get; set; }
+            public PrimaryNode SecondChild { get; set; }
 
             public override string ToString()
             {

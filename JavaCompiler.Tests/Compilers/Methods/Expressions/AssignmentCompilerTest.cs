@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Compilers.Methods.Expressions;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Compilation.ByteCode;

@@ -1,7 +1,8 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection;
-using Type = JavaCompiler.Reflection.Type;
+using JavaCompiler.Reflection.Types;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods
 {

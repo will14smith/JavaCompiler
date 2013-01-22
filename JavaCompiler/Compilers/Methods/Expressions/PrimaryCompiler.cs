@@ -1,7 +1,8 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
-using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -13,31 +14,21 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Variable Compile(ByteCodeGenerator generator)
+        public Type Compile(ByteCodeGenerator generator)
         {
-            //TODO: need to do type determination
-            if (node is PrimaryNode.TermIdentifierExpression)
+            if (node is PrimaryNode.TermIdentifierExpression ||
+                node is PrimaryNode.TermFieldExpression)
             {
-                var variable = generator.GetVariable((node as PrimaryNode.TermIdentifierExpression).Identifier);
-
-                if(variable.Type.Primitive)
-                {
-                    Common.LoadPrimative(variable, generator);
-                }
-
-                return variable;
+                return new LoadValueCompiler(node, generator.Method.DeclaringType).Compile(generator);
             }
+
             if (node is PrimaryNode.TermDecimalLiteralExpression)
             {
-                return CompileDecimal(generator, node as PrimaryNode.TermDecimalLiteralExpression);
+                return CompileDecimal(generator, node as PrimaryNode.TermDecimalLiteralExpression).Type;
             }
             if (node is PrimaryNode.TermMethodCallExpression)
             {
-                return CompileMethodCall(generator, node as PrimaryNode.TermMethodCallExpression);
-            }
-            if (node is PrimaryNode.TermFieldExpression)
-            {
-                throw new NotImplementedException();
+                return CompileMethodCall(generator, node as PrimaryNode.TermMethodCallExpression).Type;
             }
 
             throw new NotImplementedException();

@@ -88,7 +88,7 @@ namespace JavaCompiler.Tests.Translators
             MethodTranslator target = new MethodTranslator(null); // TODO: Initialize to an appropriate value
             Method expected = null; // TODO: Initialize to an appropriate value
             Method actual;
-            actual = target.Walk();
+            actual = target.Walk(null);
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");
         }

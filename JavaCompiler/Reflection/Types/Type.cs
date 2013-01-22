@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace JavaCompiler.Reflection
+namespace JavaCompiler.Reflection.Types
 {
     public class Type
     {
@@ -9,6 +9,7 @@ namespace JavaCompiler.Reflection
         public int ArrayDimensions { get; set; }
 
         public virtual bool Primitive { get { return false; } }
+        public bool Synthetic { get; set; }
 
         public virtual bool IsAssignableTo(Type c)
         {

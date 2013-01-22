@@ -1,38 +1,29 @@
 ﻿using System.IO;
-using Antlr.Runtime;
-using Antlr.Runtime.Tree;
 
 namespace JavaCompiler.Console
 {
     public class Program
     {
-        public static void Preorder(ITree tree, int depth)
+        static void Main(string[] args)
         {
-            if (tree == null)
-            {
-                return;
-            }
+            var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 
-            for (var i = 0; i < depth; i++)
+            foreach(var file in files)
             {
-                System.Console.Write("  ");
-            }
-
-            System.Console.WriteLine(tree);
-
-            for(var i = 0 ; i < tree.ChildCount; i++)
-            {
-                Preorder(tree.GetChild(i), depth + 1);
+                CompileFile(file);
             }
         }
 
-        static void Main(string[] args)
+        static void CompileFile(string filePath)
         {
-            var compiler = new Compiler(File.ReadAllText("Exercise1.java"));
+            var directory = Path.GetDirectoryName(filePath);
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
 
-            compiler.ClassPath.Add(Directory.GetCurrentDirectory());
+            var compiler = new Compiler(File.ReadAllText(filePath));
 
-            File.WriteAllBytes("Exercise1.class", compiler.Compile());
+            compiler.ClassPath.Add(directory);
+
+            File.WriteAllBytes(Path.Combine(directory, fileName + ".class"), compiler.Compile());
         }
     }
 }

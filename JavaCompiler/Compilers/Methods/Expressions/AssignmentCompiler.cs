@@ -1,7 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Type;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -15,35 +15,12 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Type Compile(ByteCodeGenerator generator)
         {
-            // get ref / index (setup stack)
-            var variable = GetVariable(generator);
-
             // calculate value
             var returnType = new ExpressionCompiler(node.Value).Compile(generator);
-            Common.Cast(returnType, variable.Type, generator);
 
-            // store value (assume stack has nessassaries)
-            if (variable.Type.Primitive)
-            {
-                Common.StorePrimative(variable, generator);
-            }
-            else
-            {
-                // save to ref
-                throw new NotImplementedException();
-            }
+            new StoreValueCompiler(node.Key, returnType, generator.Method.DeclaringType).Compile(generator);
 
             return node.ReturnType;
-        }
-
-        private Variable GetVariable(ByteCodeGenerator generator)
-        {
-            if (node.Key is PrimaryNode.TermIdentifierExpression)
-            {
-                return generator.GetVariable((node.Key as PrimaryNode.TermIdentifierExpression).Identifier);
-            }
-
-            throw new NotImplementedException();
         }
     }
 }

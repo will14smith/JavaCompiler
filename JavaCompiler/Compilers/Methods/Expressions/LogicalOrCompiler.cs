@@ -1,7 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
-using JavaCompiler.Reflection;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -13,7 +13,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Class Compile(ByteCodeGenerator generator)
+        public Type  Compile(ByteCodeGenerator generator)
         {
             throw new NotImplementedException();
         }

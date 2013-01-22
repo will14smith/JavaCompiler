@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using JavaCompiler.Reflection.Interfaces;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection
 {
     //TODO
-    public class TypeVariable<T> where T : IGenericDeclaration<T>
+    public class TypeVariable
     {
         public TypeVariable()
         {
@@ -14,6 +14,6 @@ namespace JavaCompiler.Reflection
         public string Name { get; set; }
 
         public List<Type> Bounds { get; private set; }
-        public T GenericDeclaration { get; set; }
+        public Type GenericDeclaration { get; set; }
     }
 }

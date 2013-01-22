@@ -126,6 +126,7 @@ namespace JavaCompiler.Utilities
                 child.Type == (int)JavaNodeType.PARENTESIZED_EXPR ||
                 child.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL ||
                 child.Type == (int)JavaNodeType.METHOD_CALL ||
+                child.Type == (int)JavaNodeType.THIS ||
                 child.Type == (int)JavaNodeType.THIS_CONSTRUCTOR_CALL ||
                 child.Type == (int)JavaNodeType.DOT || //TODO: Check this
                 child.Type == (int)JavaNodeType.ARRAY_DECLARATOR ||

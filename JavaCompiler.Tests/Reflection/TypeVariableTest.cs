@@ -65,16 +65,6 @@ namespace JavaCompiler.Tests.Reflection
         #endregion
 
 
-        /// <summary>
-        ///A test for TypeVariable`1 Constructor
-        ///</summary>
-        public void TypeVariableConstructorTestHelper<T>()
-            where T : IGenericDeclaration<T>
-        {
-            TypeVariable<T> target = new TypeVariable<T>();
-            Assert.Inconclusive("TODO: Implement code to verify target");
-        }
-
         [TestMethod()]
         public void TypeVariableConstructorTest()
         {
@@ -91,21 +81,6 @@ namespace JavaCompiler.Tests.Reflection
                     "Please call BoundsTestHelper<T>() with appropriate type parameters.");
         }
 
-        /// <summary>
-        ///A test for GenericDeclaration
-        ///</summary>
-        public void GenericDeclarationTestHelper<T>()
-            where T : IGenericDeclaration<T>
-        {
-            TypeVariable<T> target = new TypeVariable<T>(); // TODO: Initialize to an appropriate value
-            T expected = default(T); // TODO: Initialize to an appropriate value
-            T actual;
-            target.GenericDeclaration = expected;
-            actual = target.GenericDeclaration;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
         [TestMethod()]
         public void GenericDeclarationTest()
         {
@@ -117,9 +92,9 @@ namespace JavaCompiler.Tests.Reflection
         ///A test for Name
         ///</summary>
         public void NameTestHelper<T>()
-            where T : IGenericDeclaration<T>
+            where T : IGenericDeclaration
         {
-            TypeVariable<T> target = new TypeVariable<T>(); // TODO: Initialize to an appropriate value
+            TypeVariable target = new TypeVariable(); // TODO: Initialize to an appropriate value
             string expected = string.Empty; // TODO: Initialize to an appropriate value
             string actual;
             target.Name = expected;

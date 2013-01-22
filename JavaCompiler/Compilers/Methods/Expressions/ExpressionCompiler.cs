@@ -1,7 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Type;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -77,7 +77,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             }
             if (node is PrimaryNode)
             {
-                return new PrimaryCompiler(node as PrimaryNode).Compile(generator).Type;
+                return new PrimaryCompiler(node as PrimaryNode).Compile(generator);
             }
 
             throw new NotImplementedException();

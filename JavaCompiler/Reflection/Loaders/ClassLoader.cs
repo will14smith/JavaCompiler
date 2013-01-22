@@ -4,19 +4,21 @@ using System.IO;
 using System.Linq;
 using JavaCompiler.Compilation;
 using JavaCompiler.Reflection.Enums;
-using JavaCompiler.Reflection.Internal;
+using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Reflection.Loaders
 {
     public static class ClassLoader
     {
-        public static Class Load(string path)
+        public static Type Load(string path)
         {
             return Load(File.OpenRead(path));
         }
 
-        public static Class Load(Stream stream)
+        public static Type Load(Stream stream)
         {
             var reader = new EndianBinaryReader(EndianBitConverter.Big, stream);
 
@@ -27,7 +29,7 @@ namespace JavaCompiler.Reflection.Loaders
 
             var constants = ReadConstants(reader);
 
-            var modifiers = (Modifier)reader.ReadInt16();
+            var modifiers = (ClassModifier)reader.ReadInt16();
 
             var thisClass = reader.ReadInt16();
             var superClass = reader.ReadInt16();
@@ -42,10 +44,10 @@ namespace JavaCompiler.Reflection.Loaders
                 Name = GetClass(thisClass, constants).Name,
                 Modifiers = modifiers,
 
-                Super = superClass == 0 ? null : GetClass(superClass, constants)
+                Super = (superClass == 0 ? null : GetClass(superClass, constants)) as Class
             };
 
-            c.Interfaces.AddRange(interfaces.Select(x => GetClass(x, constants)));
+            c.Interfaces.AddRange(interfaces.Select(x => GetClass(x, constants)).OfType<Interface>());
             c.Fields.AddRange(fields.Select(x => GetField(c, x, constants)));
             c.Methods.AddRange(methods.Select(x => GetMethod(c, x, constants)));
 
@@ -182,7 +184,7 @@ namespace JavaCompiler.Reflection.Loaders
         {
             return new Field
             {
-                DeclaringClass = c,
+                DeclaringType = c,
 
                 Name = GetUtf8(field.Name, constants),
                 Modifiers = field.Modifiers,
@@ -194,7 +196,7 @@ namespace JavaCompiler.Reflection.Loaders
         {
             var m = new Method
             {
-                DeclaringClass = c,
+                DeclaringType = c,
 
                 Name = GetUtf8(method.Name, constants),
                 Modifiers = method.Modifiers,
@@ -257,7 +259,7 @@ namespace JavaCompiler.Reflection.Loaders
             if (descriptor[0] != 'L') throw new ArgumentException();
             if (descriptor[descriptor.Length - 1] != ';') throw new ArgumentException();
 
-            return new PlaceholderClass { ArrayDimensions = arrayDimensions, Name = descriptor.Substring(1, descriptor.Length - 2) };
+            return new PlaceholderType { ArrayDimensions = arrayDimensions, Name = descriptor.Substring(1, descriptor.Length - 2) };
         }
         private static Tuple<List<Type>, Type> GetMethodTypeFromDescriptor(string descriptor)
         {
@@ -289,15 +291,16 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderClass { Name = typeName });
+                            parameterTypes.Add(new PlaceholderType { Name = typeName });
                         }
                         break;
                     case '[':
                         {
                             var arrayDimensions = 1;
-                            while (descriptor[i++] == '[')
+                            while (descriptor[i] == '[')
                             {
                                 arrayDimensions++;
+                                i++;
                             }
 
                             var typeName = "";
@@ -315,7 +318,7 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderClass { Name = typeName, ArrayDimensions = arrayDimensions });
+                            parameterTypes.Add(new PlaceholderType { Name = typeName, ArrayDimensions = arrayDimensions });
                         }
                         break;
                     default:
@@ -331,14 +334,14 @@ namespace JavaCompiler.Reflection.Loaders
             return new Tuple<List<Type>, Type>(parameterTypes, returnType);
         }
 
-        private static Class GetClass(short index, CompileConstant[] constants)
+        private static DefinedType GetClass(short index, CompileConstant[] constants)
         {
             var constant = constants[index];
 
             var compileConstantClass = constant as CompileConstantClass;
             if (compileConstantClass != null)
             {
-                return new PlaceholderClass { Name = GetUtf8(compileConstantClass.NameIndex, constants) };
+                return new PlaceholderType { Name = GetUtf8(compileConstantClass.NameIndex, constants) };
             }
 
             throw new InvalidOperationException();

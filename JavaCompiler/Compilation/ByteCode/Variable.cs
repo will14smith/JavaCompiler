@@ -1,5 +1,5 @@
 ﻿using System;
-using Type = JavaCompiler.Reflection.Type;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
 {

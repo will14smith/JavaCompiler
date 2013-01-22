@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Type = JavaCompiler.Reflection.Type;
+using JavaCompiler.Reflection;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
 {
     public class ByteCodeGenerator
     {
-        public CompileManager Manager { get; set; }
+        public CompileManager Manager { get; private set; }
+        public Method Method { get; private set; }
 
         private int length;
         private byte[] byteCodeStream;
 
-        public ByteCodeGenerator(CompileManager manager)
+        public ByteCodeGenerator(CompileManager manager, Method method)
         {
+            Manager = manager;
+            Method = method;
+
             byteCodeStream = new byte[64];
             length = 0;
 
@@ -83,7 +88,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
         public Variable GetVariable(string name)
         {
-            return variableList.First(x => x != null && x.Name == name);
+            return variableList.FirstOrDefault(x => x != null && x.Name == name);
         }
 
         public Variable DefineVariable(string name, Type type)

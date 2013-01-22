@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Compilation;
 using JavaCompiler.Reflection;
@@ -72,7 +73,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void ByteCodeGeneratorConstructorTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager);
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null);
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
 
@@ -83,7 +84,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void DefineLabelTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             Label expected = new Label(); // TODO: Initialize to an appropriate value
             Label actual;
             actual = target.DefineLabel();
@@ -98,7 +99,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void DefineVariableTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             string name = string.Empty; // TODO: Initialize to an appropriate value
             Class type = null; // TODO: Initialize to an appropriate value
             Variable expected = null; // TODO: Initialize to an appropriate value
@@ -115,7 +116,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             target.Emit(opcode);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -128,7 +129,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest1()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             byte b1 = 0; // TODO: Initialize to an appropriate value
             byte b2 = 0; // TODO: Initialize to an appropriate value
@@ -143,7 +144,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest2()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             byte b = 0; // TODO: Initialize to an appropriate value
             target.Emit(opcode, b);
@@ -157,7 +158,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest3()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             short s = 0; // TODO: Initialize to an appropriate value
             byte b1 = 0; // TODO: Initialize to an appropriate value
@@ -173,7 +174,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest4()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             Label l = new Label(); // TODO: Initialize to an appropriate value
             target.Emit(opcode, l);
@@ -187,7 +188,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest5()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             short s = 0; // TODO: Initialize to an appropriate value
             target.Emit(opcode, s);
@@ -201,7 +202,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitTest6()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             short s = 0; // TODO: Initialize to an appropriate value
             byte b = 0; // TODO: Initialize to an appropriate value
@@ -216,7 +217,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitWideTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             short s1 = 0; // TODO: Initialize to an appropriate value
             short s2 = 0; // TODO: Initialize to an appropriate value
@@ -231,7 +232,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void EmitWideTest1()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             OpCode opcode = null; // TODO: Initialize to an appropriate value
             short s = 0; // TODO: Initialize to an appropriate value
             target.EmitWide(opcode, s);
@@ -245,7 +246,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void GetBytesTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             byte[] expected = null; // TODO: Initialize to an appropriate value
             byte[] actual;
             actual = target.GetBytes();
@@ -260,7 +261,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void GetVariableTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             string name = string.Empty; // TODO: Initialize to an appropriate value
             Variable expected = null; // TODO: Initialize to an appropriate value
             Variable actual;
@@ -276,7 +277,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void MarkLabelTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             Label loc = new Label(); // TODO: Initialize to an appropriate value
             target.MarkLabel(loc);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -289,7 +290,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void PopVariablesTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             target.PopVariables();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
@@ -301,7 +302,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void PushVariablesTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             target.PushVariables();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
@@ -313,7 +314,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void UndefineVariableTest()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             Variable variable = null; // TODO: Initialize to an appropriate value
             target.UndefineVariable(variable);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -326,7 +327,7 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void UndefineVariableTest1()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             int index = 0; // TODO: Initialize to an appropriate value
             target.UndefineVariable(index);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -339,26 +340,10 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
         public void UndefineVariableTest2()
         {
             CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
+            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
             string name = string.Empty; // TODO: Initialize to an appropriate value
             target.UndefineVariable(name);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
-
-        /// <summary>
-        ///A test for Manager
-        ///</summary>
-        [TestMethod()]
-        public void ManagerTest()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager); // TODO: Initialize to an appropriate value
-            CompileManager expected = null; // TODO: Initialize to an appropriate value
-            CompileManager actual;
-            target.Manager = expected;
-            actual = target.Manager;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
         }
     }
 }

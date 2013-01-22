@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Compilation;
-using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers
 {
@@ -32,6 +32,9 @@ namespace JavaCompiler.Compilers
             // fields
             CompileFields(manager);
 
+            // constructors
+            CompileConstructors(manager);
+
             // methods
             CompileMethods(manager);
 
@@ -59,6 +62,15 @@ namespace JavaCompiler.Compilers
                 fieldInfo.Attributes = new List<CompileAttribute>(); //TODO: ConstantValue, Synthetic, Deprecated 
 
                 manager.AddField(fieldInfo);
+            }
+        }
+        private void CompileConstructors(CompileManager manager)
+        {
+            foreach (var constructor in @class.Constructors)
+            {
+                var methodInfo = new ConstructorCompiler(constructor).Compile(manager);
+
+                manager.AddMethod(methodInfo);
             }
         }
         private void CompileMethods(CompileManager manager)

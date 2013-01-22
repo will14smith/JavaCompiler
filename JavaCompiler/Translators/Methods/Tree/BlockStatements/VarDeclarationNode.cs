@@ -1,5 +1,6 @@
 ﻿using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Translators.Methods.Tree.BlockStatements

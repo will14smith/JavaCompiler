@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Compilers.Methods.Expressions;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Compilation.ByteCode;
@@ -85,8 +86,8 @@ namespace JavaCompiler.Tests.Compilers.Methods.Expressions
         {
             PrimaryCompiler target = new PrimaryCompiler(null); // TODO: Initialize to an appropriate value
             ByteCodeGenerator generator = null; // TODO: Initialize to an appropriate value
-            Variable expected = null; // TODO: Initialize to an appropriate value
-            Variable actual;
+            Type expected = null; // TODO: Initialize to an appropriate value
+            Type actual;
             actual = target.Compile(generator);
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");

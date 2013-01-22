@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Compilation;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Reflection;
 using System.Collections.Generic;
@@ -206,7 +207,7 @@ namespace JavaCompiler.Tests.Compilation
         public void SetModifiersTest()
         {
             CompileManager target = new CompileManager(); // TODO: Initialize to an appropriate value
-            Modifier modifiers = new Modifier(); // TODO: Initialize to an appropriate value
+            ClassModifier modifiers = new ClassModifier(); // TODO: Initialize to an appropriate value
             target.SetModifiers(modifiers);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }

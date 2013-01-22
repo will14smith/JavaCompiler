@@ -1,4 +1,4 @@
-﻿using JavaCompiler.Reflection.Internal;
+﻿using JavaCompiler.Reflection.Types.Internal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JavaCompiler.Tests.Reflection.Internal
@@ -70,7 +70,7 @@ namespace JavaCompiler.Tests.Reflection.Internal
         [DeploymentItem("JavaCompiler.dll")]
         public void PlaceholderClassConstructorTest()
         {
-            PlaceholderClass target = new PlaceholderClass();
+            PlaceholderType target = new PlaceholderType();
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
     }

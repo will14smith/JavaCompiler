@@ -1,4 +1,4 @@
-﻿namespace JavaCompiler.Reflection
+﻿namespace JavaCompiler.Reflection.Types
 {
     public static class PrimativeTypes
     {
@@ -19,6 +19,11 @@
             public override string Name { get { return "byte"; } }
             public override bool Primitive { get { return true; } }
 
+            public override string GetDescriptor()
+            {
+                return "B";
+            }
+
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Byte
@@ -34,6 +39,11 @@
         {
             public override string Name { get { return "short"; } }
             public override bool Primitive { get { return true; } }
+
+            public override string GetDescriptor()
+            {
+                return "S";
+            }
 
             public override bool IsAssignableTo(Type c)
             {
@@ -52,6 +62,11 @@
             public override string Name { get { return "int"; } }
             public override bool Primitive { get { return true; } }
 
+            public override string GetDescriptor()
+            {
+                return "I";
+            }
+
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Integer
@@ -69,6 +84,11 @@
         {
             public override string Name { get { return "long"; } }
             public override bool Primitive { get { return true; } }
+
+            public override string GetDescriptor()
+            {
+                return "J";
+            }
 
             public override bool IsAssignableTo(Type c)
             {
@@ -89,6 +109,11 @@
             public override string Name { get { return "float"; } }
             public override bool Primitive { get { return true; } }
 
+            public override string GetDescriptor()
+            {
+                return "F";
+            }
+
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Float
@@ -108,6 +133,11 @@
         {
             public override string Name { get { return "double"; } }
             public override bool Primitive { get { return true; } }
+
+            public override string GetDescriptor()
+            {
+                return "D";
+            }
 
             public override bool IsAssignableTo(Type c)
             {
@@ -130,6 +160,11 @@
             public override string Name { get { return "boolean"; } }
             public override bool Primitive { get { return true; } }
 
+            public override string GetDescriptor()
+            {
+                return "Z";
+            }
+
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Boolean
@@ -151,6 +186,11 @@
             public override string Name { get { return "char"; } }
             public override bool Primitive { get { return true; } }
 
+            public override string GetDescriptor()
+            {
+                return "C";
+            }
+
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Char
@@ -168,6 +208,11 @@
         {
             public override string Name { get { return "void"; } }
             public override bool Primitive { get { return true; } }
+
+            public override string GetDescriptor()
+            {
+                return "V";
+            }
 
             public override bool IsAssignableTo(Type c)
             {

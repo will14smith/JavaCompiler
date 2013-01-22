@@ -1,4 +1,5 @@
 ﻿using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JavaCompiler.Translators.Methods.Tree;
 using System.Collections.Generic;
@@ -92,20 +93,6 @@ namespace JavaCompiler.Tests.Reflection
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for DeclaringClass
-        ///</summary>
-        [TestMethod()]
-        public void DeclaringClassTest()
-        {
-            Method target = new Method(); // TODO: Initialize to an appropriate value
-            Class expected = null; // TODO: Initialize to an appropriate value
-            Class actual;
-            target.DeclaringClass = expected;
-            actual = target.DeclaringClass;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
         /// <summary>
         ///A test for GenericReturnType

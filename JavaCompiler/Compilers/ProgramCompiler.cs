@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using JavaCompiler.Compilation;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers
 {
@@ -27,8 +27,6 @@ namespace JavaCompiler.Compilers
             {
                 throw new NotImplementedException();
             }
-
-            manager.AddAttribute(new CompileAttributeSourceFile { SourceFile = manager.AddConstantUtf8("Exercise1.java") });
 
             return manager.GetBytes();
         }
