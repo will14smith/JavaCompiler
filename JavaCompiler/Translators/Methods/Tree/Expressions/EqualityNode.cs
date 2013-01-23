@@ -1,27 +1,11 @@
-﻿using System;
-using JavaCompiler.Reflection;
-
-namespace JavaCompiler.Translators.Methods.Tree.Expressions
+﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
     public abstract class EqualityNode : ExpressionNode
     {
         public ExpressionNode LeftChild { get; set; }
         public ExpressionNode RightChild { get; set; }
 
-        public override void ValidateType()
-        {
-            LeftChild.ValidateType();
-            RightChild.ValidateType();
-
-            if (LeftChild.ReturnType != RightChild.ReturnType)
-            {
-                ReturnType = LeftChild.ReturnType.FindCommonType(RightChild.ReturnType);
-            }
-            else
-            {
-                ReturnType = LeftChild.ReturnType;
-            }
-        }
+        #region Nested type: EqualityEqualNode
 
         public class EqualityEqualNode : EqualityNode
         {
@@ -30,6 +14,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 return "(" + LeftChild + " == " + RightChild + ")";
             }
         }
+
+        #endregion
+
+        #region Nested type: EqualityNotEqualNode
+
         public class EqualityNotEqualNode : EqualityNode
         {
             public override string ToString()
@@ -37,5 +26,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 return "(" + LeftChild + " != " + RightChild + ")";
             }
         }
+
+        #endregion
     }
 }

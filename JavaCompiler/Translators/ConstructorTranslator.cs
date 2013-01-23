@@ -6,22 +6,24 @@ using JavaCompiler.Translators.Methods.BlockStatements;
 
 namespace JavaCompiler.Translators
 {
-    class ConstructorTranslator
+    internal class ConstructorTranslator
     {
         private readonly ITree node;
+
         public ConstructorTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.CONSTRUCTOR_DECL);
+            Debug.Assert(node.Type == (int) JavaNodeType.CONSTRUCTOR_DECL);
 
             this.node = node;
         }
 
         public Constructor Walk(Class c)
         {
-            var constructor = new Constructor();
-
-            constructor.Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk();
-            constructor.DeclaringType = c;
+            var constructor = new Constructor
+                                  {
+                                      Modifiers = new ModifierListTranslator(node.GetChild(0)).Walk(),
+                                      DeclaringType = c
+                                  };
 
             constructor.Parameters.AddRange(new MethodParameterTranslator(node.GetChild(1)).Walk());
 

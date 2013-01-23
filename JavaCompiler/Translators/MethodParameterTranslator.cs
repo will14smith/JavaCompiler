@@ -8,18 +8,19 @@ namespace JavaCompiler.Translators
     public class MethodParameterTranslator
     {
         private readonly ITree node;
+
         public MethodParameterTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.FORMAL_PARAM_LIST);
+            Debug.Assert(node.Type == (int) JavaNodeType.FORMAL_PARAM_LIST);
 
             this.node = node;
         }
 
         public IEnumerable<Method.Parameter> Walk()
         {
-            for (var i = 0; i < node.ChildCount; i++)
+            for (int i = 0; i < node.ChildCount; i++)
             {
-                var child = node.GetChild(i);
+                ITree child = node.GetChild(i);
 
                 yield return ConvertNode(child);
             }

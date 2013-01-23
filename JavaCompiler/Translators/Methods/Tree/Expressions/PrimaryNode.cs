@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Antlr.Runtime.Tree;
+﻿using System.Collections.Generic;
 using System.Linq;
-using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Types;
+using Antlr.Runtime.Tree;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
@@ -17,105 +14,10 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             return Child.ToString();
         }
 
-        public class TermThisExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
+        #region Nested type: TermBoolLiteralExpression
 
-            public override string ToString()
-            {
-                return "this";
-            }
-        }
-        public class TermSuperExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
-
-            public override string ToString()
-            {
-                return "super";
-            }
-        }
-        public class TermNullExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
-
-            public override string ToString()
-            {
-                return "null";
-            }
-        }
-        public class TermDecimalLiteralExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.Int;
-            }
-
-            public int Value { get; set; }
-
-            public override string ToString()
-            {
-                return Value.ToString();
-            }
-        }
-        public class TermFloatLiteralExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.Float;
-            }
-
-            public float Value { get; set; }
-
-            public override string ToString()
-            {
-                return Value.ToString();
-            }
-        }
-        public class TermCharLiteralExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.Char;
-            }
-
-            public char Value { get; set; }
-
-            public override string ToString()
-            {
-                return Value.ToString();
-            }
-        }
-        public class TermStringLiteralExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string Value { get; set; }
-
-            public override string ToString()
-            {
-                return Value;
-            }
-        }
         public class TermBoolLiteralExpression : PrimaryNode
         {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.Boolean;
-            }
-
             public bool Value { get; set; }
 
             public override string ToString()
@@ -123,75 +25,35 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 return Value.ToString();
             }
         }
-        public class TermFieldExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
 
-            public PrimaryNode SecondChild { get; set; }
+        #endregion
+
+        #region Nested type: TermCharLiteralExpression
+
+        public class TermCharLiteralExpression : PrimaryNode
+        {
+            public char Value { get; set; }
 
             public override string ToString()
             {
-                return Child + "." + SecondChild;
+                return Value.ToString();
             }
         }
-        public class TermIdentifierExpression : PrimaryNode
+
+        #endregion
+
+        #region Nested type: TermClassLiteralExpression
+
+        public class TermClassLiteralExpression : PrimaryNode
         {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
-
-            public string Identifier { get; set; }
-
-            public TermIdentifierExpression()
-            {
-            }
-            public TermIdentifierExpression(ITree node)
-            {
-                Identifier = node.Text;
-            }
-
-            public override string ToString()
-            {
-                return Identifier;
-            }
         }
-        public class TermMethodCallExpression : PrimaryNode
-        {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.CompileTime;
-            }
 
-            public List<ExpressionNode> Arguments { get; set; }
+        #endregion
 
-            public override string ToString()
-            {
-                var arguments = "";
+        #region Nested type: TermConstructorCallExpression
 
-                for (var i = 0; i < Arguments.Count(); i++)
-                {
-                    if (i > 0)
-                    {
-                        arguments += ", ";
-                    }
-
-                    arguments += Arguments[i];
-                }
-
-                return Child + "(" + arguments + ")";
-            }
-        }
         public class TermConstructorCallExpression : PrimaryNode
         {
-            public override void ValidateType()
-            {
-                ReturnType = PrimativeTypes.Void;
-            }
-
             public bool IsSuper { get; set; }
             public List<ExpressionNode> Arguments { get; set; }
 
@@ -212,12 +74,148 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 return (IsSuper ? "super" : "this") + "(" + arguments + ")";
             }
         }
-        public class TermClassLiteralExpression : PrimaryNode
+
+        #endregion
+
+        #region Nested type: TermDecimalLiteralExpression
+
+        public class TermDecimalLiteralExpression : PrimaryNode
         {
-            public override void ValidateType()
+            public int Value { get; set; }
+
+            public override string ToString()
             {
-                throw new NotImplementedException();
+                return Value.ToString();
             }
         }
+
+        #endregion
+
+        #region Nested type: TermFieldExpression
+
+        public class TermFieldExpression : PrimaryNode
+        {
+            public PrimaryNode SecondChild { get; set; }
+
+            public override string ToString()
+            {
+                return Child + "." + SecondChild;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermFloatLiteralExpression
+
+        public class TermFloatLiteralExpression : PrimaryNode
+        {
+            public float Value { get; set; }
+
+            public override string ToString()
+            {
+                return Value.ToString();
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermIdentifierExpression
+
+        public class TermIdentifierExpression : PrimaryNode
+        {
+            public TermIdentifierExpression()
+            {
+            }
+
+            public TermIdentifierExpression(ITree node)
+            {
+                Identifier = node.Text;
+            }
+
+            public string Identifier { get; set; }
+
+            public override string ToString()
+            {
+                return Identifier;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermMethodCallExpression
+
+        public class TermMethodCallExpression : PrimaryNode
+        {
+            public List<ExpressionNode> Arguments { get; set; }
+
+            public override string ToString()
+            {
+                string arguments = "";
+
+                for (int i = 0; i < Arguments.Count(); i++)
+                {
+                    if (i > 0)
+                    {
+                        arguments += ", ";
+                    }
+
+                    arguments += Arguments[i];
+                }
+
+                return Child + "(" + arguments + ")";
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermNullExpression
+
+        public class TermNullExpression : PrimaryNode
+        {
+            public override string ToString()
+            {
+                return "null";
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermStringLiteralExpression
+
+        public class TermStringLiteralExpression : PrimaryNode
+        {
+            public string Value { get; set; }
+
+            public override string ToString()
+            {
+                return Value;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermSuperExpression
+
+        public class TermSuperExpression : PrimaryNode
+        {
+            public override string ToString()
+            {
+                return "super";
+            }
+        }
+
+        #endregion
+
+        #region Nested type: TermThisExpression
+
+        public class TermThisExpression : PrimaryNode
+        {
+            public override string ToString()
+            {
+                return "this";
+            }
+        }
+
+        #endregion
     }
 }

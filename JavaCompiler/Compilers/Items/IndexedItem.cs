@@ -5,21 +5,23 @@ using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class IndexedItem : Item
+    internal class IndexedItem : Item
     {
         public IndexedItem(ByteCodeGenerator generator, Type type)
-            : base(generator, type) { }
+            : base(generator, type)
+        {
+        }
 
         public override Item Load()
         {
-            Generator.InternalEmit(OpCodeValue.iaload + (byte)TypeCode);
+            Generator.InternalEmit(OpCodeValue.iaload + (byte) TypeCode);
 
             return StackItem[(int) TypeCode];
         }
 
         public override void Store()
         {
-            Generator.InternalEmit(OpCodeValue.iastore + (byte)TypeCode);
+            Generator.InternalEmit(OpCodeValue.iastore + (byte) TypeCode);
         }
 
         public override void Duplicate()
@@ -34,7 +36,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Stash(ItemTypeCode code)
         {
-            Generator.InternalEmit(OpCodeValue.dup_x2 + (byte) (3 * (TypeCodeHelper.Width(code) - 1)));
+            Generator.InternalEmit(OpCodeValue.dup_x2 + (byte) (3*(TypeCodeHelper.Width(code) - 1)));
         }
 
         public override int Width()

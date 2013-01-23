@@ -10,6 +10,10 @@ namespace JavaCompiler.Compilers
     public class ConstructorCompiler
     {
         private readonly Constructor constructor;
+
+        private List<CompileAttribute> attributes;
+        private ByteCodeGenerator generator;
+
         public ConstructorCompiler(Constructor constructor)
         {
             this.constructor = constructor;
@@ -21,8 +25,8 @@ namespace JavaCompiler.Compilers
 
             var methodInfo = new CompileMethodInfo();
 
-            var nameIndex = manager.AddConstantUtf8(constructor.Name);
-            var descriptorIndex = manager.AddConstantUtf8(constructor.GetDescriptor());
+            short nameIndex = manager.AddConstantUtf8(constructor.Name);
+            short descriptorIndex = manager.AddConstantUtf8(constructor.GetDescriptor());
 
             CompileBody(manager);
 
@@ -34,16 +38,12 @@ namespace JavaCompiler.Compilers
             return methodInfo;
         }
 
-        private List<CompileAttribute> attributes;
-        private ByteCodeGenerator generator;
         private void CompileBody(CompileManager manager)
         {
             attributes = new List<CompileAttribute>();
             generator = new ByteCodeGenerator(manager, (Method)constructor);
 
-            constructor.Body.ValidateType();
-
-            foreach (var parameter in constructor.Parameters)
+            foreach (Method.Parameter parameter in constructor.Parameters)
             {
                 generator.DefineVariable(parameter.Name, parameter.Type);
             }
@@ -56,15 +56,9 @@ namespace JavaCompiler.Compilers
                 Code = generator.GetBytes(),
                 Attributes = new List<CompileAttribute>(),
                 ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
-
                 MaxLocals = 4,
                 MaxStack = 2
             });
-        }
-
-        private void CompileMethodTree(MethodTree node)
-        {
-
         }
     }
 }

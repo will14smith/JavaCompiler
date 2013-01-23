@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
-using JavaCompiler.Translators.Methods.Tree;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Utilities;
 
@@ -10,9 +9,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class ExpressionTranslator
     {
         private readonly ITree node;
+
         public ExpressionTranslator(ITree node)
         {
-            if (node.Type == (int)JavaNodeType.PARENTESIZED_EXPR)
+            if (node.Type == (int) JavaNodeType.PARENTESIZED_EXPR)
             {
                 node = node.GetChild(0);
             }
@@ -24,33 +24,33 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         public ExpressionNode Walk()
         {
-            var child = node.Type == (int)JavaNodeType.EXPR ? node.GetChild(0) : node;
+            ITree child = node.Type == (int) JavaNodeType.EXPR ? node.GetChild(0) : node;
 
             if (child.IsAssignExpression())
             {
                 return new AssignmentTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.QUESTION)
+            if (child.Type == (int) JavaNodeType.QUESTION)
             {
                 return new ConditionalTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.LOGICAL_OR)
+            if (child.Type == (int) JavaNodeType.LOGICAL_OR)
             {
                 return new LogicalOrTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.LOGICAL_AND)
+            if (child.Type == (int) JavaNodeType.LOGICAL_AND)
             {
                 return new LogicalAndTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.OR)
+            if (child.Type == (int) JavaNodeType.OR)
             {
                 return new OrTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.XOR)
+            if (child.Type == (int) JavaNodeType.XOR)
             {
                 return new XorTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.AND)
+            if (child.Type == (int) JavaNodeType.AND)
             {
                 return new AndTranslator(child).Walk();
             }
@@ -58,7 +58,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
             {
                 return new EqualityTranslator(child).Walk();
             }
-            if (child.Type == (int)JavaNodeType.INSTANCEOF)
+            if (child.Type == (int) JavaNodeType.INSTANCEOF)
             {
                 throw new NotImplementedException();
             }

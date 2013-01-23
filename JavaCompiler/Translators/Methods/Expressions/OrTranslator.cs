@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class OrTranslator
     {
         private readonly ITree node;
+
         public OrTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.OR);
+            Debug.Assert(node.Type == (int) JavaNodeType.OR);
 
             this.node = node;
         }

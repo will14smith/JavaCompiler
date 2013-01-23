@@ -1,33 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators.Methods.Tree
 {
     public abstract class MethodTreeNode
     {
-        public Type ReturnType { get; set; }
-
-        public abstract void ValidateType();
     }
+
     public abstract class MethodTreeNode<T> : MethodTreeNode, IList<T> where T : MethodTreeNode
     {
         private readonly List<T> backend = new List<T>();
 
-        public override void ValidateType()
-        {
-            foreach(var item in backend)
-            {
-                item.ValidateType();
-            }
-        }
+        #region IList<T> Members
 
         public IEnumerator<T> GetEnumerator()
         {
             return backend.GetEnumerator();
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return backend.GetEnumerator();
@@ -58,8 +49,15 @@ namespace JavaCompiler.Translators.Methods.Tree
             return backend.Remove(item);
         }
 
-        public int Count { get { return backend.Count; } }
-        public bool IsReadOnly { get { return false; } }
+        public int Count
+        {
+            get { return backend.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
         public int IndexOf(T item)
         {
@@ -81,6 +79,8 @@ namespace JavaCompiler.Translators.Methods.Tree
             get { return backend[index]; }
             set { backend[index] = value; }
         }
+
+        #endregion
 
         public override string ToString()
         {

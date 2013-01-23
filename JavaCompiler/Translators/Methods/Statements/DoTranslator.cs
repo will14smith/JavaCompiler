@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class DoTranslator
     {
         private readonly ITree node;
+
         public DoTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.DO);
+            Debug.Assert(node.Type == (int) JavaNodeType.DO);
 
             this.node = node;
         }

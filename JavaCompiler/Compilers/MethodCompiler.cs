@@ -3,7 +3,6 @@ using JavaCompiler.Compilation;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Methods.BlockStatements;
 using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Compilers
@@ -11,6 +10,10 @@ namespace JavaCompiler.Compilers
     public class MethodCompiler
     {
         private readonly Method method;
+
+        private List<CompileAttribute> attributes;
+        private ByteCodeGenerator generator;
+
         public MethodCompiler(Method method)
         {
             this.method = method;
@@ -22,8 +25,8 @@ namespace JavaCompiler.Compilers
 
             var methodInfo = new CompileMethodInfo();
 
-            var nameIndex = manager.AddConstantUtf8(method.Name);
-            var descriptorIndex = manager.AddConstantUtf8(method.GetDescriptor());
+            short nameIndex = manager.AddConstantUtf8(method.Name);
+            short descriptorIndex = manager.AddConstantUtf8(method.GetDescriptor());
 
             CompileBody(manager);
 
@@ -35,23 +38,19 @@ namespace JavaCompiler.Compilers
             return methodInfo;
         }
 
-        private List<CompileAttribute> attributes;
-        private ByteCodeGenerator generator;
         private void CompileBody(CompileManager manager)
         {
             attributes = new List<CompileAttribute>();
             generator = new ByteCodeGenerator(manager, method);
 
-            method.Body.ValidateType();
-
-            foreach(var parameter in method.Parameters)
+            foreach (Method.Parameter parameter in method.Parameters)
             {
                 generator.DefineVariable(parameter.Name, parameter.Type);
             }
 
             new BlockCompiler(method.Body).Compile(generator);
 
-            if(method.ReturnType.Name == "void")
+            if (method.ReturnType.Name == "void")
             {
                 generator.Emit(OpCodes.@return);
             }
@@ -62,15 +61,9 @@ namespace JavaCompiler.Compilers
                 Code = generator.GetBytes(),
                 Attributes = new List<CompileAttribute>(),
                 ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
-
                 MaxLocals = 4,
                 MaxStack = 2
             });
-        }
-
-        private void CompileMethodTree(MethodTree node)
-        {
-
         }
     }
 }

@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class ShiftTranslator
     {
         private readonly ITree node;
+
         public ShiftTranslator(ITree node)
         {
             Debug.Assert(node.IsShiftExpression());

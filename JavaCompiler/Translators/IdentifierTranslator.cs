@@ -6,9 +6,10 @@ namespace JavaCompiler.Translators
     public class IdentifierTranslator
     {
         private readonly ITree node;
+
         public IdentifierTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.IDENT);
+            Debug.Assert(node.Type == (int) JavaNodeType.IDENT);
 
             this.node = node;
         }

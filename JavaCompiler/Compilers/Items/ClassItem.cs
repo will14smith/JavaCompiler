@@ -1,9 +1,9 @@
 ﻿using JavaCompiler.Compilation.ByteCode;
-using Type = JavaCompiler.Reflection.Types.Type;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class ClassItem : Item
+    internal class ClassItem : Item
     {
         public ClassItem(ByteCodeGenerator generator, Type type) : base(generator, type)
         {

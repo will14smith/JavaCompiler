@@ -17,151 +17,58 @@ namespace JavaCompiler.Reflection.Types
         public static Type Void = new VoidClass();
         public static Type CompileTime = new CompileTimeClass();
 
-        private class ByteClass : Type
+        internal static ItemTypeCode TypeCode(Type type)
         {
-            public override string Name { get { return "byte"; } }
-            public override bool Primitive { get { return true; } }
-
-            public override string GetDescriptor()
+            if (type is ByteClass)
             {
-                return "B";
+                return ItemTypeCode.Byte;
+            }
+            if (type is ShortClass)
+            {
+                return ItemTypeCode.Short;
+            }
+            if (type is IntClass)
+            {
+                return ItemTypeCode.Int;
+            }
+            if (type is LongClass)
+            {
+                return ItemTypeCode.Long;
+            }
+            if (type is FloatClass)
+            {
+                return ItemTypeCode.Float;
+            }
+            if (type is DoubleClass)
+            {
+                return ItemTypeCode.Double;
+            }
+            if (type is CharClass)
+            {
+                return ItemTypeCode.Char;
             }
 
-            public override bool IsAssignableTo(Type c)
+            if (type is VoidClass)
             {
-                //TODO: Byte
-                if (!c.Primitive) return false;
-
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
+                return ItemTypeCode.Void;
             }
+
+            throw new NotImplementedException();
         }
-        private class ShortClass : Type
-        {
-            public override string Name { get { return "short"; } }
-            public override bool Primitive { get { return true; } }
 
-            public override string GetDescriptor()
-            {
-                return "S";
-            }
+        #region Nested type: BooleanClass
 
-            public override bool IsAssignableTo(Type c)
-            {
-                //TODO: Short
-                if (!c.Primitive) return false;
-
-                if (c is ByteClass) return false;
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
-            }
-        }
-        private class IntClass : Type
-        {
-            public override string Name { get { return "int"; } }
-            public override bool Primitive { get { return true; } }
-
-            public override string GetDescriptor()
-            {
-                return "I";
-            }
-
-            public override bool IsAssignableTo(Type c)
-            {
-                //TODO: Integer
-                if (!c.Primitive) return false;
-
-                if (c is ByteClass) return false;
-                if (c is ShortClass) return false;
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
-            }
-        }
-        private class LongClass : Type
-        {
-            public override string Name { get { return "long"; } }
-            public override bool Primitive { get { return true; } }
-
-            public override string GetDescriptor()
-            {
-                return "J";
-            }
-
-            public override bool IsAssignableTo(Type c)
-            {
-                //TODO: Long
-                if (!c.Primitive) return false;
-
-                if (c is ByteClass) return false;
-                if (c is ShortClass) return false;
-                if (c is IntClass) return false;
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
-            }
-        }
-        private class FloatClass : Type
-        {
-            public override string Name { get { return "float"; } }
-            public override bool Primitive { get { return true; } }
-
-            public override string GetDescriptor()
-            {
-                return "F";
-            }
-
-            public override bool IsAssignableTo(Type c)
-            {
-                //TODO: Float
-                if (!c.Primitive) return false;
-
-                if (c is ByteClass) return false;
-                if (c is ShortClass) return false;
-                if (c is IntClass) return false;
-                if (c is LongClass) return false;
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
-            }
-        }
-        private class DoubleClass : Type
-        {
-            public override string Name { get { return "double"; } }
-            public override bool Primitive { get { return true; } }
-
-            public override string GetDescriptor()
-            {
-                return "D";
-            }
-
-            public override bool IsAssignableTo(Type c)
-            {
-                //TODO: Double
-                if (!c.Primitive) return false;
-
-                if (c is ByteClass) return false;
-                if (c is ShortClass) return false;
-                if (c is IntClass) return false;
-                if (c is LongClass) return false;
-                if (c is FloatClass) return false;
-                if (c is BooleanClass) return false;
-                if (c is CharClass) return false;
-
-                return true;
-            }
-        }
         private class BooleanClass : Type
         {
-            public override string Name { get { return "boolean"; } }
-            public override bool Primitive { get { return true; } }
+            public override string Name
+            {
+                get { return "boolean"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
 
             public override string GetDescriptor()
             {
@@ -184,10 +91,55 @@ namespace JavaCompiler.Reflection.Types
                 return true;
             }
         }
+
+        #endregion
+
+        #region Nested type: ByteClass
+
+        private class ByteClass : Type
+        {
+            public override string Name
+            {
+                get { return "byte"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "B";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Byte
+                if (!c.Primitive) return false;
+
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: CharClass
+
         private class CharClass : Type
         {
-            public override string Name { get { return "char"; } }
-            public override bool Primitive { get { return true; } }
+            public override string Name
+            {
+                get { return "char"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
 
             public override string GetDescriptor()
             {
@@ -207,10 +159,223 @@ namespace JavaCompiler.Reflection.Types
             }
         }
 
+        #endregion
+
+        #region Nested type: CompileTimeClass
+
+        internal class CompileTimeClass : Type
+        {
+            public override string Name
+            {
+                get { return "COMPILE TIME"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: DoubleClass
+
+        private class DoubleClass : Type
+        {
+            public override string Name
+            {
+                get { return "double"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "D";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Double
+                if (!c.Primitive) return false;
+
+                if (c is ByteClass) return false;
+                if (c is ShortClass) return false;
+                if (c is IntClass) return false;
+                if (c is LongClass) return false;
+                if (c is FloatClass) return false;
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: FloatClass
+
+        private class FloatClass : Type
+        {
+            public override string Name
+            {
+                get { return "float"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "F";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Float
+                if (!c.Primitive) return false;
+
+                if (c is ByteClass) return false;
+                if (c is ShortClass) return false;
+                if (c is IntClass) return false;
+                if (c is LongClass) return false;
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: IntClass
+
+        private class IntClass : Type
+        {
+            public override string Name
+            {
+                get { return "int"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "I";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Integer
+                if (!c.Primitive) return false;
+
+                if (c is ByteClass) return false;
+                if (c is ShortClass) return false;
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: LongClass
+
+        private class LongClass : Type
+        {
+            public override string Name
+            {
+                get { return "long"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "J";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Long
+                if (!c.Primitive) return false;
+
+                if (c is ByteClass) return false;
+                if (c is ShortClass) return false;
+                if (c is IntClass) return false;
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: ShortClass
+
+        private class ShortClass : Type
+        {
+            public override string Name
+            {
+                get { return "short"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
+
+            public override string GetDescriptor()
+            {
+                return "S";
+            }
+
+            public override bool IsAssignableTo(Type c)
+            {
+                //TODO: Short
+                if (!c.Primitive) return false;
+
+                if (c is ByteClass) return false;
+                if (c is BooleanClass) return false;
+                if (c is CharClass) return false;
+
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Nested type: VoidClass
+
         private class VoidClass : Type
         {
-            public override string Name { get { return "void"; } }
-            public override bool Primitive { get { return true; } }
+            public override string Name
+            {
+                get { return "void"; }
+            }
+
+            public override bool Primitive
+            {
+                get { return true; }
+            }
 
             public override string GetDescriptor()
             {
@@ -222,54 +387,7 @@ namespace JavaCompiler.Reflection.Types
                 return false;
             }
         }
-        internal class CompileTimeClass : Type
-        {
-            public override string Name { get { return "COMPILE TIME"; } }
-            public override bool Primitive { get { return true; } }
 
-            public override bool IsAssignableTo(Type c)
-            {
-                return false;
-            }
-        }
-
-        internal static ItemTypeCode TypeCode(Type type)
-        {
-            if (type is ByteClass)
-            {
-                return ItemTypeCode.Byte;
-            }
-            if (type is ShortClass)
-            {
-                return ItemTypeCode.Short;
-            }
-            if (type is IntClass)
-            {
-                return ItemTypeCode.Int;
-            }
-            if (type is LongClass)
-            {
-                return ItemTypeCode.Long;
-            }
-            if (type is FloatClass)
-            {
-                return ItemTypeCode.Float;
-            } 
-            if (type is DoubleClass)
-            {
-                return ItemTypeCode.Double;
-            }
-            if (type is CharClass)
-            {
-                return ItemTypeCode.Char;
-            }
-            
-            if (type is VoidClass)
-            {
-                return ItemTypeCode.Void;
-            }
-
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }

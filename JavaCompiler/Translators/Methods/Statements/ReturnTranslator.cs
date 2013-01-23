@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class ReturnTranslator
     {
         private readonly ITree node;
+
         public ReturnTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.RETURN);
+            Debug.Assert(node.Type == (int) JavaNodeType.RETURN);
 
             this.node = node;
         }
@@ -19,7 +20,7 @@ namespace JavaCompiler.Translators.Methods.Statements
         {
             var returnNode = new ReturnNode();
 
-            if(node.ChildCount > 0)
+            if (node.ChildCount > 0)
             {
                 returnNode.Value = new ExpressionTranslator(node.GetChild(0)).Walk();
             }

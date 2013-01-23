@@ -8,19 +8,20 @@ namespace JavaCompiler.Reflection.Loaders
 {
     public static class ClassLocator
     {
-        public static List<string> SearchPaths { get; private set; }
-
         private static readonly Dictionary<string, Type> CachedClasses = new Dictionary<string, Type>();
 
         static ClassLocator()
         {
-            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt.jar" };
+            SearchPaths = new List<string> {@"C:\Program Files\Java\jre7\lib\rt.jar"};
         }
+
+        public static List<string> SearchPaths { get; private set; }
 
         public static void Add(Type c, List<Package> importedPackages)
         {
             CachedClasses.Add(GetCacheKey(c.Name, ProcessImports(importedPackages)), c);
         }
+
         public static void Reset()
         {
             CachedClasses.Clear();
@@ -28,7 +29,7 @@ namespace JavaCompiler.Reflection.Loaders
 
         public static Type Find(Type c, List<Package> importedPackages)
         {
-            if(c is PlaceholderType)
+            if (c is PlaceholderType)
             {
                 return Find(c.Name, importedPackages);
             }
@@ -43,19 +44,19 @@ namespace JavaCompiler.Reflection.Loaders
 
         public static Type Find(string s, List<Package> importedPackages)
         {
-            var imports = ProcessImports(importedPackages);
+            List<string> imports = ProcessImports(importedPackages);
 
-            var cacheKey = GetCacheKey(s, imports);
+            string cacheKey = GetCacheKey(s, imports);
 
             if (!CachedClasses.ContainsKey(cacheKey))
             {
                 var results = new List<Type>();
 
-                foreach (var location in SearchPaths.Distinct())
+                foreach (string location in SearchPaths.Distinct())
                 {
-                    var locator = location.EndsWith(".jar", StringComparison.CurrentCultureIgnoreCase)
-                                       ? (IClassLocator)new JarClassLocator(location)
-                                       : (IClassLocator)new DirectoryClassLocator(location);
+                    IClassLocator locator = location.EndsWith(".jar", StringComparison.CurrentCultureIgnoreCase)
+                                                ? new JarClassLocator(location)
+                                                : (IClassLocator) new DirectoryClassLocator(location);
 
                     results.AddRange(locator.Search(s, imports));
                 }
@@ -66,11 +67,9 @@ namespace JavaCompiler.Reflection.Loaders
                 }
                 else if (!results.Any())
                 {
-
                 }
                 else
                 {
-
                 }
             }
 
@@ -79,12 +78,12 @@ namespace JavaCompiler.Reflection.Loaders
 
         private static List<string> ProcessImports(IEnumerable<Package> packages)
         {
-            if(packages == null)
+            if (packages == null)
             {
                 packages = new List<Package>();
             }
 
-            var imports = packages.Select(x => x.Name).ToList();
+            List<string> imports = packages.Select(x => x.Name).ToList();
             if (!imports.Contains("java.lang.*"))
             {
                 imports.Add("java.lang.*");
@@ -92,10 +91,10 @@ namespace JavaCompiler.Reflection.Loaders
 
             return imports.OrderBy(x => x).ToList();
         }
+
         private static string GetCacheKey(string s, IEnumerable<string> imports)
         {
             return imports.Aggregate(s, (s1, s2) => s1 + ";" + s2);
         }
-
     }
 }

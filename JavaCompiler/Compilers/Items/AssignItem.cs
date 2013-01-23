@@ -4,9 +4,10 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class AssignItem : Item
+    internal class AssignItem : Item
     {
         private readonly Item lhs;
+
         public AssignItem(ByteCodeGenerator generator, Item lhs)
             : base(generator, lhs.Type)
         {

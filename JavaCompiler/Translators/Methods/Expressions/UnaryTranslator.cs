@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class UnaryTranslator
     {
         private readonly ITree node;
+
         public UnaryTranslator(ITree node)
         {
             Debug.Assert(node.IsUnaryExpression());

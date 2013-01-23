@@ -22,50 +22,49 @@ namespace JavaCompiler.Reflection.Loaders
         {
             var reader = new EndianBinaryReader(EndianBitConverter.Big, stream);
 
-            var magic = reader.ReadInt32();
+            int magic = reader.ReadInt32();
 
-            var minorVersion = reader.ReadInt16();
-            var majorVersion = reader.ReadInt16();
+            short minorVersion = reader.ReadInt16();
+            short majorVersion = reader.ReadInt16();
 
-            var constants = ReadConstants(reader);
+            CompileConstant[] constants = ReadConstants(reader);
 
-            var modifiers = (ClassModifier)reader.ReadInt16();
+            var modifiers = (ClassModifier) reader.ReadInt16();
 
-            var thisClass = reader.ReadInt16();
-            var superClass = reader.ReadInt16();
+            short thisClass = reader.ReadInt16();
+            short superClass = reader.ReadInt16();
 
-            var interfaces = ReadInterfaces(reader);
-            var fields = ReadFields(reader, constants);
-            var methods = ReadMethods(reader, constants);
-            var attributes = ReadAttributes(reader, constants);
+            IEnumerable<short> interfaces = ReadInterfaces(reader);
+            IEnumerable<CompileFieldInfo> fields = ReadFields(reader, constants);
+            IEnumerable<CompileMethodInfo> methods = ReadMethods(reader, constants);
+            CompileAttribute[] attributes = ReadAttributes(reader, constants);
 
             var c = new Class
-            {
-                Name = GetClass(thisClass, constants).Name,
-                Modifiers = modifiers,
-
-                Super = (superClass == 0 ? null : GetClass(superClass, constants)) as Class
-            };
+                        {
+                            Name = GetClass(thisClass, constants).Name,
+                            Modifiers = modifiers,
+                            Super = (superClass == 0 ? null : GetClass(superClass, constants)) as Class
+                        };
 
             c.Interfaces.AddRange(interfaces.Select(x => GetClass(x, constants)).OfType<Interface>());
             c.Fields.AddRange(fields.Select(x => GetField(c, x, constants)));
 
-            var javaMethods = methods.Select(x => GetMethod(c, x, constants)).ToList();
+            List<Method> javaMethods = methods.Select(x => GetMethod(c, x, constants)).ToList();
 
             c.Methods.AddRange(javaMethods.Where(x => x.Name != "<init>"));
-            c.Constructors.AddRange(javaMethods.Where(x => x.Name == "<init>").Select(x => (Constructor)x));
+            c.Constructors.AddRange(javaMethods.Where(x => x.Name == "<init>").Select(x => (Constructor) x));
 
             return c;
         }
 
         private static CompileConstant[] ReadConstants(EndianBinaryReader reader)
         {
-            var constantCount = reader.ReadInt16();
+            short constantCount = reader.ReadInt16();
             var constants = new CompileConstant[constantCount];
 
-            for (var i = 1; i < constantCount; i++)
+            for (int i = 1; i < constantCount; i++)
             {
-                var tag = (CompileConstants)reader.ReadByte();
+                var tag = (CompileConstants) reader.ReadByte();
                 switch (tag)
                 {
                     case CompileConstants.Class:
@@ -119,28 +118,30 @@ namespace JavaCompiler.Reflection.Loaders
 
             return constants;
         }
-        private static short[] ReadInterfaces(EndianBinaryReader reader)
+
+        private static IEnumerable<short> ReadInterfaces(EndianBinaryReader reader)
         {
-            var interfaceCount = reader.ReadInt16();
+            short interfaceCount = reader.ReadInt16();
             var interfaces = new short[interfaceCount];
 
-            for (var i = 0; i < interfaceCount; i++)
+            for (int i = 0; i < interfaceCount; i++)
             {
                 interfaces[i] = reader.ReadInt16();
             }
 
             return interfaces;
         }
-        private static CompileFieldInfo[] ReadFields(EndianBinaryReader reader, CompileConstant[] constants)
+
+        private static IEnumerable<CompileFieldInfo> ReadFields(EndianBinaryReader reader, CompileConstant[] constants)
         {
-            var fieldCount = reader.ReadInt16();
+            short fieldCount = reader.ReadInt16();
             var fields = new CompileFieldInfo[fieldCount];
 
-            for (var i = 0; i < fieldCount; i++)
+            for (int i = 0; i < fieldCount; i++)
             {
                 var field = new CompileFieldInfo();
 
-                field.Modifiers = (Modifier)reader.ReadInt16();
+                field.Modifiers = (Modifier) reader.ReadInt16();
                 field.Name = reader.ReadInt16();
                 field.Descriptor = reader.ReadInt16();
 
@@ -151,16 +152,17 @@ namespace JavaCompiler.Reflection.Loaders
 
             return fields;
         }
-        private static CompileMethodInfo[] ReadMethods(EndianBinaryReader reader, CompileConstant[] constants)
+
+        private static IEnumerable<CompileMethodInfo> ReadMethods(EndianBinaryReader reader, CompileConstant[] constants)
         {
-            var methodCount = reader.ReadInt16();
+            short methodCount = reader.ReadInt16();
             var methods = new CompileMethodInfo[methodCount];
 
-            for (var i = 0; i < methodCount; i++)
+            for (int i = 0; i < methodCount; i++)
             {
                 var method = new CompileMethodInfo();
 
-                method.Modifiers = (Modifier)reader.ReadInt16();
+                method.Modifiers = (Modifier) reader.ReadInt16();
                 method.Name = reader.ReadInt16();
                 method.Descriptor = reader.ReadInt16();
 
@@ -171,12 +173,13 @@ namespace JavaCompiler.Reflection.Loaders
 
             return methods;
         }
+
         private static CompileAttribute[] ReadAttributes(EndianBinaryReader reader, CompileConstant[] constants)
         {
-            var attributeCount = reader.ReadInt16();
+            short attributeCount = reader.ReadInt16();
             var attributes = new CompileAttribute[attributeCount];
 
-            for (var i = 0; i < attributeCount; i++)
+            for (int i = 0; i < attributeCount; i++)
             {
                 attributes[i] = CompileAttribute.ReadAttribute(reader, constants);
             }
@@ -187,29 +190,27 @@ namespace JavaCompiler.Reflection.Loaders
         public static Field GetField(Class c, CompileFieldInfo field, CompileConstant[] constants)
         {
             return new Field
-            {
-                DeclaringType = c,
-
-                Name = GetUtf8(field.Name, constants),
-                Modifiers = field.Modifiers,
-
-                ReturnType = GetType(field.Descriptor, constants),
-            };
+                       {
+                           DeclaringType = c,
+                           Name = GetUtf8(field.Name, constants),
+                           Modifiers = field.Modifiers,
+                           ReturnType = GetType(field.Descriptor, constants),
+                       };
         }
+
         public static Method GetMethod(Class c, CompileMethodInfo method, CompileConstant[] constants)
         {
             var m = new Method
-            {
-                DeclaringType = c,
+                        {
+                            DeclaringType = c,
+                            Name = GetUtf8(method.Name, constants),
+                            Modifiers = method.Modifiers,
+                        };
 
-                Name = GetUtf8(method.Name, constants),
-                Modifiers = method.Modifiers,
-            };
+            string methodDescriptor = GetUtf8(method.Descriptor, constants);
+            Tuple<List<Type>, Type> methodTypes = GetMethodTypeFromDescriptor(methodDescriptor);
 
-            var methodDescriptor = GetUtf8(method.Descriptor, constants);
-            var methodTypes = GetMethodTypeFromDescriptor(methodDescriptor);
-
-            m.Parameters.AddRange(methodTypes.Item1.Select(x => new Method.Parameter { Type = x }));
+            m.Parameters.AddRange(methodTypes.Item1.Select(x => new Method.Parameter {Type = x}));
             m.ReturnType = methodTypes.Item2;
 
             return m;
@@ -217,10 +218,11 @@ namespace JavaCompiler.Reflection.Loaders
 
         private static Type GetType(short p, CompileConstant[] constants)
         {
-            var descriptor = GetUtf8(p, constants);
+            string descriptor = GetUtf8(p, constants);
 
             return GetTypeFromDescriptor(descriptor);
         }
+
         private static Type GetTypeFromDescriptor(string descriptor)
         {
             if (descriptor.Length == 1)
@@ -250,24 +252,29 @@ namespace JavaCompiler.Reflection.Loaders
                 }
             }
 
-            var arrayDimensions = descriptor.TakeWhile(x => x == '[').Count();
+            int arrayDimensions = descriptor.TakeWhile(x => x == '[').Count();
             descriptor = new string(descriptor.SkipWhile(x => x == '[').ToArray());
 
             if (descriptor.Length == 1)
             {
-                var primType = GetTypeFromDescriptor(descriptor);
+                Type primType = GetTypeFromDescriptor(descriptor);
 
-                return new Type { ArrayDimensions = arrayDimensions, Name = primType.Name };
+                return new Type {ArrayDimensions = arrayDimensions, Name = primType.Name};
             }
 
             if (descriptor[0] != 'L') throw new ArgumentException();
             if (descriptor[descriptor.Length - 1] != ';') throw new ArgumentException();
 
-            return new PlaceholderType { ArrayDimensions = arrayDimensions, Name = descriptor.Replace('/', '.').Substring(1, descriptor.Length - 2) };
+            return new PlaceholderType
+                       {
+                           ArrayDimensions = arrayDimensions,
+                           Name = descriptor.Replace('/', '.').Substring(1, descriptor.Length - 2)
+                       };
         }
+
         private static Tuple<List<Type>, Type> GetMethodTypeFromDescriptor(string descriptor)
         {
-            var i = 0;
+            int i = 0;
             if (descriptor[i++] != '(') throw new ArgumentException();
 
             var parameterTypes = new List<Type>();
@@ -284,30 +291,30 @@ namespace JavaCompiler.Reflection.Loaders
                     case 'J':
                     case 'S':
                     case 'Z':
-                        parameterTypes.Add(GetTypeFromDescriptor(new string(new[] { descriptor[i - 1] })));
+                        parameterTypes.Add(GetTypeFromDescriptor(new string(new[] {descriptor[i - 1]})));
                         break;
                     case 'L':
                         {
-                            var typeName = "";
+                            string typeName = "";
                             while (descriptor[i] != ';')
                             {
                                 typeName += descriptor[i++];
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderType { Name = typeName });
+                            parameterTypes.Add(new PlaceholderType {Name = typeName});
                         }
                         break;
                     case '[':
                         {
-                            var arrayDimensions = 1;
+                            int arrayDimensions = 1;
                             while (descriptor[i] == '[')
                             {
                                 arrayDimensions++;
                                 i++;
                             }
 
-                            var typeName = "";
+                            string typeName = "";
 
                             if (descriptor[i] == 'L')
                             {
@@ -318,41 +325,41 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             else
                             {
-                                typeName = GetTypeFromDescriptor(new string(new[] { descriptor[i] })).Name;
+                                typeName = GetTypeFromDescriptor(new string(new[] {descriptor[i]})).Name;
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderType { Name = typeName, ArrayDimensions = arrayDimensions });
+                            parameterTypes.Add(new PlaceholderType {Name = typeName, ArrayDimensions = arrayDimensions});
                         }
                         break;
                     default:
                         throw new NotImplementedException();
                 }
-
             }
 
             if (descriptor[i++] != ')') throw new ArgumentException();
 
-            var returnType = GetTypeFromDescriptor(descriptor.Substring(i));
+            Type returnType = GetTypeFromDescriptor(descriptor.Substring(i));
 
             return new Tuple<List<Type>, Type>(parameterTypes, returnType);
         }
 
         private static DefinedType GetClass(short index, CompileConstant[] constants)
         {
-            var constant = constants[index];
+            CompileConstant constant = constants[index];
 
             var compileConstantClass = constant as CompileConstantClass;
             if (compileConstantClass != null)
             {
-                return new PlaceholderType { Name = GetUtf8(compileConstantClass.NameIndex, constants) };
+                return new PlaceholderType {Name = GetUtf8(compileConstantClass.NameIndex, constants)};
             }
 
             throw new InvalidOperationException();
         }
+
         private static string GetUtf8(short index, CompileConstant[] constants)
         {
-            var constant = constants[index];
+            CompileConstant constant = constants[index];
 
             var compileConstantUtf8 = constant as CompileConstantUtf8;
             if (compileConstantUtf8 != null)

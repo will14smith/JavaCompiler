@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators
     public class ModifierListTranslator
     {
         private readonly ITree node;
+
         public ModifierListTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.MODIFIER_LIST);
+            Debug.Assert(node.Type == (int) JavaNodeType.MODIFIER_LIST);
 
             this.node = node;
         }
@@ -19,7 +20,7 @@ namespace JavaCompiler.Translators
         {
             var modifier = Modifier.None;
 
-            for (var i = 0; i < node.ChildCount; i++)
+            for (int i = 0; i < node.ChildCount; i++)
             {
                 modifier |= ConvertNode(node.GetChild(i));
             }
@@ -29,7 +30,7 @@ namespace JavaCompiler.Translators
 
         private static Modifier ConvertNode(ITree node)
         {
-            switch ((JavaNodeType)node.Type)
+            switch ((JavaNodeType) node.Type)
             {
                 case JavaNodeType.PUBLIC:
                     return Modifier.Public;

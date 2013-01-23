@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
 
@@ -8,9 +7,10 @@ namespace JavaCompiler.Translators
     public class ProgramTranslator
     {
         private readonly ITree node;
+
         public ProgramTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.JAVA_SOURCE);
+            Debug.Assert(node.Type == (int) JavaNodeType.JAVA_SOURCE);
 
             this.node = node;
         }
@@ -19,19 +19,19 @@ namespace JavaCompiler.Translators
         {
             var program = new Program();
 
-            var annotationList = node.GetChild(0);
+            ITree annotationList = node.GetChild(0);
 
-            var i = 1;
-            var child = node.GetChild(i++);
+            int i = 1;
+            ITree child = node.GetChild(i++);
 
             // package decl?
-            if ((JavaNodeType)child.Type == JavaNodeType.PACKAGE)
+            if ((JavaNodeType) child.Type == JavaNodeType.PACKAGE)
             {
                 child = node.GetChild(i++);
             }
 
             // import decl*
-            if ((JavaNodeType)child.Type == JavaNodeType.IMPORT)
+            if ((JavaNodeType) child.Type == JavaNodeType.IMPORT)
             {
                 child = node.GetChild(i);
             }

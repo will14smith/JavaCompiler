@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class VariableInitialiserCompiler
     {
         private readonly VariableInitialiserNode node;
+
         public VariableInitialiserCompiler(VariableInitialiserNode node)
         {
             this.node = node;

@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class AdditiveTranslator
     {
         private readonly ITree node;
+
         public AdditiveTranslator(ITree node)
         {
             Debug.Assert(node.IsAdditiveExpression());
@@ -22,10 +23,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
             switch (node.Type)
             {
-                case (int)JavaNodeType.PLUS:
+                case (int) JavaNodeType.PLUS:
                     additiveNode = new AdditiveNode.AdditivePlusNode();
                     break;
-                case (int)JavaNodeType.MINUS:
+                case (int) JavaNodeType.MINUS:
                     additiveNode = new AdditiveNode.AdditiveMinusNode();
                     break;
                 default:

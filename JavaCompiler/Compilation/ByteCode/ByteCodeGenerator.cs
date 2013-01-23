@@ -11,13 +11,8 @@ namespace JavaCompiler.Compilation.ByteCode
 {
     public class ByteCodeGenerator
     {
-        public CompileManager Manager { get; private set; }
-        public Method Method { get; private set; }
-
-        public Item[] StackItem { get; private set; }
-
-        private int length;
         private byte[] byteCodeStream;
+        private int length;
 
         public ByteCodeGenerator(CompileManager manager, Method method)
         {
@@ -34,12 +29,14 @@ namespace JavaCompiler.Compilation.ByteCode
             variableList = new Variable[256];
             variableListStack = new Stack<Tuple<int, Variable[]>>();
 
-            StackItem = new Item[(int)ItemTypeCode.TypeCodeCount];
-            for (var i = 0; i < (int)ItemTypeCode.Void; i++) StackItem[i] = new StackItem(this, TypeCodeHelper.Type((ItemTypeCode)i));
-            StackItem[(int)ItemTypeCode.Void] = new VoidItem(this);
+            StackItem = new Item[(int) ItemTypeCode.TypeCodeCount];
+            for (int i = 0; i < (int) ItemTypeCode.Void; i++)
+                StackItem[i] = new StackItem(this, TypeCodeHelper.Type((ItemTypeCode) i));
+            StackItem[(int) ItemTypeCode.Void] = new VoidItem(this);
         }
 
         #region Labels
+
         private int labelCount;
         private int[] labelList;
 
@@ -58,9 +55,10 @@ namespace JavaCompiler.Compilation.ByteCode
 
             return new Label(labelCount++);
         }
+
         public virtual void MarkLabel(Label loc)
         {
-            var labelValue = loc.GetLabelValue();
+            int labelValue = loc.GetLabelValue();
 
             if (labelValue < 0 || labelValue >= labelList.Length)
             {
@@ -75,20 +73,23 @@ namespace JavaCompiler.Compilation.ByteCode
         }
 
         #endregion
+
         #region Variables
+
+        private readonly Stack<Tuple<int, Variable[]>> variableListStack;
         private int variableCount;
         private Variable[] variableList;
-        private Stack<Tuple<int, Variable[]>> variableListStack;
 
         public void PushVariables()
         {
             variableListStack.Push(new Tuple<int, Variable[]>(variableCount, variableList));
 
-            variableList = (Variable[])variableList.Clone();
+            variableList = (Variable[]) variableList.Clone();
         }
+
         public void PopVariables()
         {
-            var vars = variableListStack.Pop();
+            Tuple<int, Variable[]> vars = variableListStack.Pop();
 
             variableCount = vars.Item1;
             variableList = vars.Item2;
@@ -101,15 +102,17 @@ namespace JavaCompiler.Compilation.ByteCode
 
         public Variable DefineVariable(string name, Type type)
         {
-            if (variableCount >= variableList.Length) throw new StackOverflowException("Cannot define any more local variables!");
+            if (variableCount >= variableList.Length)
+                throw new StackOverflowException("Cannot define any more local variables!");
 
-            var index = FindFreeVariableIndex();
+            short index = FindFreeVariableIndex();
 
             variableList[index] = new Variable(index, name, type);
             variableCount++;
 
             return variableList[index];
         }
+
         private short FindFreeVariableIndex()
         {
             // starts at 1 because variable 0 is usually "this"
@@ -127,21 +130,26 @@ namespace JavaCompiler.Compilation.ByteCode
         {
             UndefineVariable(GetVariable(name).Index);
         }
+
         public void UndefineVariable(Variable variable)
         {
             UndefineVariable(variable.Index);
         }
+
         public void UndefineVariable(int index)
         {
-            if (index < 0 && index > variableList.Length) throw new ArgumentException("index is greater than max", "index");
+            if (index < 0 && index > variableList.Length)
+                throw new ArgumentException("index is greater than max", "index");
 
             variableList[index] = null;
 
             variableCount--;
         }
+
         #endregion
 
         #region Emit
+
         public virtual void Emit(OpCode opcode)
         {
             Debug.Assert(
@@ -152,6 +160,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             InternalEmit(opcode.Value);
         }
+
         public virtual void Emit(OpCode opcode, byte b)
         {
             Debug.Assert(
@@ -164,6 +173,7 @@ namespace JavaCompiler.Compilation.ByteCode
             InternalEmit(opcode.Value);
             byteCodeStream[length++] = b;
         }
+
         public virtual void Emit(OpCode opcode, byte b1, byte b2)
         {
             Debug.Assert(opcode.Mode == OpCodeMode.Local_1_Immediate_1);
@@ -174,6 +184,7 @@ namespace JavaCompiler.Compilation.ByteCode
             byteCodeStream[length++] = b1;
             byteCodeStream[length++] = b2;
         }
+
         public virtual void Emit(OpCode opcode, short s)
         {
             Debug.Assert(
@@ -183,9 +194,10 @@ namespace JavaCompiler.Compilation.ByteCode
             EnsureCapacity(3);
 
             InternalEmit(opcode.Value);
-            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s & 0xff);
+            byteCodeStream[length++] = (byte) ((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s & 0xff);
         }
+
         public virtual void Emit(OpCode opcode, short s, byte b)
         {
             Debug.Assert(opcode.Mode == OpCodeMode.Constant_2_Immediate_1);
@@ -193,10 +205,11 @@ namespace JavaCompiler.Compilation.ByteCode
             EnsureCapacity(4);
 
             InternalEmit(opcode.Value);
-            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s & 0xff);
+            byteCodeStream[length++] = (byte) ((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s & 0xff);
             byteCodeStream[length++] = b;
         }
+
         public virtual void Emit(OpCode opcode, short s, byte b1, byte b2)
         {
             Debug.Assert(opcode.Mode == OpCodeMode.Constant_2_1_1);
@@ -204,11 +217,12 @@ namespace JavaCompiler.Compilation.ByteCode
             EnsureCapacity(5);
 
             InternalEmit(opcode.Value);
-            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s & 0xff);
+            byteCodeStream[length++] = (byte) ((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s & 0xff);
             byteCodeStream[length++] = b1;
             byteCodeStream[length++] = b2;
         }
+
         public virtual void Emit(OpCode opcode, Label l)
         {
             Debug.Assert(
@@ -217,17 +231,17 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(opcode.Mode == OpCodeMode.Branch_2 ? 3 : 5);
 
-            var labelValue = l.GetLabelValue();
-            var i = labelList[labelValue];
+            int labelValue = l.GetLabelValue();
+            int i = labelList[labelValue];
 
             InternalEmit(opcode.Value);
             if (opcode.Mode == OpCodeMode.Branch_4)
             {
-                byteCodeStream[length++] = (byte)((i >> 24) & 0xff);
-                byteCodeStream[length++] = (byte)((i >> 16) & 0xff);
+                byteCodeStream[length++] = (byte) ((i >> 24) & 0xff);
+                byteCodeStream[length++] = (byte) ((i >> 16) & 0xff);
             }
-            byteCodeStream[length++] = (byte)((i >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(i & 0xff);
+            byteCodeStream[length++] = (byte) ((i >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (i & 0xff);
         }
 
         public virtual void EmitWide(OpCode opcode, short s)
@@ -238,10 +252,10 @@ namespace JavaCompiler.Compilation.ByteCode
 
             InternalEmit(OpCodes.wide.Value);
             InternalEmit(opcode.Value);
-            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s & 0xff);
-
+            byteCodeStream[length++] = (byte) ((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s & 0xff);
         }
+
         public virtual void EmitWide(OpCode opcode, short s1, short s2)
         {
             Debug.Assert(opcode.WideMode == OpCodeModeWide.Local_2_Immediate_2);
@@ -250,31 +264,34 @@ namespace JavaCompiler.Compilation.ByteCode
 
             InternalEmit(OpCodes.wide.Value);
             InternalEmit(opcode.Value);
-            byteCodeStream[length++] = (byte)((s1 >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s1 & 0xff);
-            byteCodeStream[length++] = (byte)((s2 >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s2 & 0xff);
+            byteCodeStream[length++] = (byte) ((s1 >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s1 & 0xff);
+            byteCodeStream[length++] = (byte) ((s2 >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s2 & 0xff);
         }
 
         internal void InternalEmit(OpCodeValue opcode)
         {
             EnsureCapacity(1);
 
-            byteCodeStream[length++] = (byte)opcode;
+            byteCodeStream[length++] = (byte) opcode;
         }
+
         internal void InternalEmitByte(byte b)
         {
             EnsureCapacity(1);
 
             byteCodeStream[length++] = b;
         }
+
         internal void InternalEmitShort(short s)
         {
             EnsureCapacity(2);
 
-            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
-            byteCodeStream[length++] = (byte)(s & 0xff);
+            byteCodeStream[length++] = (byte) ((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte) (s & 0xff);
         }
+
         #endregion
 
         #region Output
@@ -291,9 +308,10 @@ namespace JavaCompiler.Compilation.ByteCode
         #endregion
 
         #region Stack
-        private int maxStackSize;
+
         private int maxMidStack;
         private int maxMidStackCur;
+        private int maxStackSize;
 
         internal void UpdateStackSize(OpCode opcode, int stackchange)
         {
@@ -316,25 +334,29 @@ namespace JavaCompiler.Compilation.ByteCode
             //    maxMidStackCur = 0;
             //}
         }
+
         #endregion
 
         #region Helpers
+
         internal static int[] EnlargeArray(int[] incoming)
         {
-            var array = new int[incoming.Length * 2];
+            var array = new int[incoming.Length*2];
 
             Array.Copy(incoming, array, incoming.Length);
 
             return array;
         }
+
         internal static byte[] EnlargeArray(byte[] incoming)
         {
-            var array = new byte[incoming.Length * 2];
+            var array = new byte[incoming.Length*2];
 
             Array.Copy(incoming, array, incoming.Length);
 
             return array;
         }
+
         internal static byte[] EnlargeArray(byte[] incoming, int requiredSize)
         {
             var array = new byte[requiredSize];
@@ -348,7 +370,7 @@ namespace JavaCompiler.Compilation.ByteCode
         {
             if (length + size < byteCodeStream.Length) return;
 
-            if (length + size >= 2 * byteCodeStream.Length)
+            if (length + size >= 2*byteCodeStream.Length)
             {
                 byteCodeStream = EnlargeArray(byteCodeStream, length + size);
                 return;
@@ -358,5 +380,10 @@ namespace JavaCompiler.Compilation.ByteCode
         }
 
         #endregion
+
+        public CompileManager Manager { get; private set; }
+        public Method Method { get; private set; }
+
+        public Item[] StackItem { get; private set; }
     }
 }

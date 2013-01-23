@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection

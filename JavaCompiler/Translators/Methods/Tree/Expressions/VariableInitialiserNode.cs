@@ -2,9 +2,5 @@
 {
     public class VariableInitialiserNode : ExpressionNode
     {
-        public override void ValidateType()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

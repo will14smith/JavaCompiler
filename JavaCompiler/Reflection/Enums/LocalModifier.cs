@@ -2,7 +2,10 @@
 {
     public class LocalModifier
     {
-        public static LocalModifier FINAL { get { return new LocalModifier {IsFinal = true}; } }
+        public static LocalModifier Final
+        {
+            get { return new LocalModifier {IsFinal = true}; }
+        }
 
         public bool IsFinal { get; set; }
     }

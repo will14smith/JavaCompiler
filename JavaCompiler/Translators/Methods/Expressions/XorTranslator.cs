@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class XorTranslator
     {
         private readonly ITree node;
+
         public XorTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.XOR);
+            Debug.Assert(node.Type == (int) JavaNodeType.XOR);
 
             this.node = node;
         }

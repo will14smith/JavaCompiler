@@ -2,13 +2,6 @@
 {
     public class OpCode
     {
-        public OpCodeValue Value { get; private set; }
-
-        public OpCodeMode Mode { get; private set; }
-        public OpCodeModeWide WideMode { get; private set; }
-        public NormalizedOpCodeValues NormalizedValue { get; private set; }
-        public OpCodeFlags Flags { get; private set; }
-
         private readonly int arg;
 
         internal OpCode(OpCodeValue bc, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
@@ -16,12 +9,14 @@
         {
         }
 
-        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, OpCodeMode reg, OpCodeModeWide wide,
+                        bool cannotThrow)
             : this(bc, normalizedValue, 0, reg, wide, cannotThrow)
         {
         }
 
-        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, int arg, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, int arg, OpCodeMode reg,
+                        OpCodeModeWide wide, bool cannotThrow)
         {
             Value = bc;
             Mode = reg;
@@ -29,12 +24,19 @@
             NormalizedValue = normalizedValue;
 
             this.arg = arg;
-            this.Flags = OpCodeFlags.FixedArg;
+            Flags = OpCodeFlags.FixedArg;
             if (cannotThrow)
             {
-                this.Flags |= OpCodeFlags.CannotThrow;
+                Flags |= OpCodeFlags.CannotThrow;
             }
         }
+
+        public OpCodeValue Value { get; private set; }
+
+        public OpCodeMode Mode { get; private set; }
+        public OpCodeModeWide WideMode { get; private set; }
+        public NormalizedOpCodeValues NormalizedValue { get; private set; }
+        public OpCodeFlags Flags { get; private set; }
 
         internal int GetArg(OpCode bc, int defaultArg)
         {
@@ -126,6 +128,5 @@
                     return false;
             }
         }
-
     }
 }

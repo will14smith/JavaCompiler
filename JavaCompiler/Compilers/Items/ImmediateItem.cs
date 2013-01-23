@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
@@ -9,7 +6,7 @@ using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class ImmediateItem : Item
+    internal class ImmediateItem : Item
     {
         private readonly object value;
 
@@ -29,19 +26,19 @@ namespace JavaCompiler.Compilers.Items
                 case ItemTypeCode.Char:
                 case ItemTypeCode.Short:
                 case ItemTypeCode.Int:
-                    index = Generator.Manager.AddConstantInteger((int)value);
+                    index = Generator.Manager.AddConstantInteger((int) value);
                     break;
                 case ItemTypeCode.Float:
-                    index = Generator.Manager.AddConstantFloat((float)value);
+                    index = Generator.Manager.AddConstantFloat((float) value);
                     break;
                 case ItemTypeCode.Long:
-                    index = Generator.Manager.AddConstantLong((long)value);
+                    index = Generator.Manager.AddConstantLong((long) value);
                     break;
                 case ItemTypeCode.Double:
-                    index = Generator.Manager.AddConstantDouble((double)value);
+                    index = Generator.Manager.AddConstantDouble((double) value);
                     break;
                 case ItemTypeCode.Object:
-                    index = Generator.Manager.AddConstantString((string)value);
+                    index = Generator.Manager.AddConstantString((string) value);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -53,7 +50,7 @@ namespace JavaCompiler.Compilers.Items
             }
             else if (index <= 255)
             {
-                Generator.Emit(OpCodes.ldc, (byte)index);
+                Generator.Emit(OpCodes.ldc, (byte) index);
             }
             else
             {
@@ -69,19 +66,19 @@ namespace JavaCompiler.Compilers.Items
                 case ItemTypeCode.Byte:
                 case ItemTypeCode.Short:
                 case ItemTypeCode.Char:
-                    var ival = (int)value;
+                    var ival = (int) value;
 
                     if (-1 <= ival && ival <= 5)
                     {
-                        Generator.InternalEmit(OpCodeValue.iconst_0 + (byte)ival);
+                        Generator.InternalEmit(OpCodeValue.iconst_0 + (byte) ival);
                     }
                     else if (byte.MinValue <= ival && ival <= byte.MaxValue)
                     {
-                        Generator.Emit(OpCodes.bipush, (byte)ival);
+                        Generator.Emit(OpCodes.bipush, (byte) ival);
                     }
                     else if (short.MinValue <= ival && ival <= short.MaxValue)
                     {
-                        Generator.Emit(OpCodes.sipush, (short)ival);
+                        Generator.Emit(OpCodes.sipush, (short) ival);
                     }
                     else
                     {
@@ -89,11 +86,11 @@ namespace JavaCompiler.Compilers.Items
                     }
                     break;
                 case ItemTypeCode.Long:
-                    var lval = (long)value;
+                    var lval = (long) value;
 
                     if (lval == 0 || lval == 1)
                     {
-                        Generator.InternalEmit(OpCodeValue.lconst_0 + (byte)lval);
+                        Generator.InternalEmit(OpCodeValue.lconst_0 + (byte) lval);
                     }
                     else
                     {
@@ -101,10 +98,10 @@ namespace JavaCompiler.Compilers.Items
                     }
                     break;
                 case ItemTypeCode.Float:
-                    var fval = (float)value;
+                    var fval = (float) value;
                     if (fval == 0.0f || fval == 1.0f || fval == 2.0f)
                     {
-                        Generator.InternalEmit(OpCodeValue.fconst_0 + (byte)fval);
+                        Generator.InternalEmit(OpCodeValue.fconst_0 + (byte) fval);
                     }
                     else
                     {
@@ -112,11 +109,11 @@ namespace JavaCompiler.Compilers.Items
                     }
                     break;
                 case ItemTypeCode.Double:
-                    var dval = (double)value;
+                    var dval = (double) value;
 
                     if (dval == 0.0d || dval == 1.0d)
                     {
-                        Generator.InternalEmit(OpCodeValue.dconst_0 + (byte)dval);
+                        Generator.InternalEmit(OpCodeValue.dconst_0 + (byte) dval);
                     }
                     else
                     {
@@ -130,7 +127,7 @@ namespace JavaCompiler.Compilers.Items
                     throw new NotImplementedException();
             }
 
-            return StackItem[(int)TypeCode];
+            return StackItem[(int) TypeCode];
         }
 
         public override Item Coerce(ItemTypeCode targetCode)
@@ -148,19 +145,19 @@ namespace JavaCompiler.Compilers.Items
                         return this;
                     }
 
-                    return new ImmediateItem(Generator, PrimativeTypes.Int, (int)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Int, (int) value);
                 case ItemTypeCode.Long:
-                    return new ImmediateItem(Generator, PrimativeTypes.Long, (long)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Long, (long) value);
                 case ItemTypeCode.Float:
-                    return new ImmediateItem(Generator, PrimativeTypes.Float, (float)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Float, (float) value);
                 case ItemTypeCode.Double:
-                    return new ImmediateItem(Generator, PrimativeTypes.Double, (double)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Double, (double) value);
                 case ItemTypeCode.Byte:
-                    return new ImmediateItem(Generator, PrimativeTypes.Byte, (byte)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Byte, (byte) value);
                 case ItemTypeCode.Char:
-                    return new ImmediateItem(Generator, PrimativeTypes.Char, (char)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Char, (char) value);
                 case ItemTypeCode.Short:
-                    return new ImmediateItem(Generator, PrimativeTypes.Short, (short)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Short, (short) value);
                 default:
                     return base.Coerce(targetCode);
             }

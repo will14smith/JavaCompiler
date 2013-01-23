@@ -10,35 +10,33 @@ namespace JavaCompiler.Translators
 {
     public class ClassTranslator
     {
+        private readonly ITree node;
         private Class @class;
 
-        private readonly ITree node;
         public ClassTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.CLASS);
+            Debug.Assert(node.Type == (int) JavaNodeType.CLASS);
 
             this.node = node;
         }
 
         public Class Walk()
         {
-            @class = new Class();
+            @class = new Class
+                         {
+                             Modifiers = new ClassModifierListTranslator(node.GetChild(0)).Walk(),
+                             Name = new IdentifierTranslator(node.GetChild(1)).Walk()
+                         };
 
-            // modifiers
-            @class.Modifiers = new ClassModifierListTranslator(node.GetChild(0)).Walk();
+            int i = 2;
+            ITree child = node.GetChild(i++);
 
-            // name
-            @class.Name = new IdentifierTranslator(node.GetChild(1)).Walk();
-
-            var i = 2;
-            var child = node.GetChild(i++);
-
-            if ((JavaNodeType)child.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
+            if ((JavaNodeType) child.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
             {
                 child = node.GetChild(i++);
             }
 
-            if ((JavaNodeType)child.Type == JavaNodeType.EXTENDS_CLAUSE)
+            if ((JavaNodeType) child.Type == JavaNodeType.EXTENDS_CLAUSE)
             {
                 @class.Super = new TypeTranslator(child.GetChild(0)).Walk() as Class;
 
@@ -46,21 +44,21 @@ namespace JavaCompiler.Translators
             }
             else
             {
-                @class.Super = new PlaceholderType { Name = "java.lang.Object" };
+                @class.Super = new PlaceholderType {Name = "java.lang.Object"};
             }
 
-            if ((JavaNodeType)child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
+            if ((JavaNodeType) child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
             {
                 child = node.GetChild(i);
             }
 
-            var body = child;
+            ITree body = child;
 
             WalkBody(body);
 
             if (@class.Constructors.Count == 0)
             {
-                @class.Constructors.Add(new Constructor { DeclaringType = @class, Body = new MethodTree() });
+                @class.Constructors.Add(new Constructor {DeclaringType = @class, Body = new MethodTree()});
             }
 
             return @class;
@@ -68,13 +66,13 @@ namespace JavaCompiler.Translators
 
         public void WalkBody(ITree body)
         {
-            Debug.Assert(body.Type == (int)JavaNodeType.CLASS_TOP_LEVEL_SCOPE);
+            Debug.Assert(body.Type == (int) JavaNodeType.CLASS_TOP_LEVEL_SCOPE);
 
-            for (var i = 0; i < body.ChildCount; i++)
+            for (int i = 0; i < body.ChildCount; i++)
             {
-                var child = body.GetChild(i);
+                ITree child = body.GetChild(i);
 
-                switch ((JavaNodeType)child.Type)
+                switch ((JavaNodeType) child.Type)
                 {
                     case JavaNodeType.CLASS_INSTANCE_INITIALIZER:
                         throw new NotImplementedException();
@@ -94,7 +92,7 @@ namespace JavaCompiler.Translators
                     case JavaNodeType.INTERFACE:
                     case JavaNodeType.ENUM:
                     case JavaNodeType.AT:
-                        var type = new TypeDeclarationTranslator(child).Walk();
+                        DefinedType type = new TypeDeclarationTranslator(child).Walk();
 
                         @class.Types.Add(type);
                         break;

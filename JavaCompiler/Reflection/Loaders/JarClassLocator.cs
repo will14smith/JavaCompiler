@@ -6,31 +6,34 @@ using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Reflection.Loaders
 {
-    class JarClassLocator : IClassLocator
+    internal class JarClassLocator : IClassLocator
     {
-        public string JarFile { get; private set; }
         public JarClassLocator(string jarFile)
         {
             JarFile = jarFile;
         }
 
+        public string JarFile { get; private set; }
+
+        #region IClassLocator Members
+
         public List<Type> Search(string s, List<string> imports)
         {
             var zf = new ZipFile(JarFile);
 
-            var classParts = s.Split('.');
-            var classFolder = string.Join("\\", classParts.Take(classParts.Length - 1));
-            var className = classParts.Last() + ".class";
+            string[] classParts = s.Split('.');
+            string classFolder = string.Join("\\", classParts.Take(classParts.Length - 1));
+            string className = classParts.Last() + ".class";
 
-            var isAbsolute = !string.IsNullOrEmpty(classFolder);
+            bool isAbsolute = !string.IsNullOrEmpty(classFolder);
 
             var types = new List<Type>();
             foreach (ZipEntry ze in zf)
             {
                 if (!ze.IsFile) continue;
 
-                var fileName = Path.GetFileName(ze.Name);
-                var directoryName = Path.GetDirectoryName(ze.Name);
+                string fileName = Path.GetFileName(ze.Name);
+                string directoryName = Path.GetDirectoryName(ze.Name);
 
                 if (isAbsolute)
                 {
@@ -48,11 +51,11 @@ namespace JavaCompiler.Reflection.Loaders
                     }
                     else
                     {
-                        foreach (var import in imports)
+                        foreach (string import in imports)
                         {
-                            var importParts = import.Split('.');
-                            var importFolder = string.Join("\\", importParts.Take(importParts.Length - 1));
-                            var importName = importParts.Last();
+                            string[] importParts = import.Split('.');
+                            string importFolder = string.Join("\\", importParts.Take(importParts.Length - 1));
+                            string importName = importParts.Last();
 
                             if (!(importName == "*" || importName + ".class" == className)) continue;
 
@@ -67,5 +70,7 @@ namespace JavaCompiler.Reflection.Loaders
 
             return types;
         }
+
+        #endregion
     }
 }

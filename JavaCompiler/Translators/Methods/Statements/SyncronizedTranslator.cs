@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class SyncronizedTranslator
     {
         private readonly ITree node;
+
         public SyncronizedTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.SYNCHRONIZED);
+            Debug.Assert(node.Type == (int) JavaNodeType.SYNCHRONIZED);
 
             this.node = node;
         }

@@ -8,13 +8,18 @@ namespace JavaCompiler.Reflection.Types
         public virtual string Name { get; set; }
         public int ArrayDimensions { get; set; }
 
-        public virtual bool Primitive { get { return false; } }
+        public virtual bool Primitive
+        {
+            get { return false; }
+        }
+
         public bool Synthetic { get; set; }
 
         public virtual bool IsAssignableTo(Type c)
         {
             return false;
         }
+
         public bool CanAssignTo(Type c)
         {
             return c.IsAssignableTo(this);

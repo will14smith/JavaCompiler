@@ -8,6 +8,7 @@ namespace JavaCompiler.Compilers
     public class ProgramCompiler
     {
         private readonly Program program;
+
         public ProgramCompiler(Program program)
         {
             this.program = program;
@@ -15,11 +16,11 @@ namespace JavaCompiler.Compilers
 
         public byte[] Compile()
         {
-            var type = program.Type;
+            DefinedType type = program.Type;
 
             var manager = new CompileManager();
 
-            manager.Imports.Add(new Package { Name = type.Package == null ? "*" : type.Package.Name + ".*" });
+            manager.Imports.Add(new Package {Name = type.Package == null ? "*" : type.Package.Name + ".*"});
 
             if (type is Class)
             {

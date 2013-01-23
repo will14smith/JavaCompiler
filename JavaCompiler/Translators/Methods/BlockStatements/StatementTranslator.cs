@@ -11,6 +11,7 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
     public class StatementTranslator
     {
         private readonly ITree node;
+
         public StatementTranslator(ITree node)
         {
             Debug.Assert(node.IsStatement());
@@ -30,7 +31,7 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
                 return new ExpressionTranslator(node).Walk();
             }
 
-            switch ((JavaNodeType)node.Type)
+            switch ((JavaNodeType) node.Type)
             {
                 case JavaNodeType.ASSERT:
                     return new AssertTranslator(node).Walk();

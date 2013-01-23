@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class InnerNewCompiler
     {
         private readonly InnerNewNode node;
+
         public InnerNewCompiler(InnerNewNode node)
         {
             this.node = node;

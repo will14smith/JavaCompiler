@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class ConditionalTranslator
     {
         private readonly ITree node;
+
         public ConditionalTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.QUESTION);
+            Debug.Assert(node.Type == (int) JavaNodeType.QUESTION);
 
             this.node = node;
         }
@@ -19,6 +20,5 @@ namespace JavaCompiler.Translators.Methods.Expressions
         {
             throw new NotImplementedException();
         }
-
     }
 }

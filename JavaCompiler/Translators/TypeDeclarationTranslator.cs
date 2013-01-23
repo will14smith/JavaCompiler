@@ -8,20 +8,21 @@ namespace JavaCompiler.Translators
     public class TypeDeclarationTranslator
     {
         private readonly ITree node;
+
         public TypeDeclarationTranslator(ITree node)
         {
             Debug.Assert(
-                node.Type == (int)JavaNodeType.CLASS ||
-                node.Type == (int)JavaNodeType.INTERFACE ||
-                node.Type == (int)JavaNodeType.ENUM ||
-                node.Type == (int)JavaNodeType.AT);
+                node.Type == (int) JavaNodeType.CLASS ||
+                node.Type == (int) JavaNodeType.INTERFACE ||
+                node.Type == (int) JavaNodeType.ENUM ||
+                node.Type == (int) JavaNodeType.AT);
 
             this.node = node;
         }
 
         public DefinedType Walk()
         {
-            switch ((JavaNodeType)node.Type)
+            switch ((JavaNodeType) node.Type)
             {
                 case JavaNodeType.CLASS:
                     return new ClassTranslator(node).Walk();

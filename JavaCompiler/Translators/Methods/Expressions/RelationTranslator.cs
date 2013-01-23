@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class RelationTranslator
     {
         private readonly ITree node;
+
         public RelationTranslator(ITree node)
         {
             Debug.Assert(node.IsRelationalExpression());

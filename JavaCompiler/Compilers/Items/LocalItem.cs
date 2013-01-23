@@ -5,7 +5,7 @@ using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class LocalItem : Item
+    internal class LocalItem : Item
     {
         private readonly short reg;
         private readonly Type type;
@@ -14,6 +14,7 @@ namespace JavaCompiler.Compilers.Items
             : this(generator, localVariable.Type, localVariable.Index)
         {
         }
+
         public LocalItem(ByteCodeGenerator generator, Type type, short reg)
             : base(generator, type)
         {
@@ -25,26 +26,28 @@ namespace JavaCompiler.Compilers.Items
         {
             if (reg <= 3)
             {
-                Generator.InternalEmit((OpCodeValue)((byte)OpCodeValue.iload_0 + (byte)TypeCodeHelper.Truncate(TypeCode) * 4 + reg));
+                Generator.InternalEmit(
+                    (OpCodeValue) ((byte) OpCodeValue.iload_0 + (byte) TypeCodeHelper.Truncate(TypeCode)*4 + reg));
             }
             else
             {
-                Generator.InternalEmit(OpCodeValue.iload + (byte)TypeCodeHelper.Truncate(TypeCode));
+                Generator.InternalEmit(OpCodeValue.iload + (byte) TypeCodeHelper.Truncate(TypeCode));
                 Generator.InternalEmitShort(reg);
             }
 
-            return StackItem[(int)TypeCode];
+            return StackItem[(int) TypeCode];
         }
 
         public override void Store()
         {
             if (reg <= 3)
             {
-                Generator.InternalEmit((OpCodeValue)((byte)OpCodeValue.istore_0 + (byte)TypeCodeHelper.Truncate(TypeCode) * 4 + reg));
+                Generator.InternalEmit(
+                    (OpCodeValue) ((byte) OpCodeValue.istore_0 + (byte) TypeCodeHelper.Truncate(TypeCode)*4 + reg));
             }
             else
             {
-                Generator.InternalEmit(OpCodeValue.istore + (byte)TypeCodeHelper.Truncate(TypeCode));
+                Generator.InternalEmit(OpCodeValue.istore + (byte) TypeCodeHelper.Truncate(TypeCode));
                 Generator.InternalEmitShort(reg);
             }
 

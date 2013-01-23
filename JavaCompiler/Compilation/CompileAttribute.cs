@@ -18,8 +18,8 @@ namespace JavaCompiler.Compilation
 
         public static CompileAttribute ReadAttribute(EndianBinaryReader reader, CompileConstant[] constants)
         {
-            var nameIndex = reader.ReadInt16();
-            var attributeLength = reader.ReadInt32();
+            short nameIndex = reader.ReadInt16();
+            int attributeLength = reader.ReadInt32();
 
             var nameConstant = constants[nameIndex] as CompileConstantUtf8;
             if (nameConstant == null) throw new InvalidOperationException();
@@ -61,14 +61,20 @@ namespace JavaCompiler.Compilation
                 default:
                     throw new NotImplementedException();
             }
-
         }
     }
 
     public class CompileAttributeConstantValue : CompileAttribute
     {
-        public override string Name { get { return "ConstantValue"; } }
-        public override int Length { get { return 2; } }
+        public override string Name
+        {
+            get { return "ConstantValue"; }
+        }
+
+        public override int Length
+        {
+            get { return 2; }
+        }
 
         public short ValueIndex { get; set; }
 
@@ -76,6 +82,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(ValueIndex);
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             ValueIndex = reader.ReadInt16();
@@ -83,18 +90,18 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeCode : CompileAttribute
     {
-        public struct ExceptionTableEntry
+        public override string Name
         {
-            public short StartPC;
-            public short EndPC;
-            public short HandlerPC;
-            public short CatchType;
+            get { return "Code"; }
         }
 
-        public override string Name { get { return "Code"; } }
-        public override int Length { get { return 12 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Sum(x => x.Length); } }
+        public override int Length
+        {
+            get { return 12 + Code.Length + ExceptionTable.Count()*8 + Attributes.Sum(x => x.Length); }
+        }
 
         public short MaxStack { get; set; }
         public short MaxLocals { get; set; }
@@ -111,8 +118,8 @@ namespace JavaCompiler.Compilation
             writer.Write(Code.Length);
             writer.Write(Code);
 
-            writer.Write((short)ExceptionTable.Count());
-            foreach (var ex in ExceptionTable)
+            writer.Write((short) ExceptionTable.Count());
+            foreach (ExceptionTableEntry ex in ExceptionTable)
             {
                 writer.Write(ex.StartPC);
                 writer.Write(ex.EndPC);
@@ -120,23 +127,24 @@ namespace JavaCompiler.Compilation
                 writer.Write(ex.CatchType);
             }
 
-            writer.Write((short)Attributes.Count());
-            foreach (var attr in Attributes)
+            writer.Write((short) Attributes.Count());
+            foreach (CompileAttribute attr in Attributes)
             {
                 attr.Write(writer);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             MaxStack = reader.ReadInt16();
             MaxLocals = reader.ReadInt16();
 
-            var codeLength = reader.ReadInt32();
+            int codeLength = reader.ReadInt32();
             Code = reader.ReadBytes(codeLength);
 
             ExceptionTable = new List<ExceptionTableEntry>();
-            var exceptionCount = reader.ReadInt16();
-            for (var i = 0; i < exceptionCount; i++)
+            short exceptionCount = reader.ReadInt16();
+            for (int i = 0; i < exceptionCount; i++)
             {
                 var exception = new ExceptionTableEntry();
 
@@ -149,36 +157,57 @@ namespace JavaCompiler.Compilation
             }
 
             Attributes = new List<CompileAttribute>();
-            var attributeCount = reader.ReadInt16();
-            for (var i = 0; i < attributeCount; i++)
+            short attributeCount = reader.ReadInt16();
+            for (int i = 0; i < attributeCount; i++)
             {
                 Attributes.Add(ReadAttribute(reader, constants));
             }
 
             return this;
         }
+
+        #region Nested type: ExceptionTableEntry
+
+        public struct ExceptionTableEntry
+        {
+            public short CatchType;
+            public short EndPC;
+            public short HandlerPC;
+            public short StartPC;
+        }
+
+        #endregion
     }
+
     public class CompileAttributeExceptions : CompileAttribute
     {
-        public override string Name { get { return "Exceptions"; } }
-        public override int Length { get { return 2 + ExceptionTable.Count() * 2; } }
+        public override string Name
+        {
+            get { return "Exceptions"; }
+        }
+
+        public override int Length
+        {
+            get { return 2 + ExceptionTable.Count()*2; }
+        }
 
         public List<short> ExceptionTable { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)ExceptionTable.Count());
-            foreach (var ex in ExceptionTable)
+            writer.Write((short) ExceptionTable.Count());
+            foreach (short ex in ExceptionTable)
             {
                 writer.Write(ex);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             ExceptionTable = new List<short>();
 
-            var exceptionCount = reader.ReadInt16();
-            for (var i = 0; i < exceptionCount; i++)
+            short exceptionCount = reader.ReadInt16();
+            for (int i = 0; i < exceptionCount; i++)
             {
                 ExceptionTable.Add(reader.ReadInt16());
             }
@@ -186,27 +215,27 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeInnerClasses : CompileAttribute
     {
-        public struct InnerClass
+        public override string Name
         {
-            public short InnerClassInfo;
-            public short OuterClassInfo;
-            public short InnerName;
-            public Modifier InnerModifier;
+            get { return "InnerClasses"; }
         }
 
-        public override string Name { get { return "InnerClasses"; } }
-        public override int Length { get { return 2 + Classes.Count() * 8; } }
+        public override int Length
+        {
+            get { return 2 + Classes.Count()*8; }
+        }
 
         public List<InnerClass> Classes { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)Classes.Count());
-            foreach (var c in Classes)
+            writer.Write((short) Classes.Count());
+            foreach (InnerClass c in Classes)
             {
-                var modifierValue = (short)c.InnerModifier & 0x631;
+                int modifierValue = (short) c.InnerModifier & 0x631;
 
                 writer.Write(c.InnerClassInfo);
                 writer.Write(c.OuterClassInfo);
@@ -214,43 +243,73 @@ namespace JavaCompiler.Compilation
                 writer.Write(modifierValue);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             Classes = new List<InnerClass>();
 
-            var classCount = reader.ReadInt16();
-            for (var i = 0; i < classCount; i++)
+            short classCount = reader.ReadInt16();
+            for (int i = 0; i < classCount; i++)
             {
                 var c = new InnerClass();
 
                 c.InnerClassInfo = reader.ReadInt16();
                 c.OuterClassInfo = reader.ReadInt16();
                 c.InnerName = reader.ReadInt16();
-                c.InnerModifier = (Modifier)reader.ReadInt16();
+                c.InnerModifier = (Modifier) reader.ReadInt16();
 
                 Classes.Add(c);
             }
 
             return this;
         }
+
+        #region Nested type: InnerClass
+
+        public struct InnerClass
+        {
+            public short InnerClassInfo;
+            public Modifier InnerModifier;
+            public short InnerName;
+            public short OuterClassInfo;
+        }
+
+        #endregion
     }
+
     public class CompileAttributeSynthetic : CompileAttribute
     {
-        public override string Name { get { return "Synthetic"; } }
-        public override int Length { get { return 0; } }
+        public override string Name
+        {
+            get { return "Synthetic"; }
+        }
+
+        public override int Length
+        {
+            get { return 0; }
+        }
 
         public override void Write(EndianBinaryWriter writer)
         {
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             return this;
         }
     }
+
     public class CompileAttributeSourceFile : CompileAttribute
     {
-        public override string Name { get { return "SourceFile"; } }
-        public override int Length { get { return 2; } }
+        public override string Name
+        {
+            get { return "SourceFile"; }
+        }
+
+        public override int Length
+        {
+            get { return 2; }
+        }
 
         public short SourceFile { get; set; }
 
@@ -258,6 +317,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(SourceFile);
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             SourceFile = reader.ReadInt16();
@@ -265,34 +325,37 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeLineNumberTable : CompileAttribute
     {
-        public class LineNumberTableEntry
+        public override string Name
         {
-            public short StartPC;
-            public short LineNumber;
+            get { return "LineNumberTable"; }
         }
 
-        public override string Name { get { return "LineNumberTable"; } }
-        public override int Length { get { return 2 + LineNumbers.Count() * 4; } }
+        public override int Length
+        {
+            get { return 2 + LineNumbers.Count()*4; }
+        }
 
         public List<LineNumberTableEntry> LineNumbers { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)LineNumbers.Count());
-            foreach (var ln in LineNumbers)
+            writer.Write((short) LineNumbers.Count());
+            foreach (LineNumberTableEntry ln in LineNumbers)
             {
                 writer.Write(ln.StartPC);
                 writer.Write(ln.LineNumber);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             LineNumbers = new List<LineNumberTableEntry>();
 
-            var lineCount = reader.ReadInt16();
-            for (var i = 0; i < lineCount; i++)
+            short lineCount = reader.ReadInt16();
+            for (int i = 0; i < lineCount; i++)
             {
                 var line = new LineNumberTableEntry();
 
@@ -304,27 +367,36 @@ namespace JavaCompiler.Compilation
 
             return this;
         }
-    }
-    public class CompileAttributeLocalVariableTable : CompileAttribute
-    {
-        public class VariableTableEntry
+
+        #region Nested type: LineNumberTableEntry
+
+        public class LineNumberTableEntry
         {
+            public short LineNumber;
             public short StartPC;
-            public short Length;
-            public short Name;
-            public short Descriptor;
-            public short Index;
         }
 
-        public override string Name { get { return "LocalVariableTable"; } }
-        public override int Length { get { return 2 + Variables.Count() * 10; } }
+        #endregion
+    }
+
+    public class CompileAttributeLocalVariableTable : CompileAttribute
+    {
+        public override string Name
+        {
+            get { return "LocalVariableTable"; }
+        }
+
+        public override int Length
+        {
+            get { return 2 + Variables.Count()*10; }
+        }
 
         public List<VariableTableEntry> Variables { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)Variables.Count());
-            foreach (var ln in Variables)
+            writer.Write((short) Variables.Count());
+            foreach (VariableTableEntry ln in Variables)
             {
                 writer.Write(ln.StartPC);
                 writer.Write(ln.Length);
@@ -333,12 +405,13 @@ namespace JavaCompiler.Compilation
                 writer.Write(ln.Index);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             Variables = new List<VariableTableEntry>();
 
-            var variableCount = reader.ReadInt16();
-            for (var i = 0; i < variableCount; i++)
+            short variableCount = reader.ReadInt16();
+            for (int i = 0; i < variableCount; i++)
             {
                 var variable = new VariableTableEntry();
 
@@ -353,15 +426,37 @@ namespace JavaCompiler.Compilation
 
             return this;
         }
+
+        #region Nested type: VariableTableEntry
+
+        public class VariableTableEntry
+        {
+            public short Descriptor;
+            public short Index;
+            public short Length;
+            public short Name;
+            public short StartPC;
+        }
+
+        #endregion
     }
+
     public class CompileAttributeDeprecated : CompileAttribute
     {
-        public override string Name { get { return "Deprecated"; } }
-        public override int Length { get { return 0; } }
+        public override string Name
+        {
+            get { return "Deprecated"; }
+        }
+
+        public override int Length
+        {
+            get { return 0; }
+        }
 
         public override void Write(EndianBinaryWriter writer)
         {
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             return this;
@@ -370,6 +465,8 @@ namespace JavaCompiler.Compilation
 
     public class CompileAttributeStackMapTable : CompileAttribute
     {
+        #region VerificationType enum
+
         public enum VerificationType
         {
             Top = 0,
@@ -382,61 +479,26 @@ namespace JavaCompiler.Compilation
             Object = 7,
             Uninitialized = 8
         }
-        public class StackFrame
+
+        #endregion
+
+        public override string Name
         {
-            public StackFrame()
-            {
-                Locals = new List<VerificationTypeInfo>();
-                Stack = new List<VerificationTypeInfo>();
-            }
-
-            public byte Type { get; set; }
-            public short OffsetDelta { get; set; }
-            public List<VerificationTypeInfo> Locals { get; set; }
-            public List<VerificationTypeInfo> Stack { get; set; }
-
-            public int Length
-            {
-                get { throw new NotImplementedException(); }
-            }
-        }
-        public class VerificationTypeInfo
-        {
-            public VerificationType Tag { get; set; }
-            public short Value { get; set; }
-
-            public void Write(EndianBinaryWriter writer)
-            {
-                writer.Write((byte)Tag);
-
-                if (Tag == VerificationType.Uninitialized ||
-                    Tag == VerificationType.Object)
-                {
-                    writer.Write(Value);
-                }
-            }
-            public void Read(EndianBinaryReader reader)
-            {
-                Tag = (VerificationType)reader.ReadByte();
-
-                if (Tag == VerificationType.Uninitialized ||
-                    Tag == VerificationType.Object)
-                {
-                    Value = reader.ReadInt16();
-                }
-            }
+            get { return "StackMapTable"; }
         }
 
-        public override string Name { get { return "StackMapTable"; } }
-        public override int Length { get { return 2 + Entries.Sum(x => x.Length); } }
+        public override int Length
+        {
+            get { return 2 + Entries.Sum(x => x.Length); }
+        }
 
         public List<StackFrame> Entries { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)Entries.Count());
+            writer.Write((short) Entries.Count());
 
-            foreach (var entry in Entries)
+            foreach (StackFrame entry in Entries)
             {
                 writer.Write(entry.Type);
                 if (entry.Type <= 63)
@@ -468,8 +530,8 @@ namespace JavaCompiler.Compilation
                 {
                     // APPEND
                     writer.Write(entry.OffsetDelta);
-                    var type = (short)entry.Type;
-                    for (var i = 251; i < type; i++)
+                    var type = (short) entry.Type;
+                    for (int i = 251; i < type; i++)
                     {
                         entry.Locals[i - 251].Write(writer);
 
@@ -486,26 +548,27 @@ namespace JavaCompiler.Compilation
                     // FULL_FRAME
                     writer.Write(entry.OffsetDelta);
 
-                    writer.Write((short)entry.Locals.Count());
-                    for (var i = 0; i < entry.Locals.Count(); i++)
+                    writer.Write((short) entry.Locals.Count());
+                    for (int i = 0; i < entry.Locals.Count(); i++)
                     {
                         entry.Locals[i].Write(writer);
                     }
 
-                    writer.Write((short)entry.Stack.Count());
-                    for (var i = 0; i < entry.Stack.Count(); i++)
+                    writer.Write((short) entry.Stack.Count());
+                    for (int i = 0; i < entry.Stack.Count(); i++)
                     {
                         entry.Stack[i].Write(writer);
                     }
                 }
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             Entries = new List<StackFrame>();
 
-            var entryCount = reader.ReadInt16();
-            for (var i = 0; i < entryCount; i++)
+            short entryCount = reader.ReadInt16();
+            for (int i = 0; i < entryCount; i++)
             {
                 var entry = new StackFrame();
 
@@ -547,8 +610,8 @@ namespace JavaCompiler.Compilation
                     // APPEND
                     entry.OffsetDelta = reader.ReadInt16();
 
-                    var type = (short)entry.Type;
-                    for (var x = 251; x < type; x++)
+                    var type = (short) entry.Type;
+                    for (int x = 251; x < type; x++)
                     {
                         var item = new VerificationTypeInfo();
                         item.Read(reader);
@@ -561,8 +624,8 @@ namespace JavaCompiler.Compilation
                     // FULL_FRAME
                     entry.OffsetDelta = reader.ReadInt16();
 
-                    var localCount = reader.ReadInt16();
-                    for (var x = 0; x < localCount; x++)
+                    short localCount = reader.ReadInt16();
+                    for (int x = 0; x < localCount; x++)
                     {
                         var item = new VerificationTypeInfo();
                         item.Read(reader);
@@ -570,8 +633,8 @@ namespace JavaCompiler.Compilation
                         entry.Locals.Add(item);
                     }
 
-                    var stackCount = reader.ReadInt16();
-                    for (var x = 0; x < stackCount; x++)
+                    short stackCount = reader.ReadInt16();
+                    for (int x = 0; x < stackCount; x++)
                     {
                         var item = new VerificationTypeInfo();
                         item.Read(reader);
@@ -585,12 +648,74 @@ namespace JavaCompiler.Compilation
 
             return this;
         }
+
+        #region Nested type: StackFrame
+
+        public class StackFrame
+        {
+            public StackFrame()
+            {
+                Locals = new List<VerificationTypeInfo>();
+                Stack = new List<VerificationTypeInfo>();
+            }
+
+            public byte Type { get; set; }
+            public short OffsetDelta { get; set; }
+            public List<VerificationTypeInfo> Locals { get; set; }
+            public List<VerificationTypeInfo> Stack { get; set; }
+
+            public int Length
+            {
+                get { throw new NotImplementedException(); }
+            }
+        }
+
+        #endregion
+
+        #region Nested type: VerificationTypeInfo
+
+        public class VerificationTypeInfo
+        {
+            public VerificationType Tag { get; set; }
+            public short Value { get; set; }
+
+            public void Write(EndianBinaryWriter writer)
+            {
+                writer.Write((byte) Tag);
+
+                if (Tag == VerificationType.Uninitialized ||
+                    Tag == VerificationType.Object)
+                {
+                    writer.Write(Value);
+                }
+            }
+
+            public void Read(EndianBinaryReader reader)
+            {
+                Tag = (VerificationType) reader.ReadByte();
+
+                if (Tag == VerificationType.Uninitialized ||
+                    Tag == VerificationType.Object)
+                {
+                    Value = reader.ReadInt16();
+                }
+            }
+        }
+
+        #endregion
     }
 
     public class CompileAttributeEnclosingMethod : CompileAttribute
     {
-        public override string Name { get { return "EnclosingMethod"; } }
-        public override int Length { get { return 4; } }
+        public override string Name
+        {
+            get { return "EnclosingMethod"; }
+        }
+
+        public override int Length
+        {
+            get { return 4; }
+        }
 
         public short ClassIndex { get; set; }
         public short MethodIndex { get; set; }
@@ -600,6 +725,7 @@ namespace JavaCompiler.Compilation
             writer.Write(ClassIndex);
             writer.Write(MethodIndex);
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             ClassIndex = reader.ReadInt16();
@@ -608,10 +734,18 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeSignature : CompileAttribute
     {
-        public override string Name { get { return "Signature"; } }
-        public override int Length { get { return 2; } }
+        public override string Name
+        {
+            get { return "Signature"; }
+        }
+
+        public override int Length
+        {
+            get { return 2; }
+        }
 
         public short SignatureIndex { get; set; }
 
@@ -619,6 +753,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(SignatureIndex);
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             SignatureIndex = reader.ReadInt16();
@@ -626,10 +761,18 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeSourceDebugExtension : CompileAttribute
     {
-        public override string Name { get { return "SourceDebugExtension"; } }
-        public override int Length { get { return DebugExtension.Length; } }
+        public override string Name
+        {
+            get { return "SourceDebugExtension"; }
+        }
+
+        public override int Length
+        {
+            get { return DebugExtension.Length; }
+        }
 
         public byte[] DebugExtension { get; set; }
 
@@ -637,6 +780,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(DebugExtension);
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             DebugExtension = reader.ReadBytes(length);
@@ -644,26 +788,25 @@ namespace JavaCompiler.Compilation
             return this;
         }
     }
+
     public class CompileAttributeLocalVariableTypeTable : CompileAttribute
     {
-        public class VariableTypeTableEntry
+        public override string Name
         {
-            public short StartPC;
-            public short Length;
-            public short Name;
-            public short Signature;
-            public short Index;
+            get { return "LocalVariableTypeTable"; }
         }
 
-        public override string Name { get { return "LocalVariableTypeTable"; } }
-        public override int Length { get { return 2 + Variables.Count() * 10; } }
+        public override int Length
+        {
+            get { return 2 + Variables.Count()*10; }
+        }
 
         public List<VariableTypeTableEntry> Variables { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)Variables.Count());
-            foreach (var ln in Variables)
+            writer.Write((short) Variables.Count());
+            foreach (VariableTypeTableEntry ln in Variables)
             {
                 writer.Write(ln.StartPC);
                 writer.Write(ln.Length);
@@ -672,12 +815,13 @@ namespace JavaCompiler.Compilation
                 writer.Write(ln.Index);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
             Variables = new List<VariableTypeTableEntry>();
 
-            var variableCount = reader.ReadInt16();
-            for (var i = 0; i < variableCount; i++)
+            short variableCount = reader.ReadInt16();
+            for (int i = 0; i < variableCount; i++)
             {
                 var variable = new VariableTypeTableEntry();
 
@@ -692,63 +836,53 @@ namespace JavaCompiler.Compilation
 
             return this;
         }
+
+        #region Nested type: VariableTypeTableEntry
+
+        public class VariableTypeTableEntry
+        {
+            public short Index;
+            public short Length;
+            public short Name;
+            public short Signature;
+            public short StartPC;
+        }
+
+        #endregion
     }
 
     public class CompileAttributeRuntimeVisibleAnnotations : CompileAttribute
     {
-        public class Annotation
-        {
-            public Annotation()
-            {
-                ElementValues = new List<Tuple<short, ElementValue>>();
-            }
-
-            public short TypeIndex { get; set; }
-            public List<Tuple<short, ElementValue>> ElementValues { get; set; }
-        }
-        public class ElementValue
-        {
-            public ElementValue()
-            {
-                Values = new List<ElementValue>();
-            }
-
-            public byte Tag { get; set; }
-
-            public short ConstValueIndex { get; set; }
-
-            public short TypeNameIndex { get; set; }
-            public short ConstNameIndex { get; set; }
-
-            public short ClassInfoIndex { get; set; }
-
-            public Annotation AnnotationValue { get; set; }
-
-            public List<ElementValue> Values { get; set; }
-        }
-
         public CompileAttributeRuntimeVisibleAnnotations()
         {
             Annotations = new List<Annotation>();
         }
 
-        public override string Name { get { return "RuntimeVisibleAnnotations"; } }
-        public override int Length { get { throw new NotImplementedException(); } }
+        public override string Name
+        {
+            get { return "RuntimeVisibleAnnotations"; }
+        }
+
+        public override int Length
+        {
+            get { throw new NotImplementedException(); }
+        }
 
         public List<Annotation> Annotations { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short)Annotations.Count());
-            foreach (var annotation in Annotations)
+            writer.Write((short) Annotations.Count());
+            foreach (Annotation annotation in Annotations)
             {
                 WriteAnnotation(annotation, writer);
             }
         }
+
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
-            var annotationCount = reader.ReadInt16();
-            for (var i = 0; i < annotationCount; i++)
+            short annotationCount = reader.ReadInt16();
+            for (int i = 0; i < annotationCount; i++)
             {
                 Annotations.Add(ReadAnnotation(reader, constants));
             }
@@ -760,7 +894,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(annotation.TypeIndex);
 
-            writer.Write((short)annotation.ElementValues.Count());
+            writer.Write((short) annotation.ElementValues.Count());
             foreach (var value in annotation.ElementValues)
             {
                 writer.Write(value.Item1);
@@ -768,9 +902,10 @@ namespace JavaCompiler.Compilation
                 WriteElementValue(value.Item2, writer);
             }
         }
+
         private void WriteElementValue(ElementValue value, EndianBinaryWriter writer)
         {
-            switch ((char)value.Tag)
+            switch ((char) value.Tag)
             {
                 case 'B':
                 case 'C':
@@ -794,8 +929,8 @@ namespace JavaCompiler.Compilation
                     WriteAnnotation(value.AnnotationValue, writer);
                     break;
                 case '[':
-                    writer.Write((short)value.Values.Count());
-                    foreach (var ev in value.Values)
+                    writer.Write((short) value.Values.Count());
+                    foreach (ElementValue ev in value.Values)
                     {
                         WriteElementValue(ev, writer);
                     }
@@ -809,11 +944,11 @@ namespace JavaCompiler.Compilation
 
             annotation.TypeIndex = reader.ReadInt16();
 
-            var valueCount = reader.ReadInt16();
-            for (var i = 0; i < valueCount; i++)
+            short valueCount = reader.ReadInt16();
+            for (int i = 0; i < valueCount; i++)
             {
-                var index = reader.ReadInt16();
-                var value = ReadElementValue(reader, constants);
+                short index = reader.ReadInt16();
+                ElementValue value = ReadElementValue(reader, constants);
 
                 annotation.ElementValues.Add(new Tuple<short, ElementValue>(index, value));
             }
@@ -821,13 +956,14 @@ namespace JavaCompiler.Compilation
 
             return annotation;
         }
+
         private ElementValue ReadElementValue(EndianBinaryReader reader, CompileConstant[] constants)
         {
             var value = new ElementValue();
 
             value.Tag = reader.ReadByte();
 
-            switch ((char)value.Tag)
+            switch ((char) value.Tag)
             {
                 case 'B':
                 case 'C':
@@ -851,8 +987,8 @@ namespace JavaCompiler.Compilation
                     value.AnnotationValue = ReadAnnotation(reader, constants);
                     break;
                 case '[':
-                    var valueCount = reader.ReadInt16();
-                    for (var i = 0; i < valueCount; i++)
+                    short valueCount = reader.ReadInt16();
+                    for (int i = 0; i < valueCount; i++)
                     {
                         value.Values.Add(ReadElementValue(reader, constants));
                     }
@@ -861,5 +997,45 @@ namespace JavaCompiler.Compilation
 
             return value;
         }
+
+        #region Nested type: Annotation
+
+        public class Annotation
+        {
+            public Annotation()
+            {
+                ElementValues = new List<Tuple<short, ElementValue>>();
+            }
+
+            public short TypeIndex { get; set; }
+            public List<Tuple<short, ElementValue>> ElementValues { get; set; }
+        }
+
+        #endregion
+
+        #region Nested type: ElementValue
+
+        public class ElementValue
+        {
+            public ElementValue()
+            {
+                Values = new List<ElementValue>();
+            }
+
+            public byte Tag { get; set; }
+
+            public short ConstValueIndex { get; set; }
+
+            public short TypeNameIndex { get; set; }
+            public short ConstNameIndex { get; set; }
+
+            public short ClassInfoIndex { get; set; }
+
+            public Annotation AnnotationValue { get; set; }
+
+            public List<ElementValue> Values { get; set; }
+        }
+
+        #endregion
     }
 }

@@ -7,14 +7,11 @@ using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
-using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation
 {
     public class CompileManager
     {
-        public List<Package> Imports { get; private set; }
-
         public CompileManager()
         {
             ConstantPool = new List<CompileConstant>();
@@ -29,6 +26,7 @@ namespace JavaCompiler.Compilation
         }
 
         #region Constants
+
         private short nextConstantIndex;
         public List<CompileConstant> ConstantPool { get; private set; }
 
@@ -36,170 +34,216 @@ namespace JavaCompiler.Compilation
         {
             if (field == null) return 0;
 
-            var classIndex = AddConstantClass(field.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(field.Name, field);
+            short classIndex = AddConstantClass(field.DeclaringType);
+            short nameAndTypeIndex = AddConstantNameAndType(field.Name, field);
 
-            var fieldConst = ConstantPool.OfType<CompileConstantFieldref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+            CompileConstantFieldref fieldConst =
+                ConstantPool.OfType<CompileConstantFieldref>().FirstOrDefault(
+                    x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
             if (fieldConst == null)
             {
-                fieldConst = new CompileConstantFieldref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+                fieldConst = new CompileConstantFieldref
+                                 {
+                                     PoolIndex = nextConstantIndex++,
+                                     ClassIndex = classIndex,
+                                     NameAndTypeIndex = nameAndTypeIndex
+                                 };
 
                 ConstantPool.Add(fieldConst);
             }
 
             return fieldConst.PoolIndex;
         }
+
         public short AddConstantMethodref(Method method)
         {
             if (method == null) return 0;
 
-            var classIndex = AddConstantClass(method.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
+            short classIndex = AddConstantClass(method.DeclaringType);
+            short nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
 
-            var methodConst = ConstantPool.OfType<CompileConstantMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+            CompileConstantMethodref methodConst =
+                ConstantPool.OfType<CompileConstantMethodref>().FirstOrDefault(
+                    x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
             if (methodConst == null)
             {
-                methodConst = new CompileConstantMethodref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+                methodConst = new CompileConstantMethodref
+                                  {
+                                      PoolIndex = nextConstantIndex++,
+                                      ClassIndex = classIndex,
+                                      NameAndTypeIndex = nameAndTypeIndex
+                                  };
 
                 ConstantPool.Add(methodConst);
             }
 
             return methodConst.PoolIndex;
         }
+
         public short AddConstantInterfaceMethodref(Method method)
         {
             if (method == null) return 0;
 
-            var classIndex = AddConstantClass(method.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
+            short classIndex = AddConstantClass(method.DeclaringType);
+            short nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
 
-            var methodConst = ConstantPool.OfType<CompileConstantInterfaceMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+            CompileConstantInterfaceMethodref methodConst =
+                ConstantPool.OfType<CompileConstantInterfaceMethodref>().FirstOrDefault(
+                    x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
             if (methodConst == null)
             {
-                methodConst = new CompileConstantInterfaceMethodref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+                methodConst = new CompileConstantInterfaceMethodref
+                                  {
+                                      PoolIndex = nextConstantIndex++,
+                                      ClassIndex = classIndex,
+                                      NameAndTypeIndex = nameAndTypeIndex
+                                  };
 
                 ConstantPool.Add(methodConst);
             }
 
             return methodConst.PoolIndex;
         }
+
         public short AddConstantNameAndType(string name, IMember type)
         {
             if (name == null || type == null) return 0;
 
-            var nameIndex = AddConstantUtf8(name);
-            var typeIndex = AddConstantUtf8(type.GetDescriptor());
-            var nameAndTypeConst = ConstantPool.OfType<CompileConstantNameAndType>().FirstOrDefault(x => x.NameIndex == nameIndex && x.DescriptorIndex == typeIndex);
+            short nameIndex = AddConstantUtf8(name);
+            short typeIndex = AddConstantUtf8(type.GetDescriptor());
+            CompileConstantNameAndType nameAndTypeConst =
+                ConstantPool.OfType<CompileConstantNameAndType>().FirstOrDefault(
+                    x => x.NameIndex == nameIndex && x.DescriptorIndex == typeIndex);
 
             if (nameAndTypeConst == null)
             {
-                nameAndTypeConst = new CompileConstantNameAndType { PoolIndex = nextConstantIndex++, NameIndex = nameIndex, DescriptorIndex = typeIndex };
+                nameAndTypeConst = new CompileConstantNameAndType
+                                       {
+                                           PoolIndex = nextConstantIndex++,
+                                           NameIndex = nameIndex,
+                                           DescriptorIndex = typeIndex
+                                       };
 
                 ConstantPool.Add(nameAndTypeConst);
             }
 
             return nameAndTypeConst.PoolIndex;
         }
+
         public short AddConstantClass(DefinedType c)
         {
             if (c == null) return 0;
 
-            var nameIndex = AddConstantUtf8(c.Name);
-            var classConst = ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
+            short nameIndex = AddConstantUtf8(c.Name);
+            CompileConstantClass classConst =
+                ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
 
             if (classConst == null)
             {
-                classConst = new CompileConstantClass { PoolIndex = nextConstantIndex++, NameIndex = nameIndex };
+                classConst = new CompileConstantClass {PoolIndex = nextConstantIndex++, NameIndex = nameIndex};
 
                 ConstantPool.Add(classConst);
             }
 
             return classConst.PoolIndex;
         }
+
         public short AddConstantInteger(int value)
         {
-            var intConst = ConstantPool.OfType<CompileConstantInteger>().FirstOrDefault(x => x.Value == value);
+            CompileConstantInteger intConst =
+                ConstantPool.OfType<CompileConstantInteger>().FirstOrDefault(x => x.Value == value);
 
             if (intConst == null)
             {
-                intConst = new CompileConstantInteger { PoolIndex = nextConstantIndex++, Value = value };
+                intConst = new CompileConstantInteger {PoolIndex = nextConstantIndex++, Value = value};
 
                 ConstantPool.Add(intConst);
             }
 
             return intConst.PoolIndex;
         }
+
         public short AddConstantFloat(float value)
         {
-            var floatConst = ConstantPool.OfType<CompileConstantFloat>().FirstOrDefault(x => x.Value == value);
+            CompileConstantFloat floatConst =
+                ConstantPool.OfType<CompileConstantFloat>().FirstOrDefault(x => x.Value == value);
 
             if (floatConst == null)
             {
-                floatConst = new CompileConstantFloat { PoolIndex = nextConstantIndex++, Value = value };
+                floatConst = new CompileConstantFloat {PoolIndex = nextConstantIndex++, Value = value};
 
                 ConstantPool.Add(floatConst);
             }
 
             return floatConst.PoolIndex;
         }
+
         public short AddConstantLong(long value)
         {
-            var longConst = ConstantPool.OfType<CompileConstantLong>().FirstOrDefault(x => x.Value == value);
+            CompileConstantLong longConst =
+                ConstantPool.OfType<CompileConstantLong>().FirstOrDefault(x => x.Value == value);
 
             if (longConst == null)
             {
-                longConst = new CompileConstantLong { PoolIndex = nextConstantIndex++, Value = value };
+                longConst = new CompileConstantLong {PoolIndex = nextConstantIndex++, Value = value};
 
                 ConstantPool.Add(longConst);
             }
 
             return longConst.PoolIndex;
         }
+
         public short AddConstantDouble(double value)
         {
-            var doubleConst = ConstantPool.OfType<CompileConstantDouble>().FirstOrDefault(x => x.Value == value);
+            CompileConstantDouble doubleConst =
+                ConstantPool.OfType<CompileConstantDouble>().FirstOrDefault(x => x.Value == value);
 
             if (doubleConst == null)
             {
-                doubleConst = new CompileConstantDouble { PoolIndex = nextConstantIndex++, Value = value };
+                doubleConst = new CompileConstantDouble {PoolIndex = nextConstantIndex++, Value = value};
 
                 ConstantPool.Add(doubleConst);
             }
 
             return doubleConst.PoolIndex;
         }
+
         public short AddConstantString(string value)
         {
-            var utfIndex = AddConstantUtf8(value);
+            short utfIndex = AddConstantUtf8(value);
 
-            var stringConst = ConstantPool.OfType<CompileConstantString>().FirstOrDefault(x => x.StringIndex == utfIndex);
+            CompileConstantString stringConst =
+                ConstantPool.OfType<CompileConstantString>().FirstOrDefault(x => x.StringIndex == utfIndex);
 
             if (stringConst == null)
             {
-                stringConst = new CompileConstantString { PoolIndex = nextConstantIndex++, StringIndex = utfIndex };
+                stringConst = new CompileConstantString {PoolIndex = nextConstantIndex++, StringIndex = utfIndex};
 
                 ConstantPool.Add(stringConst);
             }
 
             return stringConst.PoolIndex;
         }
+
         public short AddConstantUtf8(string s)
         {
-            var value = new JavaTextEncoding().GetBytes(s);
-            var utf8Const = ConstantPool.OfType<CompileConstantUtf8>().FirstOrDefault(x => x.Value.SequenceEqual(value));
+            byte[] value = new JavaTextEncoding().GetBytes(s);
+            CompileConstantUtf8 utf8Const =
+                ConstantPool.OfType<CompileConstantUtf8>().FirstOrDefault(x => x.Value.SequenceEqual(value));
 
             if (utf8Const == null)
             {
-                utf8Const = new CompileConstantUtf8 { PoolIndex = nextConstantIndex++, Value = value };
+                utf8Const = new CompileConstantUtf8 {PoolIndex = nextConstantIndex++, Value = value};
 
                 ConstantPool.Add(utf8Const);
             }
 
             return utf8Const.PoolIndex;
         }
+
         #endregion
 
         #region Modifiers
@@ -223,10 +267,12 @@ namespace JavaCompiler.Compilation
         {
             ThisClass = thisClass;
         }
+
         public void SetSuperClass(short superClass)
         {
             SuperClass = superClass;
         }
+
         public void SetInterfaces(List<short> interfaces)
         {
             Interfaces = interfaces ?? new List<short>();
@@ -244,6 +290,7 @@ namespace JavaCompiler.Compilation
         }
 
         #endregion
+
         #region Methods
 
         public List<CompileMethodInfo> Methods { get; private set; }
@@ -254,6 +301,7 @@ namespace JavaCompiler.Compilation
         }
 
         #endregion
+
         #region Attributes
 
         public List<CompileAttribute> Attributes { get; private set; }
@@ -268,15 +316,16 @@ namespace JavaCompiler.Compilation
         #endregion
 
         #region Output
+
         public byte[] GetBytes()
         {
             var program = new MemoryStream();
             var writer = new EndianBinaryWriter(EndianBitConverter.Big, program);
 
             // magic
-            writer.Write(new byte[] { 0xCA, 0xFE, 0xBA, 0xBE });
+            writer.Write(new byte[] {0xCA, 0xFE, 0xBA, 0xBE});
             // version (minor, major)
-            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x33 });
+            writer.Write(new byte[] {0x00, 0x00, 0x00, 0x33});
             // const pool
             WriteConstBytes(writer);
             // access flags
@@ -297,60 +346,66 @@ namespace JavaCompiler.Compilation
             writer.Flush();
 
             var bytes = new byte[program.Length];
-            var programArray = program.ToArray();
+            byte[] programArray = program.ToArray();
 
             Array.Copy(programArray, bytes, bytes.Length);
 
             return bytes;
         }
+
         private void WriteConstBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)(ConstantPool.Count() + 1));
+            writer.Write((short) (ConstantPool.Count() + 1));
 
-            foreach (var constant in ConstantPool)
+            foreach (CompileConstant constant in ConstantPool)
             {
                 writer.Write(constant.Tag);
                 constant.Write(writer);
             }
         }
+
         private void WriteModiferBytes(EndianBinaryWriter writer)
         {
-            var modifierValue = (short)((int)Modifiers & 0x631);
+            var modifierValue = (short) ((int) Modifiers & 0x631);
 
             writer.Write(modifierValue);
         }
+
         private void WriteInterfaceBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)Interfaces.Count());
+            writer.Write((short) Interfaces.Count());
 
-            foreach (var i in Interfaces)
+            foreach (short i in Interfaces)
             {
                 writer.Write(i);
             }
         }
+
         private void WriteFieldBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)Fields.Count());
+            writer.Write((short) Fields.Count());
 
-            foreach (var field in Fields)
+            foreach (CompileFieldInfo field in Fields)
             {
                 field.Write(writer);
             }
         }
+
         private void WriteMethodBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)Methods.Count());
+            writer.Write((short) Methods.Count());
 
-            foreach (var method in Methods)
+            foreach (CompileMethodInfo method in Methods)
             {
                 method.Write(writer);
             }
         }
+
         private void WriteAttributeBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short)Attributes.Count());
+            writer.Write((short) Attributes.Count());
 
-            foreach (var attribute in Attributes)
+            foreach (CompileAttribute attribute in Attributes)
             {
                 writer.Write(attribute.NameIndex);
                 writer.Write(attribute.Length);
@@ -360,5 +415,7 @@ namespace JavaCompiler.Compilation
         }
 
         #endregion
+
+        public List<Package> Imports { get; private set; }
     }
 }

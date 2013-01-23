@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class NewCompiler
     {
         private readonly NewNode node;
+
         public NewCompiler(NewNode node)
         {
             this.node = node;

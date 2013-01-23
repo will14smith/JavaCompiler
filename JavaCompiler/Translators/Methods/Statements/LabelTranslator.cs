@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class LabelTranslator
     {
         private readonly ITree node;
+
         public LabelTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.LABELED_STATEMENT);
+            Debug.Assert(node.Type == (int) JavaNodeType.LABELED_STATEMENT);
 
             this.node = node;
         }

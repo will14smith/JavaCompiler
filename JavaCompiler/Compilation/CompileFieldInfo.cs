@@ -21,15 +21,15 @@ namespace JavaCompiler.Compilation
 
         public void Write(EndianBinaryWriter writer)
         {
-            var modifierValue = (short)((int)Modifiers & 0xAF);
+            var modifierValue = (short) ((int) Modifiers & 0xAF);
 
             writer.Write(modifierValue);
             writer.Write(Name);
             writer.Write(Descriptor);
 
-            writer.Write((short)Attributes.Count());
+            writer.Write((short) Attributes.Count());
 
-            foreach (var attr in Attributes)
+            foreach (CompileAttribute attr in Attributes)
             {
                 attr.Write(writer);
             }

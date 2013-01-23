@@ -4,7 +4,7 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class StackItem : Item
+    internal class StackItem : Item
     {
         public StackItem(ByteCodeGenerator generator, Type type)
             : base(generator, type)
@@ -28,7 +28,8 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Stash(ItemTypeCode code)
         {
-            Generator.InternalEmit((Width() == 2 ? OpCodeValue.dup_x2 : OpCodeValue.dup_x1) + (byte)(3 * (TypeCodeHelper.Width(code) - 1)));
+            Generator.InternalEmit((Width() == 2 ? OpCodeValue.dup_x2 : OpCodeValue.dup_x1) +
+                                   (byte) (3*(TypeCodeHelper.Width(code) - 1)));
         }
 
         public override int Width()

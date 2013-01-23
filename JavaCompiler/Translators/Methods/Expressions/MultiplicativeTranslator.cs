@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class MultiplicativeTranslator
     {
         private readonly ITree node;
+
         public MultiplicativeTranslator(ITree node)
         {
             Debug.Assert(node.IsMultiplicativeExpression());
@@ -22,13 +23,13 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
             switch (node.Type)
             {
-                case (int)JavaNodeType.STAR:
+                case (int) JavaNodeType.STAR:
                     multiplicativeNode = new MultiplicativeNode.MultiplicativeMultiplyNode();
                     break;
-                case (int)JavaNodeType.DIV:
+                case (int) JavaNodeType.DIV:
                     multiplicativeNode = new MultiplicativeNode.MultiplicativeDivideNode();
                     break;
-                case (int)JavaNodeType.MOD:
+                case (int) JavaNodeType.MOD:
                     multiplicativeNode = new MultiplicativeNode.MultiplicativeModNode();
                     break;
                 default:

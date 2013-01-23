@@ -80,7 +80,7 @@ namespace JavaCompiler.Tests.Reflection.Enums
         public void FINALTest()
         {
             LocalModifier actual;
-            actual = LocalModifier.FINAL;
+            actual = LocalModifier.Final;
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 

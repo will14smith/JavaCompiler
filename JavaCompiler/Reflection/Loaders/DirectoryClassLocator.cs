@@ -1,18 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators;
 
 namespace JavaCompiler.Reflection.Loaders
 {
-    class DirectoryClassLocator : IClassLocator
+    internal class DirectoryClassLocator : IClassLocator
     {
-        public string Directory { get; private set; }
         public DirectoryClassLocator(string baseDirectory)
         {
             Directory = baseDirectory;
         }
+
+        public string Directory { get; private set; }
+
+        #region IClassLocator Members
 
         public List<Type> Search(string s, List<string> imports)
         {
@@ -34,14 +38,14 @@ namespace JavaCompiler.Reflection.Loaders
 
             var usedFiles = new List<string>();
 
-            foreach (var import in imports)
+            foreach (string import in imports)
             {
-                var importParts = import.Split('.');
-                var importName = importParts.Last();
+                string[] importParts = import.Split('.');
+                string importName = importParts.Last();
 
                 if (importName != "*" && importName != s) continue;
 
-                var path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
+                string path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
 
                 if (usedFiles.Contains(Path.GetFileNameWithoutExtension(path)))
                 {
@@ -63,8 +67,8 @@ namespace JavaCompiler.Reflection.Loaders
                 {
                     usedFiles.Add(Path.GetFileNameWithoutExtension(path));
 
-                    var tree = Compiler.BuildAst(File.ReadAllText(path));
-                    var classStructure = new ProgramTranslator(tree).Walk().Type;
+                    CommonTree tree = Compiler.BuildAst(File.ReadAllText(path));
+                    DefinedType classStructure = new ProgramTranslator(tree).Walk().Type;
 
                     classes.Add(classStructure);
                 }
@@ -73,11 +77,13 @@ namespace JavaCompiler.Reflection.Loaders
             return classes;
         }
 
+        #endregion
+
         private List<Type> SearchAbsolute(string s)
         {
             var classes = new List<Type>();
 
-            var path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
+            string path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
 
             if (File.Exists(path))
             {

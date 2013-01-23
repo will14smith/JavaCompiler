@@ -21,7 +21,7 @@ namespace JavaCompiler.Reflection.Types
             throw new NotImplementedException();
         }
 
-        public void Resolve(List<Package> imports)
+        public override void Resolve(List<Package> imports)
         {
             Super = ClassLocator.Find(Super, imports) as Class;
         }

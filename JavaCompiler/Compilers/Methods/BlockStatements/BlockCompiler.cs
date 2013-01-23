@@ -8,6 +8,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
     public class BlockCompiler
     {
         private readonly MethodTree tree;
+
         public BlockCompiler(MethodTree tree)
         {
             this.tree = tree;
@@ -15,7 +16,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
         public void Compile(ByteCodeGenerator generator)
         {
-            foreach (var node in tree)
+            foreach (MethodTreeNode node in tree)
             {
                 if (node is StatementNode)
                 {

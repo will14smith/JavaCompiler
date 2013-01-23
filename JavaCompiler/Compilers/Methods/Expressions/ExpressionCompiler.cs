@@ -8,6 +8,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class ExpressionCompiler
     {
         private readonly ExpressionNode node;
+
         public ExpressionCompiler(ExpressionNode node)
         {
             this.node = node;
@@ -17,7 +18,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         {
             if (node is AssignmentNode)
             {
-                var item = new AssignmentCompiler(node as AssignmentNode).Compile(generator);
+                Item item = new AssignmentCompiler(node as AssignmentNode).Compile(generator);
 
                 item.Drop();
 

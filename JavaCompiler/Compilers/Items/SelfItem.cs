@@ -3,7 +3,7 @@ using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class SelfItem : Item
+    internal class SelfItem : Item
     {
         private readonly bool isSuper;
 
@@ -13,13 +13,16 @@ namespace JavaCompiler.Compilers.Items
             this.isSuper = isSuper;
         }
 
-        public bool IsSuper { get { return isSuper; } }
+        public bool IsSuper
+        {
+            get { return isSuper; }
+        }
 
         public override Item Load()
         {
             Generator.Emit(OpCodes.aload_0);
 
-            return StackItem[(int)TypeCode];
+            return StackItem[(int) TypeCode];
         }
 
         public override string ToString()

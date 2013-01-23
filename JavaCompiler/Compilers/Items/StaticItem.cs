@@ -5,7 +5,7 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class StaticItem : Item
+    internal class StaticItem : Item
     {
         private readonly IMember member;
 
@@ -17,7 +17,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            var index = Generator.Manager.AddConstantFieldref((Field)member);
+            short index = Generator.Manager.AddConstantFieldref((Field) member);
 
             Generator.Emit(OpCodes.getstatic, index);
 
@@ -26,17 +26,17 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Store()
         {
-            var index = Generator.Manager.AddConstantFieldref((Field)member);
+            short index = Generator.Manager.AddConstantFieldref((Field) member);
 
             Generator.Emit(OpCodes.putstatic, index);
         }
 
         public override Item Invoke()
         {
-            var rescode = TypeCodeHelper.TypeCode(member.ReturnType);
+            ItemTypeCode rescode = TypeCodeHelper.TypeCode(member.ReturnType);
 
-            var method = (Method)member;
-            var index = Generator.Manager.AddConstantMethodref(method);
+            var method = (Method) member;
+            short index = Generator.Manager.AddConstantMethodref(method);
 
             Generator.Emit(OpCodes.invokestatic, index);
 

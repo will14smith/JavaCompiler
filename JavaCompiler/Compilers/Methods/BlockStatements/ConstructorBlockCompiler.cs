@@ -11,6 +11,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
     public class ConstructorBlockCompiler
     {
         private readonly MethodTree tree;
+
         public ConstructorBlockCompiler(MethodTree tree)
         {
             this.tree = tree;
@@ -18,7 +19,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
         public void Compile(ByteCodeGenerator generator)
         {
-            var first = tree.FirstOrDefault();
+            MethodTreeNode first = tree.FirstOrDefault();
             if (first == null)
             {
                 CompileSuperCall(generator);
@@ -47,28 +48,26 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             var thisClass = (generator.Method.DeclaringType) as Class;
             thisClass.Resolve(generator.Manager.Imports);
 
-            var superClass = thisClass.Super;
-            var thisConstructor = generator.Method;
+            Class superClass = thisClass.Super;
+            Method thisConstructor = generator.Method;
 
-            var superMethod = (Method)superClass.Constructors
-                .OrderByDescending(x => x.Parameters.Count)
-                .FirstOrDefault(x => x.Parameters.Count <= thisConstructor.Parameters.Count);
+            var superMethod = (Method) superClass.Constructors
+                                           .OrderByDescending(x => x.Parameters.Count)
+                                           .FirstOrDefault(x => x.Parameters.Count <= thisConstructor.Parameters.Count);
             if (superMethod == null)
             {
                 throw new InvalidOperationException();
             }
 
-            var index = generator.Manager.AddConstantMethodref(superMethod);
+            short index = generator.Manager.AddConstantMethodref(superMethod);
 
             generator.Emit(OpCodes.aload_0);
             generator.Emit(OpCodes.invokespecial, index);
         }
+
         private void CompileSuperCall(ByteCodeGenerator generator, PrimaryNode.TermConstructorCallExpression call)
         {
-            if(call.IsSuper)
-            {
-                
-            }
+            throw new NotImplementedException();
         }
     }
 }

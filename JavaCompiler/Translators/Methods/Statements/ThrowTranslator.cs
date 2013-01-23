@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class ThrowTranslator
     {
         private readonly ITree node;
+
         public ThrowTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.THROW);
+            Debug.Assert(node.Type == (int) JavaNodeType.THROW);
 
             this.node = node;
         }

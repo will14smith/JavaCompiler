@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class AssignmentCompiler
     {
         private readonly AssignmentNode node;
+
         public AssignmentCompiler(AssignmentNode node)
         {
             this.node = node;
@@ -14,7 +15,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lhs = new ExpressionCompiler(node.Left).Compile(generator);
+            Item lhs = new ExpressionCompiler(node.Left).Compile(generator);
 
             new ExpressionCompiler(node.Right).Compile(generator).Load();
 

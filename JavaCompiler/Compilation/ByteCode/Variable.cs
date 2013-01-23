@@ -5,10 +5,6 @@ namespace JavaCompiler.Compilation.ByteCode
 {
     public class Variable
     {
-        internal short Index { get; private set; }
-        internal string Name { get; private set; }
-        internal Type Type { get; private set; }
-
         internal Variable(short index, string name, Type type)
         {
             Index = index;
@@ -24,10 +20,15 @@ namespace JavaCompiler.Compilation.ByteCode
             Name = string.Empty;
         }
 
+        internal short Index { get; private set; }
+        internal string Name { get; private set; }
+        internal Type Type { get; private set; }
+
         public bool IsAssignableTo(Type c)
         {
             throw new NotImplementedException();
         }
+
         public bool CanAssign(Type c)
         {
             throw new NotImplementedException();

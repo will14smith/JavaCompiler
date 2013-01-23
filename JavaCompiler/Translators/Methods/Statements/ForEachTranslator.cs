@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class ForEachTranslator
     {
         private readonly ITree node;
+
         public ForEachTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.FOR_EACH);
+            Debug.Assert(node.Type == (int) JavaNodeType.FOR_EACH);
 
             this.node = node;
         }

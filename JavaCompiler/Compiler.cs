@@ -2,6 +2,7 @@
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Compilers;
+using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Translators;
 
@@ -11,17 +12,20 @@ namespace JavaCompiler
     {
         private readonly string document;
 
-        public List<string> ClassPath { get { return ClassLocator.SearchPaths; } } 
-
         public Compiler(string document)
         {
             this.document = document;
         }
 
+        public List<string> ClassPath
+        {
+            get { return ClassLocator.SearchPaths; }
+        }
+
         public byte[] Compile()
         {
-            var tree = BuildAst(document);
-            var program = new ProgramTranslator(tree).Walk();
+            CommonTree tree = BuildAst(document);
+            Program program = new ProgramTranslator(tree).Walk();
 
             return new ProgramCompiler(program).Compile();
         }

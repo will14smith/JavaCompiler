@@ -1,16 +1,10 @@
-﻿using System;
-using JavaCompiler.Translators.Methods.Tree.BlockStatements;
+﻿using JavaCompiler.Translators.Methods.Tree.BlockStatements;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Translators.Methods.Tree.Statements
 {
     public class WhileNode : StatementNode
     {
-        public override void ValidateType()
-        {
-            throw new NotImplementedException();
-        }
-
         public ExpressionNode Expression { get; set; }
         public MethodTreeNode Statement { get; set; }
     }

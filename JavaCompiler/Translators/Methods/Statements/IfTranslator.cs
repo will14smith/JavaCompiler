@@ -9,9 +9,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class IfTranslator
     {
         private readonly ITree node;
+
         public IfTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.IF);
+            Debug.Assert(node.Type == (int) JavaNodeType.IF);
 
             this.node = node;
         }
@@ -19,12 +20,12 @@ namespace JavaCompiler.Translators.Methods.Statements
         public IfNode Walk()
         {
             var ifNode = new IfNode
-            {
-                Condition = new ExpressionTranslator(node.GetChild(0)).Walk(),
-                TrueBranch = new StatementTranslator(node.GetChild(1)).Walk()
-            };
+                             {
+                                 Condition = new ExpressionTranslator(node.GetChild(0)).Walk(),
+                                 TrueBranch = new StatementTranslator(node.GetChild(1)).Walk()
+                             };
 
-            if(node.ChildCount > 2)
+            if (node.ChildCount > 2)
             {
                 ifNode.FalseBranch = new StatementTranslator(node.GetChild(2)).Walk();
             }

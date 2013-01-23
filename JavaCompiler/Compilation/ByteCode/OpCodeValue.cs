@@ -208,6 +208,7 @@ namespace JavaCompiler.Compilation.ByteCode
         goto_w = 200,
         jsr_w = 201
     }
+
     public enum NormalizedOpCodeValues : byte
     {
         nop = 0,
@@ -374,7 +375,7 @@ namespace JavaCompiler.Compilation.ByteCode
         dynamic_invokevirtual = 251,
         dynamic_invokespecial = 252,
         clone_array = 253,
-        static_error = 254,	// not a real instruction, this signals an instruction that is compiled as an exception
+        static_error = 254, // not a real instruction, this signals an instruction that is compiled as an exception
         iconst = 255
     }
 
@@ -421,5 +422,6 @@ namespace JavaCompiler.Compilation.ByteCode
         Throw,
         Switch,
     }
+
     // ReSharper restore InconsistentNaming
 }

@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class TryTranslator
     {
         private readonly ITree node;
+
         public TryTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.TRY);
+            Debug.Assert(node.Type == (int) JavaNodeType.TRY);
 
             this.node = node;
         }

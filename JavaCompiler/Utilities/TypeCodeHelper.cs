@@ -47,9 +47,12 @@ namespace JavaCompiler.Utilities
 
         public static string Name(ItemTypeCode typeCode)
         {
-            var typecodeNames = new[] { "int", "long", "float", "double", "object", "byte", "char", "short", "void", "oops" };
+            var typecodeNames = new[]
+                                    {
+                                        "int", "long", "float", "double", "object", "byte", "char", "short", "void", "oops"
+                                    };
 
-            return typecodeNames[(int)typeCode];
+            return typecodeNames[(int) typeCode];
         }
 
         public static Type Type(ItemTypeCode typeCode)
@@ -65,7 +68,7 @@ namespace JavaCompiler.Utilities
                 case ItemTypeCode.Double:
                     return PrimativeTypes.Double;
                 case ItemTypeCode.Object:
-                    return new PlaceholderType { Name = "java.lang.Object" };
+                    return new PlaceholderType {Name = "java.lang.Object"};
                 case ItemTypeCode.Byte:
                     return PrimativeTypes.Byte;
                 case ItemTypeCode.Char:

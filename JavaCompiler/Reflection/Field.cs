@@ -8,12 +8,14 @@ namespace JavaCompiler.Reflection
 {
     public class Field : AccessibleObject, IMember
     {
+        #region IMember Members
+
         public bool Synthetic { get; set; }
         public DefinedType DeclaringType { get; set; }
 
         public string Name { get; set; }
         public Modifier Modifiers { get; set; }
-        
+
         public Type ReturnType { get; set; }
 
         public void Resolve(List<Package> imports)
@@ -25,5 +27,7 @@ namespace JavaCompiler.Reflection
         {
             return ReturnType.GetDescriptor();
         }
+
+        #endregion
     }
 }

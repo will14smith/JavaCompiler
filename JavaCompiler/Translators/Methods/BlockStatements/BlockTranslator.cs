@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Translators.Methods.Tree;
+using JavaCompiler.Translators.Methods.Tree.BlockStatements;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Translators.Methods.BlockStatements
@@ -9,6 +11,7 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
     public class BlockTranslator
     {
         private readonly ITree node;
+
         public BlockTranslator(ITree node)
         {
             Debug.Assert(node.IsBlock());
@@ -20,9 +23,9 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
         {
             var method = new MethodTree();
 
-            for (var i = 0; i < node.ChildCount; i++)
+            for (int i = 0; i < node.ChildCount; i++)
             {
-                var child = node.GetChild(i);
+                ITree child = node.GetChild(i);
 
                 if (child.IsStatement())
                 {
@@ -35,9 +38,9 @@ namespace JavaCompiler.Translators.Methods.BlockStatements
                 }
                 else if (child.IsVarDeclaration())
                 {
-                    var decls = new VarDeclarationTranslator(child).Walk();
+                    List<VarDeclarationNode> decls = new VarDeclarationTranslator(child).Walk();
 
-                    foreach (var decl in decls)
+                    foreach (VarDeclarationNode decl in decls)
                     {
                         method.Add(decl);
                     }

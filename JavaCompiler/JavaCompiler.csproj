@@ -35,22 +35,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Antlr3.Runtime.Debug">
-      <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.Debug.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr3.Runtime.JavaExtensions">
-      <HintPath>..\..\..\..\..\Downloads\output\cs\Antlr3.Runtime.JavaExtensions.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compilation\ByteCode\ByteCodeGenerator.cs" />

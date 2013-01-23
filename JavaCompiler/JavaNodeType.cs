@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JavaCompiler
+﻿namespace JavaCompiler
 {
+    // ReSharper disable InconsistentNaming
     public enum JavaNodeType
     {
         EOF = -1,
@@ -189,4 +184,6 @@ namespace JavaCompiler
         XOR = 181,
         XOR_ASSIGN = 182,
     }
+
+    // ReSharper restore InconsistentNaming
 }

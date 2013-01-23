@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Items;
+using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using JavaCompiler.Compilers.Items;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -16,6 +17,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class PrimaryCompiler
     {
         private readonly PrimaryNode node;
+
         public PrimaryCompiler(PrimaryNode node)
         {
             this.node = node;
@@ -25,6 +27,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         {
             return Compile(generator, null);
         }
+
         public Item Compile(ByteCodeGenerator generator, Item scope)
         {
             if (node is PrimaryNode.TermIdentifierExpression)
@@ -54,7 +57,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                     }
                     else
                     {
-                        var item = TryInstance(generator, generator.Method.DeclaringType, id);
+                        Item item = TryInstance(generator, generator.Method.DeclaringType, id);
                         if (item != null) return item;
                     }
                 }
@@ -70,21 +73,21 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var fieldExpr = node as PrimaryNode.TermFieldExpression;
 
-                var item = new PrimaryCompiler(fieldExpr.Child).Compile(generator, scope);
+                Item item = new PrimaryCompiler(fieldExpr.Child).Compile(generator, scope);
 
                 item.Load();
                 return new PrimaryCompiler(fieldExpr.SecondChild).Compile(generator, item);
             }
             if (node is PrimaryNode.TermThisExpression)
             {
-                var selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
+                Type selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
 
                 return new SelfItem(generator, selfScope, false);
             }
             if (node is PrimaryNode.TermSuperExpression)
             {
-                var selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
-                var superScope = (selfScope as Class).Super;
+                Type selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
+                Class superScope = (selfScope as Class).Super;
 
                 return new SelfItem(generator, superScope, true);
             }
@@ -117,7 +120,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var s = node as PrimaryNode.TermStringLiteralExpression;
 
-                return new ImmediateItem(generator, new PlaceholderType { Name = "java.lang.String" }, s.Value);
+                return new ImmediateItem(generator, new PlaceholderType {Name = "java.lang.String"}, s.Value);
             }
 
             if (node is PrimaryNode.TermMethodCallExpression)
@@ -132,7 +135,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
                     methodName = id.Identifier;
 
-                    var thisItem = new PrimaryCompiler(new PrimaryNode.TermThisExpression()).Compile(generator, scope);
+                    Item thisItem = new PrimaryCompiler(new PrimaryNode.TermThisExpression()).Compile(generator, scope);
 
                     thisItem.Load();
                     parentType = thisItem.Type as DefinedType;
@@ -145,7 +148,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                     if (id == null) throw new InvalidOperationException();
                     methodName = id.Identifier;
 
-                    var objectItem = new PrimaryCompiler(field.Child).Compile(generator);
+                    Item objectItem = new PrimaryCompiler(field.Child).Compile(generator);
 
                     objectItem.Load();
                     parentType = objectItem.Type as DefinedType;
@@ -161,16 +164,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 IMember member = TryMember(generator, methodName, parentType, method.Arguments);
                 if (member == null) throw new InvalidOperationException();
 
-                var isStatic = (member.Modifiers & Modifier.Static) == Modifier.Static;
+                bool isStatic = (member.Modifiers & Modifier.Static) == Modifier.Static;
 
-                foreach(var parameter in method.Arguments)
+                foreach (ExpressionNode parameter in method.Arguments)
                 {
                     new ExpressionCompiler(parameter).Compile(generator).Load();
                 }
 
-                return isStatic ?
-                    new StaticItem(generator, member).Invoke() :
-                    new MemberItem(generator, member, member.Name == "<init>").Invoke();
+                return isStatic
+                           ? new StaticItem(generator, member).Invoke()
+                           : new MemberItem(generator, member, member.Name == "<init>").Invoke();
             }
 
             throw new NotImplementedException();
@@ -178,43 +181,48 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         private static LocalItem TryLocal(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)
         {
-            var localVariable = generator.GetVariable(id.Identifier);
+            Variable localVariable = generator.GetVariable(id.Identifier);
 
             return localVariable != null ? new LocalItem(generator, localVariable) : null;
         }
-        private static Item TryInstance(ByteCodeGenerator generator, DefinedType type, PrimaryNode.TermIdentifierExpression id)
+
+        private static Item TryInstance(ByteCodeGenerator generator, DefinedType type,
+                                        PrimaryNode.TermIdentifierExpression id)
         {
             // try instance
-            var field = type.Fields.FirstOrDefault(x => x.Name == id.Identifier);
+            Field field = type.Fields.FirstOrDefault(x => x.Name == id.Identifier);
             if (field == null)
             {
-                if (type is Class && ((Class)type).Super != null)
+                if (type is Class && ((Class) type).Super != null)
                 {
-                    ((Class)type).Resolve(generator.Manager.Imports);
+                    (type).Resolve(generator.Manager.Imports);
 
-                    return TryInstance(generator, ((Class)type).Super, id);
+                    return TryInstance(generator, ((Class) type).Super, id);
                 }
 
                 return null;
             }
 
-            var nonVirtual = field.Modifiers.HasFlag(Modifier.Private);
-            var isStatic = field.Modifiers.HasFlag(Modifier.Static);
+            bool nonVirtual = field.Modifiers.HasFlag(Modifier.Private);
+            bool isStatic = field.Modifiers.HasFlag(Modifier.Static);
 
-            return isStatic ?
-                (Item)new StaticItem(generator, field) :
-                (Item)new MemberItem(generator, field, nonVirtual);
+            return isStatic
+                       ? new StaticItem(generator, field)
+                       : (Item) new MemberItem(generator, field, nonVirtual);
         }
+
         private static ClassItem TryClass(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)
         {
-            var c = ClassLocator.Find(id.Identifier, generator.Manager.Imports);
+            Type c = ClassLocator.Find(id.Identifier, generator.Manager.Imports);
 
             return c == null ? null : new ClassItem(generator, c);
         }
 
-        private static IMember TryMember(ByteCodeGenerator generator, string name, DefinedType parentType, List<ExpressionNode> arguments)
+        private static IMember TryMember(ByteCodeGenerator generator, string name, DefinedType parentType,
+                                         List<ExpressionNode> arguments)
         {
-            var methods = parentType.Methods.Where(x => x.Name == name && x.Parameters.Count == arguments.Count).ToList();
+            List<Method> methods =
+                parentType.Methods.Where(x => x.Name == name && x.Parameters.Count == arguments.Count).ToList();
             if (!methods.Any()) return null;
 
             //TODO: Find best method

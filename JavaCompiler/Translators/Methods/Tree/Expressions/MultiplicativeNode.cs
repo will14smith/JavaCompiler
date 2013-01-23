@@ -1,26 +1,35 @@
-﻿using JavaCompiler.Reflection;
-
-namespace JavaCompiler.Translators.Methods.Tree.Expressions
+﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
     public abstract class MultiplicativeNode : ExpressionNode
     {
         public ExpressionNode LeftChild { get; set; }
         public ExpressionNode RightChild { get; set; }
 
-        public override void ValidateType()
-        {
-            LeftChild.ValidateType();
-            RightChild.ValidateType();
+        #region Nested type: MultiplicativeDivideNode
 
-            if (LeftChild.ReturnType != RightChild.ReturnType)
+        public class MultiplicativeDivideNode : MultiplicativeNode
+        {
+            public override string ToString()
             {
-                ReturnType = LeftChild.ReturnType.FindCommonType(RightChild.ReturnType);
-            }
-            else
-            {
-                ReturnType = LeftChild.ReturnType;
+                return "(" + LeftChild + " / " + RightChild + ")";
             }
         }
+
+        #endregion
+
+        #region Nested type: MultiplicativeModNode
+
+        public class MultiplicativeModNode : MultiplicativeNode
+        {
+            public override string ToString()
+            {
+                return "(" + LeftChild + " % " + RightChild + ")";
+            }
+        }
+
+        #endregion
+
+        #region Nested type: MultiplicativeMultiplyNode
 
         public class MultiplicativeMultiplyNode : MultiplicativeNode
         {
@@ -29,19 +38,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 return "(" + LeftChild + " * " + RightChild + ")";
             }
         }
-        public class MultiplicativeDivideNode : MultiplicativeNode
-        {
-            public override string ToString()
-            {
-                return "(" + LeftChild + " / " + RightChild + ")";
-            }
-        }
-        public class MultiplicativeModNode : MultiplicativeNode
-        {
-            public override string ToString()
-            {
-                return "(" + LeftChild + " % " + RightChild + ")";
-            }
-        }
+
+        #endregion
     }
 }

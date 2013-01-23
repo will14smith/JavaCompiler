@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class SwitchTranslator
     {
         private readonly ITree node;
+
         public SwitchTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.SWITCH);
+            Debug.Assert(node.Type == (int) JavaNodeType.SWITCH);
 
             this.node = node;
         }

@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class QualifiedCompiler
     {
         private readonly QualifiedNode node;
+
         public QualifiedCompiler(QualifiedNode node)
         {
             this.node = node;

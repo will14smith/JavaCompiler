@@ -5,30 +5,33 @@ namespace JavaCompiler.Compilation.ByteCode
     [Serializable]
     public struct Label
     {
-        internal int label;
+        internal readonly int Index;
 
-        internal Label(int label)
+        internal Label(int index)
         {
-            this.label = label;
+            Index = index;
         }
 
         public int GetLabelValue()
         {
-            return label;
+            return Index;
         }
 
         public override int GetHashCode()
         {
-            return label;
+            return Index;
         }
+
         public override bool Equals(object obj)
         {
-            return obj is Label && Equals((Label)obj);
+            return obj is Label && Equals((Label) obj);
         }
+
         public static bool operator ==(Label a, Label b)
         {
             return a.Equals(b);
         }
+
         public static bool operator !=(Label a, Label b)
         {
             return !(a == b);

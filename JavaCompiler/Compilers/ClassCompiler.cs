@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Compilation;
+using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers
@@ -8,6 +9,7 @@ namespace JavaCompiler.Compilers
     public class ClassCompiler
     {
         private readonly Class @class;
+
         public ClassCompiler(Class @class)
         {
             this.@class = @class;
@@ -16,11 +18,11 @@ namespace JavaCompiler.Compilers
         public void Compile(CompileManager manager)
         {
             // this class
-            var thisClass = manager.AddConstantClass(@class);
+            short thisClass = manager.AddConstantClass(@class);
             manager.SetThisClass(thisClass);
 
             // super class
-            var superClass = manager.AddConstantClass(@class.Super);
+            short superClass = manager.AddConstantClass(@class.Super);
             manager.SetSuperClass(superClass);
 
             // modifiers
@@ -43,18 +45,19 @@ namespace JavaCompiler.Compilers
 
         private void CompileInterfaces(CompileManager manager)
         {
-            var interfaces = @class.Interfaces.Select(manager.AddConstantClass).ToList();
+            List<short> interfaces = @class.Interfaces.Select(manager.AddConstantClass).ToList();
 
             manager.SetInterfaces(interfaces);
         }
+
         private void CompileFields(CompileManager manager)
         {
-            foreach (var field in @class.Fields)
+            foreach (Field field in @class.Fields)
             {
                 var fieldInfo = new CompileFieldInfo();
 
-                var nameIndex = manager.AddConstantUtf8(field.Name);
-                var descriptorIndex = manager.AddConstantUtf8(field.ReturnType.GetDescriptor());
+                short nameIndex = manager.AddConstantUtf8(field.Name);
+                short descriptorIndex = manager.AddConstantUtf8(field.ReturnType.GetDescriptor());
 
                 fieldInfo.Modifiers = field.Modifiers;
                 fieldInfo.Name = nameIndex;
@@ -64,20 +67,22 @@ namespace JavaCompiler.Compilers
                 manager.AddField(fieldInfo);
             }
         }
+
         private void CompileConstructors(CompileManager manager)
         {
-            foreach (var constructor in @class.Constructors)
+            foreach (Constructor constructor in @class.Constructors)
             {
-                var methodInfo = new ConstructorCompiler(constructor).Compile(manager);
+                CompileMethodInfo methodInfo = new ConstructorCompiler(constructor).Compile(manager);
 
                 manager.AddMethod(methodInfo);
             }
         }
+
         private void CompileMethods(CompileManager manager)
         {
-            foreach (var method in @class.Methods)
+            foreach (Method method in @class.Methods)
             {
-                var methodInfo = new MethodCompiler(method).Compile(manager);
+                CompileMethodInfo methodInfo = new MethodCompiler(method).Compile(manager);
 
                 manager.AddMethod(methodInfo);
             }

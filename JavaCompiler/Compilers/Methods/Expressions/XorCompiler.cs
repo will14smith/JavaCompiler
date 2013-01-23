@@ -8,6 +8,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class XorCompiler
     {
         private readonly XorNode node;
+
         public XorCompiler(XorNode node)
         {
             this.node = node;
@@ -17,6 +18,5 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         {
             throw new NotImplementedException();
         }
-
     }
 }

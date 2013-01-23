@@ -9,6 +9,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class EqualityTranslator
     {
         private readonly ITree node;
+
         public EqualityTranslator(ITree node)
         {
             Debug.Assert(node.IsEqualityExpression());
@@ -22,10 +23,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
             switch (node.Type)
             {
-                case (int)JavaNodeType.EQUAL:
+                case (int) JavaNodeType.EQUAL:
                     equalityNode = new EqualityNode.EqualityEqualNode();
                     break;
-                case (int)JavaNodeType.NOT_EQUAL:
+                case (int) JavaNodeType.NOT_EQUAL:
                     equalityNode = new EqualityNode.EqualityNotEqualNode();
                     break;
                 default:

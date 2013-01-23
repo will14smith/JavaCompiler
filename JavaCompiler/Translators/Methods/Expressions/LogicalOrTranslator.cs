@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class LogicalOrTranslator
     {
         private readonly ITree node;
+
         public LogicalOrTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.LOGICAL_OR);
+            Debug.Assert(node.Type == (int) JavaNodeType.LOGICAL_OR);
 
             this.node = node;
         }
@@ -19,6 +20,5 @@ namespace JavaCompiler.Translators.Methods.Expressions
         {
             throw new NotImplementedException();
         }
-
     }
 }

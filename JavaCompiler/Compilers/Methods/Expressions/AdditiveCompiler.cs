@@ -1,15 +1,14 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
-using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Types;
-using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Compilers.Items;
+using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
     public class AdditiveCompiler
     {
         private readonly AdditiveNode node;
+
         public AdditiveCompiler(AdditiveNode node)
         {
             this.node = node;

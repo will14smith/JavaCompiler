@@ -7,6 +7,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
     public class ArrayInitialiserCompiler
     {
         private readonly ArrayInitialiserNode node;
+
         public ArrayInitialiserCompiler(ArrayInitialiserNode node)
         {
             this.node = node;

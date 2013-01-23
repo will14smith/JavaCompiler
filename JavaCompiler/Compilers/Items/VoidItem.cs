@@ -3,7 +3,7 @@ using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers.Items
 {
-    class VoidItem : Item
+    internal class VoidItem : Item
     {
         public VoidItem(ByteCodeGenerator generator) : base(generator, PrimativeTypes.Void)
         {

@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Statements
     public class BreakTranslator
     {
         private readonly ITree node;
+
         public BreakTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.BREAK);
+            Debug.Assert(node.Type == (int) JavaNodeType.BREAK);
 
             this.node = node;
         }

@@ -8,9 +8,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
     public class AndTranslator
     {
         private readonly ITree node;
+
         public AndTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int)JavaNodeType.AND);
+            Debug.Assert(node.Type == (int) JavaNodeType.AND);
 
             this.node = node;
         }
@@ -19,6 +20,5 @@ namespace JavaCompiler.Translators.Methods.Expressions
         {
             throw new NotImplementedException();
         }
-
     }
 }

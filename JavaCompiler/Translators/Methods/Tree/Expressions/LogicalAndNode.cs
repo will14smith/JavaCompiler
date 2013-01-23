@@ -2,9 +2,5 @@
 {
     public class LogicalAndNode : ExpressionNode
     {
-        public override void ValidateType()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
