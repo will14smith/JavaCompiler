@@ -3,7 +3,7 @@
 namespace JavaCompiler.Compilation.ByteCode
 {
     // ReSharper disable InconsistentNaming
-    public enum OpCodeValues : byte
+    public enum OpCodeValue : byte
     {
         nop = 0,
         aconst_null = 1,

@@ -11,6 +11,8 @@ namespace JavaCompiler.Reflection.Interfaces
 
         DefinedType DeclaringType { get; set; }
 
+        Type ReturnType { get; set; }
+
         Modifier Modifiers { get; set; }
 
         void Resolve(List<Package> imports);

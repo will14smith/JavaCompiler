@@ -69,5 +69,26 @@ namespace JavaCompiler.Reflection
         {
             return string.Format("({0}){1}", Parameters.Aggregate("", (s, parameter) => s + parameter.Type.GetDescriptor()), ReturnType.GetDescriptor());
         }
+        
+        public override string ToString()
+        {
+            return string.Format("{0}({1})", Name, Parameters.Aggregate("", (s, parameter) => s + ", " + parameter.Type.GetDescriptor()));
+        }
+        
+        public static explicit operator Constructor(Method method)
+        {
+            if (method == null) return null;
+
+            var constructor = new Constructor()
+            {
+                Modifiers = method.Modifiers,
+                DeclaringType = method.DeclaringType,
+            };
+
+            constructor.Parameters.AddRange(method.Parameters);
+
+            return constructor;
+        }
+
     }
 }

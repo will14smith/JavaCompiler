@@ -1,7 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Items;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -13,11 +13,15 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Type Compile(ByteCodeGenerator generator)
+        public Item Compile(ByteCodeGenerator generator)
         {
             if (node is AssignmentNode)
             {
-                return new AssignmentCompiler(node as AssignmentNode).Compile(generator);
+                var item = new AssignmentCompiler(node as AssignmentNode).Compile(generator);
+
+                item.Drop();
+
+                return new VoidItem(generator);
             }
             if (node is ConditionalNode)
             {

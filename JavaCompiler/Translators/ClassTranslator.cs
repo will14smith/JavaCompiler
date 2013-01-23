@@ -40,6 +40,8 @@ namespace JavaCompiler.Translators
 
             if ((JavaNodeType)child.Type == JavaNodeType.EXTENDS_CLAUSE)
             {
+                @class.Super = new TypeTranslator(child.GetChild(0)).Walk() as Class;
+
                 child = node.GetChild(i++);
             }
             else

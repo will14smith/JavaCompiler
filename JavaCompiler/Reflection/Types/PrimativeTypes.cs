@@ -1,4 +1,7 @@
-﻿namespace JavaCompiler.Reflection.Types
+﻿using System;
+using JavaCompiler.Compilers.Items;
+
+namespace JavaCompiler.Reflection.Types
 {
     public static class PrimativeTypes
     {
@@ -125,7 +128,7 @@
                 if (c is LongClass) return false;
                 if (c is BooleanClass) return false;
                 if (c is CharClass) return false;
-                
+
                 return true;
             }
         }
@@ -177,7 +180,7 @@
                 if (c is FloatClass) return false;
                 if (c is DoubleClass) return false;
                 if (c is CharClass) return false;
-                
+
                 return true;
             }
         }
@@ -228,6 +231,45 @@
             {
                 return false;
             }
+        }
+
+        internal static ItemTypeCode TypeCode(Type type)
+        {
+            if (type is ByteClass)
+            {
+                return ItemTypeCode.Byte;
+            }
+            if (type is ShortClass)
+            {
+                return ItemTypeCode.Short;
+            }
+            if (type is IntClass)
+            {
+                return ItemTypeCode.Int;
+            }
+            if (type is LongClass)
+            {
+                return ItemTypeCode.Long;
+            }
+            if (type is FloatClass)
+            {
+                return ItemTypeCode.Float;
+            } 
+            if (type is DoubleClass)
+            {
+                return ItemTypeCode.Double;
+            }
+            if (type is CharClass)
+            {
+                return ItemTypeCode.Char;
+            }
+            
+            if (type is VoidClass)
+            {
+                return ItemTypeCode.Void;
+            }
+
+            throw new NotImplementedException();
         }
     }
 }

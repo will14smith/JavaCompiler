@@ -2,15 +2,15 @@
 {
     public class AssignmentNode : ExpressionNode
     {
-        public PrimaryNode Key { get; set; }
-        public ExpressionNode Value { get; set; }
+        public PrimaryNode Left { get; set; }
+        public ExpressionNode Right { get; set; }
 
         public override void ValidateType()
         {
-            Key.ValidateType();
-            Value.ValidateType();
+            Left.ValidateType();
+            Right.ValidateType();
 
-            ReturnType = Value.ReturnType;
+            ReturnType = Right.ReturnType;
         }
     }
 }

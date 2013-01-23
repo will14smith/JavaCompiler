@@ -49,7 +49,11 @@ namespace JavaCompiler.Reflection.Loaders
 
             c.Interfaces.AddRange(interfaces.Select(x => GetClass(x, constants)).OfType<Interface>());
             c.Fields.AddRange(fields.Select(x => GetField(c, x, constants)));
-            c.Methods.AddRange(methods.Select(x => GetMethod(c, x, constants)));
+
+            var javaMethods = methods.Select(x => GetMethod(c, x, constants)).ToList();
+
+            c.Methods.AddRange(javaMethods.Where(x => x.Name != "<init>"));
+            c.Constructors.AddRange(javaMethods.Where(x => x.Name == "<init>").Select(x => (Constructor)x));
 
             return c;
         }
@@ -189,7 +193,7 @@ namespace JavaCompiler.Reflection.Loaders
                 Name = GetUtf8(field.Name, constants),
                 Modifiers = field.Modifiers,
 
-                Type = GetType(field.Descriptor, constants),
+                ReturnType = GetType(field.Descriptor, constants),
             };
         }
         public static Method GetMethod(Class c, CompileMethodInfo method, CompileConstant[] constants)

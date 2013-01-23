@@ -21,7 +21,7 @@ namespace JavaCompiler.Compilers
 
             var methodInfo = new CompileMethodInfo();
 
-            var nameIndex = manager.AddConstantUtf8(constructor.DeclaringType.Name);
+            var nameIndex = manager.AddConstantUtf8(constructor.Name);
             var descriptorIndex = manager.AddConstantUtf8(constructor.GetDescriptor());
 
             CompileBody(manager);

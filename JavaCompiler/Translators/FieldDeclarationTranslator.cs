@@ -29,7 +29,7 @@ namespace JavaCompiler.Translators
                 {
                     Name = declaration.Name,
                     DeclaringType = c,
-                    Type = declaration.Type,
+                    ReturnType = declaration.Type,
                     Modifiers = declaration.Modifiers
                 }).ToList();
         }

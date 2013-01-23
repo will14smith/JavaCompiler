@@ -10,7 +10,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
     public abstract class PrimaryNode : ExpressionNode
     {
         // Valid types are below classes and AllocationNode
-        public ExpressionNode Child { get; set; }
+        public PrimaryNode Child { get; set; }
 
         public override string ToString()
         {
@@ -183,6 +183,33 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
                 }
 
                 return Child + "(" + arguments + ")";
+            }
+        }
+        public class TermConstructorCallExpression : PrimaryNode
+        {
+            public override void ValidateType()
+            {
+                ReturnType = PrimativeTypes.Void;
+            }
+
+            public bool IsSuper { get; set; }
+            public List<ExpressionNode> Arguments { get; set; }
+
+            public override string ToString()
+            {
+                var arguments = "";
+
+                for (var i = 0; i < Arguments.Count(); i++)
+                {
+                    if (i > 0)
+                    {
+                        arguments += ", ";
+                    }
+
+                    arguments += Arguments[i];
+                }
+
+                return (IsSuper ? "super" : "this") + "(" + arguments + ")";
             }
         }
         public class TermClassLiteralExpression : PrimaryNode

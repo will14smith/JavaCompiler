@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Types.Type;
+using JavaCompiler.Compilers.Items;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -14,74 +17,127 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Type Compile(ByteCodeGenerator generator)
+        public Item Compile(ByteCodeGenerator generator)
         {
-            if (node is PrimaryNode.TermIdentifierExpression ||
-                node is PrimaryNode.TermFieldExpression)
+            return Compile(generator, null);
+        }
+        public Item Compile(ByteCodeGenerator generator, Item scope)
+        {
+            if (node is PrimaryNode.TermIdentifierExpression)
             {
-                return new LoadValueCompiler(node, generator.Method.DeclaringType).Compile(generator);
+                var id = node as PrimaryNode.TermIdentifierExpression;
+
+                if (scope == null)
+                {
+                    // try local, instance, static, super, etc...
+
+                    var item = TryLocal(generator, id);
+                    if (item != null) return item;
+
+                    item = TryInstance(generator, generator.Method.DeclaringType, id);
+                    if (item != null) return item;
+                }
+                else if (scope is SelfItem)
+                {
+                    var self = scope as SelfItem;
+
+                    if (self.IsSuper)
+                    {
+                        // try super
+                    }
+                    else
+                    {
+                        var item = TryInstance(generator, generator.Method.DeclaringType, id);
+                        if (item != null) return item;
+                    }
+                }
+            }
+            if (node is PrimaryNode.TermFieldExpression)
+            {
+                var fieldExpr = node as PrimaryNode.TermFieldExpression;
+
+                var item = new PrimaryCompiler(fieldExpr.Child).Compile(generator, scope);
+
+                item.Load();
+                return new PrimaryCompiler(fieldExpr.SecondChild).Compile(generator, item);
+            }
+            if (node is PrimaryNode.TermThisExpression)
+            {
+                return new SelfItem(generator, false);
+            }
+            if (node is PrimaryNode.TermSuperExpression)
+            {
+                return new SelfItem(generator, true);
             }
 
             if (node is PrimaryNode.TermDecimalLiteralExpression)
             {
-                return CompileDecimal(generator, node as PrimaryNode.TermDecimalLiteralExpression).Type;
+                var i = node as PrimaryNode.TermDecimalLiteralExpression;
+
+                return new ImmediateItem(generator, PrimativeTypes.Int, i.Value);
             }
+            if (node is PrimaryNode.TermBoolLiteralExpression)
+            {
+                var b = node as PrimaryNode.TermBoolLiteralExpression;
+
+                return new ImmediateItem(generator, PrimativeTypes.Boolean, b.Value);
+            }
+            if (node is PrimaryNode.TermCharLiteralExpression)
+            {
+                var b = node as PrimaryNode.TermCharLiteralExpression;
+
+                return new ImmediateItem(generator, PrimativeTypes.Char, b.Value);
+            }
+            if (node is PrimaryNode.TermFloatLiteralExpression)
+            {
+                var b = node as PrimaryNode.TermFloatLiteralExpression;
+
+                return new ImmediateItem(generator, PrimativeTypes.Float, b.Value);
+            }
+
             if (node is PrimaryNode.TermMethodCallExpression)
             {
-                return CompileMethodCall(generator, node as PrimaryNode.TermMethodCallExpression).Type;
+                var method = node as PrimaryNode.TermMethodCallExpression;
+
+                //TODO: resolve method
+                var objectItem = new PrimaryCompiler(method.Child).Compile(generator);
+
+                IMember member = null;
+                var isStatic = objectItem == null;
+
+                return isStatic ?
+                    new StaticItem(generator, member).Invoke() :
+                    new MemberItem(generator, member, member.Name == "<init>").Invoke();
             }
 
             throw new NotImplementedException();
         }
 
-        private static Variable CompileDecimal(ByteCodeGenerator generator, PrimaryNode.TermDecimalLiteralExpression primaryNode)
+        private static Item TryLocal(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)
         {
-            var value = primaryNode.Value;
+            var localVariable = generator.GetVariable(id.Identifier);
 
-            if (value > -128 && value < 127)
+            return localVariable != null ? new LocalItem(generator, localVariable) : null;
+        }
+        private static Item TryInstance(ByteCodeGenerator generator, DefinedType type, PrimaryNode.TermIdentifierExpression id)
+        {
+            // try instance
+            var field = type.Fields.FirstOrDefault(x => x.Name == id.Identifier);
+            if (field == null)
             {
-                switch (value)
+                if (type is Class && ((Class)type).Super != null)
                 {
-                    case -1:
-                        generator.Emit(OpCodes.iconst_m1);
-                        break;
-                    case 0:
-                        generator.Emit(OpCodes.iconst_0);
-                        break;
-                    case 1:
-                        generator.Emit(OpCodes.iconst_1);
-                        break;
-                    case 2:
-                        generator.Emit(OpCodes.iconst_2);
-                        break;
-                    case 3:
-                        generator.Emit(OpCodes.iconst_3);
-                        break;
-                    case 4:
-                        generator.Emit(OpCodes.iconst_4);
-                        break;
-                    case 5:
-                        generator.Emit(OpCodes.iconst_5);
-                        break;
-                    default:
-                        generator.Emit(OpCodes.bipush, (byte)value);
-                        break;
+                    ((Class)type).Resolve(generator.Manager.Imports);
+
+                    return TryInstance(generator, ((Class)type).Super, id);
                 }
-            }
-            else if (value > -32768 && value < 32767)
-            {
-                generator.Emit(OpCodes.sipush, (short)value);
-            }
-            else
-            {
-                generator.Emit(OpCodes.ldc, generator.Manager.AddConstantInteger(value));
+
+                return null;
             }
 
-            return new Variable(PrimativeTypes.Int);
-        }
-        private static Variable CompileMethodCall(ByteCodeGenerator generator, PrimaryNode.TermMethodCallExpression termMethodCallExpression)
-        {
-            throw new NotImplementedException();
+            var nonVirtual = (field.Modifiers & Modifier.Private) == Modifier.Private;
+
+            return new MemberItem(generator, field, nonVirtual);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace JavaCompiler.Compilation
 {
     public class CompileManager
     {
+        public List<Package> Imports { get; private set; }
+
         public CompileManager()
         {
             ConstantPool = new List<CompileConstant>();
@@ -20,6 +22,8 @@ namespace JavaCompiler.Compilation
             Methods = new List<CompileMethodInfo>();
             Attributes = new List<CompileAttribute>();
 
+            Imports = new List<Package>();
+
             nextConstantIndex = 1;
         }
 
@@ -27,6 +31,77 @@ namespace JavaCompiler.Compilation
         private short nextConstantIndex;
         public List<CompileConstant> ConstantPool { get; private set; }
 
+        public short AddConstantFieldref(Field field)
+        {
+            if (field == null) return 0;
+
+            var classIndex = AddConstantClass(field.DeclaringType);
+            var nameAndTypeIndex = AddConstantNameAndType(field.Name, field.ReturnType);
+
+            var fieldConst = ConstantPool.OfType<CompileConstantFieldref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+
+            if (fieldConst == null)
+            {
+                fieldConst = new CompileConstantFieldref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+
+                ConstantPool.Add(fieldConst);
+            }
+
+            return fieldConst.PoolIndex;
+        }
+        public short AddConstantMethodref(Method method)
+        {
+            if (method == null) return 0;
+
+            var classIndex = AddConstantClass(method.DeclaringType);
+            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method.ReturnType);
+
+            var methodConst = ConstantPool.OfType<CompileConstantMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+
+            if (methodConst == null)
+            {
+                methodConst = new CompileConstantMethodref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+
+                ConstantPool.Add(methodConst);
+            }
+
+            return methodConst.PoolIndex;
+        }
+        public short AddConstantInterfaceMethodref(Method method)
+        {
+            if (method == null) return 0;
+
+            var classIndex = AddConstantClass(method.DeclaringType);
+            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method.ReturnType);
+
+            var methodConst = ConstantPool.OfType<CompileConstantInterfaceMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
+
+            if (methodConst == null)
+            {
+                methodConst = new CompileConstantInterfaceMethodref { PoolIndex = nextConstantIndex++, ClassIndex = classIndex, NameAndTypeIndex = nameAndTypeIndex };
+
+                ConstantPool.Add(methodConst);
+            }
+
+            return methodConst.PoolIndex;
+        }
+        public short AddConstantNameAndType(string name, Type type)
+        {
+            if (name == null || type == null) return 0;
+
+            var nameIndex = AddConstantUtf8(name);
+            var typeIndex = AddConstantUtf8(type.GetDescriptor());
+            var nameAndTypeConst = ConstantPool.OfType<CompileConstantNameAndType>().FirstOrDefault(x => x.NameIndex == nameIndex && x.DescriptorIndex == typeIndex);
+
+            if (nameAndTypeConst == null)
+            {
+                nameAndTypeConst = new CompileConstantNameAndType { PoolIndex = nextConstantIndex++, NameIndex = nameIndex, DescriptorIndex = typeIndex };
+
+                ConstantPool.Add(nameAndTypeConst);
+            }
+
+            return nameAndTypeConst.PoolIndex;
+        }
         public short AddConstantClass(DefinedType c)
         {
             if (c == null) return 0;
@@ -56,10 +131,49 @@ namespace JavaCompiler.Compilation
 
             return intConst.PoolIndex;
         }
+        public short AddConstantFloat(float value)
+        {
+            var floatConst = ConstantPool.OfType<CompileConstantFloat>().FirstOrDefault(x => x.Value == value);
+
+            if (floatConst == null)
+            {
+                floatConst = new CompileConstantFloat { PoolIndex = nextConstantIndex++, Value = value };
+
+                ConstantPool.Add(floatConst);
+            }
+
+            return floatConst.PoolIndex;
+        }
+        public short AddConstantLong(long value)
+        {
+            var longConst = ConstantPool.OfType<CompileConstantLong>().FirstOrDefault(x => x.Value == value);
+
+            if (longConst == null)
+            {
+                longConst = new CompileConstantLong { PoolIndex = nextConstantIndex++, Value = value };
+
+                ConstantPool.Add(longConst);
+            }
+
+            return longConst.PoolIndex;
+        }
+        public short AddConstantDouble(double value)
+        {
+            var doubleConst = ConstantPool.OfType<CompileConstantDouble>().FirstOrDefault(x => x.Value == value);
+
+            if (doubleConst == null)
+            {
+                doubleConst = new CompileConstantDouble { PoolIndex = nextConstantIndex++, Value = value };
+
+                ConstantPool.Add(doubleConst);
+            }
+
+            return doubleConst.PoolIndex;
+        }
         public short AddConstantUtf8(string s)
         {
             var value = new JavaTextEncoding().GetBytes(s);
-            var utf8Const = ConstantPool.OfType<CompileConstantUtf8>().FirstOrDefault(x => x.Value == value);
+            var utf8Const = ConstantPool.OfType<CompileConstantUtf8>().FirstOrDefault(x => x.Value.SequenceEqual(value));
 
             if (utf8Const == null)
             {
@@ -69,10 +183,6 @@ namespace JavaCompiler.Compilation
             }
 
             return utf8Const.PoolIndex;
-        }
-        public short AddConstantUtf8Type(Type type)
-        {
-            return AddConstantUtf8(type.GetDescriptor());
         }
         #endregion
 
@@ -131,8 +241,6 @@ namespace JavaCompiler.Compilation
         #region Attributes
 
         public List<CompileAttribute> Attributes { get; private set; }
-
-        public List<Package> Imports { get; private set; }
 
         public void AddAttribute(CompileAttribute attribute)
         {

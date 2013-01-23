@@ -51,7 +51,7 @@ namespace JavaCompiler.Reflection.Loaders
             {
                 var results = new List<Type>();
 
-                foreach (var location in SearchPaths)
+                foreach (var location in SearchPaths.Distinct())
                 {
                     var locator = location.EndsWith(".jar", StringComparison.CurrentCultureIgnoreCase)
                                        ? (IClassLocator)new JarClassLocator(location)
@@ -94,7 +94,7 @@ namespace JavaCompiler.Reflection.Loaders
         }
         private static string GetCacheKey(string s, IEnumerable<string> imports)
         {
-            return imports.Aggregate(s, (s1, s2) => s1 + s2);
+            return imports.Aggregate(s, (s1, s2) => s1 + ";" + s2);
         }
 
     }

@@ -21,9 +21,9 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             {
                 new AssignmentCompiler(new AssignmentNode
                 {
-                    Key = new PrimaryNode.TermIdentifierExpression { Identifier = node.Name, ReturnType = node.Type },
-                    Value = node.Initialiser
-                }).Compile(generator);
+                    Left = new PrimaryNode.TermIdentifierExpression { Identifier = node.Name, ReturnType = node.Type },
+                    Right = node.Initialiser
+                }).Compile(generator).Store();
             }
         }
     }

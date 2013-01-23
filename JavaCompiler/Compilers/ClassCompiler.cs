@@ -54,7 +54,7 @@ namespace JavaCompiler.Compilers
                 var fieldInfo = new CompileFieldInfo();
 
                 var nameIndex = manager.AddConstantUtf8(field.Name);
-                var descriptorIndex = manager.AddConstantUtf8Type(field.Type);
+                var descriptorIndex = manager.AddConstantUtf8(field.ReturnType.GetDescriptor());
 
                 fieldInfo.Modifiers = field.Modifiers;
                 fieldInfo.Name = nameIndex;

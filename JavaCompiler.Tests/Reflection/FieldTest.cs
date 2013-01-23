@@ -130,8 +130,8 @@ namespace JavaCompiler.Tests.Reflection
             Field target = new Field(); // TODO: Initialize to an appropriate value
             Type expected = null; // TODO: Initialize to an appropriate value
             Type actual;
-            target.Type = expected;
-            actual = target.Type;
+            target.ReturnType = expected;
+            actual = target.ReturnType;
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("Verify the correctness of this test method.");
         }

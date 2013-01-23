@@ -75,7 +75,6 @@
     <Compile Include="Compilers\ClassCompilerTest.cs" />
     <Compile Include="Reflection\ClassTest.cs" />
     <Compile Include="Translators\ClassTranslatorTest.cs" />
-    <Compile Include="Compilers\Methods\CommonTest.cs" />
     <Compile Include="Reflection\CommonTypeFinderTest.cs" />
     <Compile Include="Compilation\CompileAttributeCodeTest.cs" />
     <Compile Include="Compilation\CompileAttributeConstantValueTest.cs" />

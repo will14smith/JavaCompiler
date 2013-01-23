@@ -19,7 +19,6 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             if (node is ExpressionNode)
             {
                 var returnType = new ExpressionCompiler(node as ExpressionNode).Compile(generator);
-                Common.Cast(returnType, node.ReturnType, generator);
             }
             else
             {

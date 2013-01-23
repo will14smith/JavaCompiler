@@ -34,8 +34,8 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
             return new AssignmentNode
             {
-                Key = key,
-                Value = value
+                Left = key,
+                Right = value
             };
 
         }

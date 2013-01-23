@@ -40,6 +40,9 @@ namespace JavaCompiler.Translators.Methods.Expressions
                     };
                 case JavaNodeType.METHOD_CALL:
                     return WalkMethodCall();
+                case JavaNodeType.SUPER_CONSTRUCTOR_CALL:
+                case JavaNodeType.THIS_CONSTRUCTOR_CALL:
+                    return WalkConstructorCall();
                 default:
                     throw new NotImplementedException();
             }
@@ -56,9 +59,9 @@ namespace JavaCompiler.Translators.Methods.Expressions
                 case JavaNodeType.DECIMAL_LITERAL:
                     return new PrimaryNode.TermDecimalLiteralExpression { Value = int.Parse(node.Text) };
                 case JavaNodeType.FLOATING_POINT_LITERAL:
-                    throw new NotImplementedException();
+                    return new PrimaryNode.TermFloatLiteralExpression() { Value = float.Parse(node.Text) };
                 case JavaNodeType.CHARACTER_LITERAL:
-                    throw new NotImplementedException();
+                    return new PrimaryNode.TermCharLiteralExpression() { Value = char.Parse(node.Text) };
                 case JavaNodeType.STRING_LITERAL:
                     return new PrimaryNode.TermStringLiteralExpression { Value = node.Text };
                 case JavaNodeType.TRUE:
@@ -85,6 +88,23 @@ namespace JavaCompiler.Translators.Methods.Expressions
             return new PrimaryNode.TermMethodCallExpression
             {
                 Child = key,
+                Arguments = arguments
+            };
+        }
+        private PrimaryNode WalkConstructorCall()
+        {
+            var isSuper = node.Type == (int) JavaNodeType.SUPER_CONSTRUCTOR_CALL;
+
+            var arguments = new List<ExpressionNode>();
+            var argumentList = node.GetChild(0);
+            for (var i = 0; i < argumentList.ChildCount; i++)
+            {
+                arguments.Add(new ExpressionTranslator(argumentList.GetChild(i)).Walk());
+            }
+
+            return new PrimaryNode.TermConstructorCallExpression
+            {
+                IsSuper = isSuper,
                 Arguments = arguments
             };
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection;
 using Type = JavaCompiler.Reflection.Types.Type;
 
@@ -11,6 +12,8 @@ namespace JavaCompiler.Compilation.ByteCode
     {
         public CompileManager Manager { get; private set; }
         public Method Method { get; private set; }
+
+        public Item[] StackItem { get; private set; }
 
         private int length;
         private byte[] byteCodeStream;
@@ -29,6 +32,10 @@ namespace JavaCompiler.Compilation.ByteCode
             variableCount = 0;
             variableList = new Variable[256];
             variableListStack = new Stack<Tuple<int, Variable[]>>();
+
+            StackItem = new Item[(int)ItemTypeCode.TypeCodeCount];
+            for (var i = 0; i < (int)ItemTypeCode.Void; i++) StackItem[i] = new StackItem(this, (ItemTypeCode)i);
+            StackItem[(int)ItemTypeCode.Void] = new VoidItem(this);
         }
 
         #region Labels
@@ -142,7 +149,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(1);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
         }
         public virtual void Emit(OpCode opcode, byte b)
         {
@@ -153,7 +160,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(2);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = b;
         }
         public virtual void Emit(OpCode opcode, byte b1, byte b2)
@@ -162,7 +169,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(3);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = b1;
             byteCodeStream[length++] = b2;
         }
@@ -174,7 +181,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(3);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s & 0xff);
         }
@@ -184,7 +191,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(4);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s & 0xff);
             byteCodeStream[length++] = b;
@@ -195,7 +202,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(5);
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s & 0xff);
             byteCodeStream[length++] = b1;
@@ -212,7 +219,7 @@ namespace JavaCompiler.Compilation.ByteCode
             var labelValue = l.GetLabelValue();
             var i = labelList[labelValue];
 
-            InternalEmit(opcode);
+            InternalEmit(opcode.Value);
             if (opcode.Mode == OpCodeMode.Branch_4)
             {
                 byteCodeStream[length++] = (byte)((i >> 24) & 0xff);
@@ -228,8 +235,8 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(4);
 
-            InternalEmit(OpCodes.wide);
-            InternalEmit(opcode);
+            InternalEmit(OpCodes.wide.Value);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s & 0xff);
 
@@ -240,19 +247,32 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EnsureCapacity(6);
 
-            InternalEmit(OpCodes.wide);
-            InternalEmit(opcode);
+            InternalEmit(OpCodes.wide.Value);
+            InternalEmit(opcode.Value);
             byteCodeStream[length++] = (byte)((s1 >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s1 & 0xff);
             byteCodeStream[length++] = (byte)((s2 >> 8) & 0xff);
             byteCodeStream[length++] = (byte)(s2 & 0xff);
         }
 
-        internal void InternalEmit(OpCode opcode)
+        internal void InternalEmit(OpCodeValue opcode)
         {
-            byteCodeStream[length++] = (byte)opcode.Value;
+            EnsureCapacity(1);
 
-            //TODO: UpdateStackSize(opcode, opcode.StackChange());
+            byteCodeStream[length++] = (byte)opcode;
+        }
+        internal void InternalEmitByte(byte b)
+        {
+            EnsureCapacity(1);
+
+            byteCodeStream[length++] = b;
+        }
+        internal void InternalEmitShort(short s)
+        {
+            EnsureCapacity(2);
+
+            byteCodeStream[length++] = (byte)((s >> 8) & 0xff);
+            byteCodeStream[length++] = (byte)(s & 0xff);
         }
         #endregion
 

@@ -14,11 +14,11 @@ namespace JavaCompiler.Reflection
         public string Name { get; set; }
         public Modifier Modifiers { get; set; }
         
-        public Type Type { get; set; }
+        public Type ReturnType { get; set; }
 
         public void Resolve(List<Package> imports)
         {
-            Type = ClassLocator.Find(Type, imports);
+            ReturnType = ClassLocator.Find(ReturnType, imports);
         }
     }
 }

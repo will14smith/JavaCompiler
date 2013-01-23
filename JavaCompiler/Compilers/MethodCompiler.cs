@@ -3,6 +3,7 @@ using JavaCompiler.Compilation;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Methods.BlockStatements;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Compilers
@@ -49,6 +50,11 @@ namespace JavaCompiler.Compilers
             }
 
             new BlockCompiler(method.Body).Compile(generator);
+
+            if(method.ReturnType.Name == "void")
+            {
+                generator.Emit(OpCodes.@return);
+            }
 
             attributes.Add(new CompileAttributeCode
             {

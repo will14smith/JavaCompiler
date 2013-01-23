@@ -2,7 +2,7 @@
 {
     public class OpCode
     {
-        public OpCodeValues Value { get; private set; }
+        public OpCodeValue Value { get; private set; }
 
         public OpCodeMode Mode { get; private set; }
         public OpCodeModeWide WideMode { get; private set; }
@@ -11,17 +11,17 @@
 
         private readonly int arg;
 
-        internal OpCode(OpCodeValues bc, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValue bc, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
             : this(bc, (NormalizedOpCodeValues) bc, 0, reg, wide, cannotThrow)
         {
         }
 
-        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normalizedValue, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
             : this(bc, normalizedValue, 0, reg, wide, cannotThrow)
         {
         }
 
-        internal OpCode(OpCodeValues bc, NormalizedOpCodeValues normalizedValue, int arg, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
+        internal OpCode(OpCodeValue bc, NormalizedOpCodeValues normalizedValue, int arg, OpCodeMode reg, OpCodeModeWide wide, bool cannotThrow)
         {
             Value = bc;
             Mode = reg;

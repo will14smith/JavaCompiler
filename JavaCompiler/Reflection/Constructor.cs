@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Reflection
 {
@@ -21,7 +23,9 @@ namespace JavaCompiler.Reflection
         public bool Synthetic { get; set; }
         public DefinedType DeclaringType { get; set; }
 
-        public string Name { get; set; }
+        public Type ReturnType { get { return PrimativeTypes.Void; } set { throw new InvalidOperationException(); } }
+
+        public string Name { get { return "<init>"; } set { throw new InvalidOperationException(); } }
         public Modifier Modifiers { get; set; }
 
         public List<TypeVariable> TypeParameters { get; private set; }
@@ -47,10 +51,13 @@ namespace JavaCompiler.Reflection
 
         public static explicit operator Method(Constructor constructor)
         {
+            if (constructor == null) return null;
+
             var method = new Method
             {
                 Modifiers = constructor.Modifiers,
-                Name = constructor.DeclaringType.Name,
+                Name = "<init>",
+                DeclaringType = constructor.DeclaringType,
                 ReturnType = PrimativeTypes.Void
             };
 

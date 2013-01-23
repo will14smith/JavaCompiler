@@ -19,6 +19,8 @@ namespace JavaCompiler.Compilers
 
             var manager = new CompileManager();
 
+            manager.Imports.Add(new Package { Name = type.Package == null ? "*" : type.Package.Name + ".*" });
+
             if (type is Class)
             {
                 new ClassCompiler(type as Class).Compile(manager);

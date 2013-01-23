@@ -135,20 +135,6 @@ namespace JavaCompiler.Tests.Compilation
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for AddConstantUtf8Type
-        ///</summary>
-        [TestMethod()]
-        public void AddConstantUtf8TypeTest()
-        {
-            CompileManager target = new CompileManager(); // TODO: Initialize to an appropriate value
-            Class type = null; // TODO: Initialize to an appropriate value
-            short expected = 0; // TODO: Initialize to an appropriate value
-            short actual;
-            actual = target.AddConstantUtf8Type(type);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
         /// <summary>
         ///A test for AddField

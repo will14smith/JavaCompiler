@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using JavaCompiler.Reflection.Types;
+using JavaCompiler.Translators;
 
 namespace JavaCompiler.Reflection.Loaders
 {
@@ -22,14 +23,16 @@ namespace JavaCompiler.Reflection.Loaders
 
             var classes = new List<Type>();
 
-            {
+            /*{
                 var path = Path.Combine(Directory, s + ".class");
 
                 if(File.Exists(path))
                 {
                     classes.Add(ClassLoader.Load(path));
                 }
-            }
+            }*/
+
+            var usedFiles = new List<string>();
 
             foreach (var import in imports)
             {
@@ -38,11 +41,32 @@ namespace JavaCompiler.Reflection.Loaders
 
                 if (importName != "*" && importName != s) continue;
 
-                var path = Path.Combine(Directory, import.Replace('.', '\\') + ".class");
+                var path = Path.Combine(Directory, s.Replace('.', '\\') + ".class");
+
+                if (usedFiles.Contains(Path.GetFileNameWithoutExtension(path)))
+                {
+                    continue;
+                }
 
                 if (File.Exists(path))
                 {
+                    usedFiles.Add(Path.GetFileNameWithoutExtension(path));
+
                     classes.Add(ClassLoader.Load(path));
+
+                    continue;
+                }
+
+                path = Path.Combine(Directory, s.Replace('.', '\\') + ".java");
+
+                if (File.Exists(path))
+                {
+                    usedFiles.Add(Path.GetFileNameWithoutExtension(path));
+
+                    var tree = Compiler.BuildAst(File.ReadAllText(path));
+                    var classStructure = new ProgramTranslator(tree).Walk().Type;
+
+                    classes.Add(classStructure);
                 }
             }
 

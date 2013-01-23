@@ -1,7 +1,6 @@
-﻿using System;
-using JavaCompiler.Compilation.ByteCode;
+﻿using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Items;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
-using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
 {
@@ -13,14 +12,13 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             this.node = node;
         }
 
-        public Type Compile(ByteCodeGenerator generator)
+        public Item Compile(ByteCodeGenerator generator)
         {
-            // calculate value
-            var returnType = new ExpressionCompiler(node.Value).Compile(generator);
+            var lhs = new ExpressionCompiler(node.Left).Compile(generator);
 
-            new StoreValueCompiler(node.Key, returnType, generator.Method.DeclaringType).Compile(generator);
+            new ExpressionCompiler(node.Right).Compile(generator).Load();
 
-            return node.ReturnType;
+            return new AssignItem(generator, lhs);
         }
     }
 }

@@ -2,7 +2,6 @@
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Compilers;
-using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Translators;
 
@@ -21,13 +20,13 @@ namespace JavaCompiler
 
         public byte[] Compile()
         {
-            var tree = BuildAst();
+            var tree = BuildAst(document);
             var program = new ProgramTranslator(tree).Walk();
 
             return new ProgramCompiler(program).Compile();
         }
 
-        private CommonTree BuildAst()
+        internal static CommonTree BuildAst(string document)
         {
             var input = new ANTLRStringStream(document);
             var lexer = new JavaLexer(input);

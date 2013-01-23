@@ -57,7 +57,7 @@
     <Compile Include="Compilation\ByteCode\Label.cs" />
     <Compile Include="Compilation\ByteCode\OpCode.cs" />
     <Compile Include="Compilation\ByteCode\OpCodes.cs" />
-    <Compile Include="Compilation\ByteCode\OpCodeValues.cs" />
+    <Compile Include="Compilation\ByteCode\OpCodeValue.cs" />
     <Compile Include="Compilation\ByteCode\Variable.cs" />
     <Compile Include="Compilation\CompileAttribute.cs" />
     <Compile Include="Compilation\CompileConstant.cs" />
@@ -67,13 +67,21 @@
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
     <Compile Include="Compilers\ConstructorCompiler.cs" />
-    <Compile Include="Compilers\LoadValueCompiler.cs" />
+    <Compile Include="Compilers\Items\AssignItem.cs" />
+    <Compile Include="Compilers\Items\ImmediateItem.cs" />
+    <Compile Include="Compilers\Items\IndexedItem.cs" />
+    <Compile Include="Compilers\Items\Item.cs" />
+    <Compile Include="Compilers\Items\LocalItem.cs" />
+    <Compile Include="Compilers\Items\MemberItem.cs" />
+    <Compile Include="Compilers\Items\SelfItem.cs" />
+    <Compile Include="Compilers\Items\StackItem.cs" />
+    <Compile Include="Compilers\Items\StaticItem.cs" />
+    <Compile Include="Compilers\Items\VoidItem.cs" />
     <Compile Include="Compilers\MethodCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\BlockCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\ConstructorBlockCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\StatementCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\VarDeclarationCompiler.cs" />
-    <Compile Include="Compilers\Methods\Common.cs" />
     <Compile Include="Compilers\Methods\Expressions\AdditiveCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\AndCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\ArrayInitialiserCompiler.cs" />
@@ -95,7 +103,6 @@
     <Compile Include="Compilers\Methods\Expressions\UnaryOtherCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\VariableInitialiserCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\XorCompiler.cs" />
-    <Compile Include="Compilers\StoreValueCompiler.cs" />
     <Compile Include="JavaLexer.cs" />
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
@@ -226,6 +233,7 @@
     <Compile Include="Utilities\ITreeExtensions.cs" />
     <Compile Include="Utilities\JavaTextEncoding.cs" />
     <Compile Include="Utilities\LittleEndianBitConverter.cs" />
+    <Compile Include="Utilities\TypeCodeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compilers\Methods\Statements\" />

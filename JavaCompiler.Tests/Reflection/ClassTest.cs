@@ -138,22 +138,6 @@ namespace JavaCompiler.Tests.Reflection
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-
-        /// <summary>
-        ///A test for GenericSuperclass
-        ///</summary>
-        [TestMethod()]
-        public void GenericSuperclassTest()
-        {
-            Class target = new Class(); // TODO: Initialize to an appropriate value
-            Type expected = null; // TODO: Initialize to an appropriate value
-            Type actual;
-            target.GenericSuperclass = expected;
-            actual = target.GenericSuperclass;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
         /// <summary>
         ///A test for Name
         ///</summary>

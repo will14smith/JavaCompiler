@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JavaCompiler.Reflection.Interfaces;
+using JavaCompiler.Reflection.Loaders;
 
 namespace JavaCompiler.Reflection.Types
 {
@@ -12,13 +13,17 @@ namespace JavaCompiler.Reflection.Types
         }
 
         public Class Super { get; set; }
-        public Type GenericSuperclass { get; set; }
 
         public List<Constructor> Constructors { get; private set; }
 
         public override bool IsAssignableTo(Type c)
         {
             throw new NotImplementedException();
+        }
+
+        public void Resolve(List<Package> imports)
+        {
+            Super = ClassLocator.Find(Super, imports) as Class;
         }
     }
 }
