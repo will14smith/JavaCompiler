@@ -68,6 +68,7 @@
     <Compile Include="Compilers\ClassCompiler.cs" />
     <Compile Include="Compilers\ConstructorCompiler.cs" />
     <Compile Include="Compilers\Items\AssignItem.cs" />
+    <Compile Include="Compilers\Items\ClassItem.cs" />
     <Compile Include="Compilers\Items\ImmediateItem.cs" />
     <Compile Include="Compilers\Items\IndexedItem.cs" />
     <Compile Include="Compilers\Items\Item.cs" />

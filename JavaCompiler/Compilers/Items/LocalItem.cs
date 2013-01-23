@@ -15,7 +15,7 @@ namespace JavaCompiler.Compilers.Items
         {
         }
         public LocalItem(ByteCodeGenerator generator, Type type, short reg)
-            : base(generator, TypeCodeHelper.TypeCode(type))
+            : base(generator, type)
         {
             this.reg = reg;
             this.type = type;

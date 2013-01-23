@@ -1,5 +1,5 @@
-﻿using System;
-using JavaCompiler.Compilation.ByteCode;
+﻿using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Compilers.Items
 {
@@ -7,8 +7,8 @@ namespace JavaCompiler.Compilers.Items
     {
         private readonly bool isSuper;
 
-        public SelfItem(ByteCodeGenerator generator, bool isSuper)
-            : base(generator, ItemTypeCode.Object)
+        public SelfItem(ByteCodeGenerator generator, Type scope, bool isSuper)
+            : base(generator, scope)
         {
             this.isSuper = isSuper;
         }
@@ -22,7 +22,7 @@ namespace JavaCompiler.Compilers.Items
             return StackItem[(int)TypeCode];
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return isSuper ? "super" : "this";
         }

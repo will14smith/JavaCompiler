@@ -263,7 +263,7 @@ namespace JavaCompiler.Reflection.Loaders
             if (descriptor[0] != 'L') throw new ArgumentException();
             if (descriptor[descriptor.Length - 1] != ';') throw new ArgumentException();
 
-            return new PlaceholderType { ArrayDimensions = arrayDimensions, Name = descriptor.Substring(1, descriptor.Length - 2) };
+            return new PlaceholderType { ArrayDimensions = arrayDimensions, Name = descriptor.Replace('/', '.').Substring(1, descriptor.Length - 2) };
         }
         private static Tuple<List<Type>, Type> GetMethodTypeFromDescriptor(string descriptor)
         {

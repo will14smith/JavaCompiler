@@ -1,13 +1,13 @@
-﻿using System;
-using JavaCompiler.Compilation.ByteCode;
+﻿using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
     class StackItem : Item
     {
-        public StackItem(ByteCodeGenerator generator, ItemTypeCode typeCode)
-            : base(generator, typeCode)
+        public StackItem(ByteCodeGenerator generator, Type type)
+            : base(generator, type)
         {
         }
 
@@ -36,7 +36,7 @@ namespace JavaCompiler.Compilers.Items
             return TypeCodeHelper.Width(TypeCode);
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "stack(" + TypeCodeHelper.Name(TypeCode) + ")";
         }

@@ -63,7 +63,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
                 case JavaNodeType.CHARACTER_LITERAL:
                     return new PrimaryNode.TermCharLiteralExpression() { Value = char.Parse(node.Text) };
                 case JavaNodeType.STRING_LITERAL:
-                    return new PrimaryNode.TermStringLiteralExpression { Value = node.Text };
+                    return new PrimaryNode.TermStringLiteralExpression { Value = node.Text.Substring(1, node.Text.Length - 2) };
                 case JavaNodeType.TRUE:
                     return new PrimaryNode.TermBoolLiteralExpression { Value = true };
                 case JavaNodeType.FALSE:
@@ -93,7 +93,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
         }
         private PrimaryNode WalkConstructorCall()
         {
-            var isSuper = node.Type == (int) JavaNodeType.SUPER_CONSTRUCTOR_CALL;
+            var isSuper = node.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL;
 
             var arguments = new List<ExpressionNode>();
             var argumentList = node.GetChild(0);

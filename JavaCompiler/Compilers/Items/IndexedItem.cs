@@ -8,7 +8,7 @@ namespace JavaCompiler.Compilers.Items
     class IndexedItem : Item
     {
         public IndexedItem(ByteCodeGenerator generator, Type type)
-            : base(generator, TypeCodeHelper.TypeCode(type)) { }
+            : base(generator, type) { }
 
         public override Item Load()
         {

@@ -14,7 +14,7 @@ namespace JavaCompiler.Compilers.Items
         private readonly object value;
 
         public ImmediateItem(ByteCodeGenerator generator, Type type, object value)
-            : base(generator, TypeCodeHelper.TypeCode(type))
+            : base(generator, type)
         {
             this.value = value;
         }
@@ -39,6 +39,9 @@ namespace JavaCompiler.Compilers.Items
                     break;
                 case ItemTypeCode.Double:
                     index = Generator.Manager.AddConstantDouble((double)value);
+                    break;
+                case ItemTypeCode.Object:
+                    index = Generator.Manager.AddConstantString((string)value);
                     break;
                 default:
                     throw new NotImplementedException();

@@ -10,7 +10,7 @@ namespace JavaCompiler.Compilers.Items
         private readonly IMember member;
 
         public StaticItem(ByteCodeGenerator generator, IMember member)
-            : base(generator, TypeCodeHelper.TypeCode(member.ReturnType))
+            : base(generator, member.ReturnType)
         {
             this.member = member;
         }

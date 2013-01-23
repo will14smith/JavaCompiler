@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
@@ -36,7 +37,7 @@ namespace JavaCompiler.Compilation
             if (field == null) return 0;
 
             var classIndex = AddConstantClass(field.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(field.Name, field.ReturnType);
+            var nameAndTypeIndex = AddConstantNameAndType(field.Name, field);
 
             var fieldConst = ConstantPool.OfType<CompileConstantFieldref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
@@ -54,7 +55,7 @@ namespace JavaCompiler.Compilation
             if (method == null) return 0;
 
             var classIndex = AddConstantClass(method.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method.ReturnType);
+            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
 
             var methodConst = ConstantPool.OfType<CompileConstantMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
@@ -72,7 +73,7 @@ namespace JavaCompiler.Compilation
             if (method == null) return 0;
 
             var classIndex = AddConstantClass(method.DeclaringType);
-            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method.ReturnType);
+            var nameAndTypeIndex = AddConstantNameAndType(method.Name, method);
 
             var methodConst = ConstantPool.OfType<CompileConstantInterfaceMethodref>().FirstOrDefault(x => x.ClassIndex == classIndex && x.NameAndTypeIndex == nameAndTypeIndex);
 
@@ -85,7 +86,7 @@ namespace JavaCompiler.Compilation
 
             return methodConst.PoolIndex;
         }
-        public short AddConstantNameAndType(string name, Type type)
+        public short AddConstantNameAndType(string name, IMember type)
         {
             if (name == null || type == null) return 0;
 
@@ -169,6 +170,21 @@ namespace JavaCompiler.Compilation
             }
 
             return doubleConst.PoolIndex;
+        }
+        public short AddConstantString(string value)
+        {
+            var utfIndex = AddConstantUtf8(value);
+
+            var stringConst = ConstantPool.OfType<CompileConstantString>().FirstOrDefault(x => x.StringIndex == utfIndex);
+
+            if (stringConst == null)
+            {
+                stringConst = new CompileConstantString { PoolIndex = nextConstantIndex++, StringIndex = utfIndex };
+
+                ConstantPool.Add(stringConst);
+            }
+
+            return stringConst.PoolIndex;
         }
         public short AddConstantUtf8(string s)
         {

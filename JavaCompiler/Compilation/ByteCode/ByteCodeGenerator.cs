@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection;
+using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
@@ -34,7 +35,7 @@ namespace JavaCompiler.Compilation.ByteCode
             variableListStack = new Stack<Tuple<int, Variable[]>>();
 
             StackItem = new Item[(int)ItemTypeCode.TypeCodeCount];
-            for (var i = 0; i < (int)ItemTypeCode.Void; i++) StackItem[i] = new StackItem(this, (ItemTypeCode)i);
+            for (var i = 0; i < (int)ItemTypeCode.Void; i++) StackItem[i] = new StackItem(this, TypeCodeHelper.Type((ItemTypeCode)i));
             StackItem[(int)ItemTypeCode.Void] = new VoidItem(this);
         }
 

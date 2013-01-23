@@ -16,5 +16,7 @@ namespace JavaCompiler.Reflection.Interfaces
         Modifier Modifiers { get; set; }
 
         void Resolve(List<Package> imports);
+
+        string GetDescriptor();
     }
 }

@@ -12,7 +12,7 @@ namespace JavaCompiler.Compilers.Items
         private readonly IMember member;
 
         public MemberItem(ByteCodeGenerator generator, IMember member, bool nonVirtual)
-            : base(generator, TypeCodeHelper.TypeCode(member.ReturnType))
+            : base(generator, member.ReturnType)
         {
             this.nonVirtual = nonVirtual;
             this.member = member;

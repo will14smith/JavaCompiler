@@ -20,5 +20,10 @@ namespace JavaCompiler.Reflection
         {
             ReturnType = ClassLocator.Find(ReturnType, imports);
         }
+
+        public string GetDescriptor()
+        {
+            return ReturnType.GetDescriptor();
+        }
     }
 }

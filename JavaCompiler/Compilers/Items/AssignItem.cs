@@ -8,7 +8,7 @@ namespace JavaCompiler.Compilers.Items
     {
         private readonly Item lhs;
         public AssignItem(ByteCodeGenerator generator, Item lhs)
-            : base(generator, lhs.TypeCode)
+            : base(generator, lhs.Type)
         {
             this.lhs = lhs;
         }

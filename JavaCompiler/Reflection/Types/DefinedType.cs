@@ -32,5 +32,9 @@ namespace JavaCompiler.Reflection.Types
         public List<Interface> Interfaces { get; private set; }
 
         public List<TypeVariable> TypeParameters { get; private set; }
+
+        public virtual void Resolve(List<Package> imports)
+        {
+        }
     }
 }

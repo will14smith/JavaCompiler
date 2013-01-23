@@ -1,6 +1,8 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Items
 {
@@ -22,16 +24,24 @@ namespace JavaCompiler.Compilers.Items
     {
         protected ByteCodeGenerator Generator;
         public ItemTypeCode TypeCode { get; private set; }
+        public Type Type { get; private set; }
 
         protected Item[] StackItem
         {
             get { return Generator.StackItem; }
         }
 
-        protected Item(ByteCodeGenerator generator, ItemTypeCode typeCode)
+        protected Item(ByteCodeGenerator generator, Type type)
         {
             Generator = generator;
-            TypeCode = typeCode;
+
+            if(type is DefinedType)
+            {
+                ((DefinedType) type).Resolve(generator.Manager.Imports);
+            }
+
+            Type = type;
+            TypeCode = TypeCodeHelper.TypeCode(type);
         }
 
         public virtual Item Load()
