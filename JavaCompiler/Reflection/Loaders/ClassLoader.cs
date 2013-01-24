@@ -7,6 +7,7 @@ using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
+using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Reflection.Loaders
@@ -257,19 +258,32 @@ namespace JavaCompiler.Reflection.Loaders
 
             if (descriptor.Length == 1)
             {
-                Type primType = GetTypeFromDescriptor(descriptor);
+                Type type = GetTypeFromDescriptor(descriptor);
 
-                return new Type { ArrayDimensions = arrayDimensions, Name = primType.Name };
+                for (var i = 0; i < arrayDimensions; i++)
+                {
+                    type = new Array(type);
+                }
+
+                return type;
             }
 
             if (descriptor[0] != 'L') throw new ArgumentException();
             if (descriptor[descriptor.Length - 1] != ';') throw new ArgumentException();
 
-            return new PlaceholderType
-                       {
-                           ArrayDimensions = arrayDimensions,
-                           Name = descriptor.Replace('/', '.').Substring(1, descriptor.Length - 2)
-                       };
+            {
+                Type type = new PlaceholderType
+                               {
+                                   Name = descriptor.Replace('/', '.').Substring(1, descriptor.Length - 2)
+                               };
+
+                for (var i = 0; i < arrayDimensions; i++)
+                {
+                    type = new Array(type);
+                }
+
+                return type;
+            }
         }
 
         private static Tuple<List<Type>, Type> GetMethodTypeFromDescriptor(string descriptor)
@@ -329,7 +343,14 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderType { Name = typeName.Replace('/', '.'), ArrayDimensions = arrayDimensions });
+                            Type type = new PlaceholderType { Name = typeName.Replace('/', '.') };
+
+                            for (var x = 0; x < arrayDimensions; x++)
+                            {
+                                type = new Array(type);
+                            }
+
+                            parameterTypes.Add(type);
                         }
                         break;
                     default:

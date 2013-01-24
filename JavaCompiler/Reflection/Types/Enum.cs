@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace JavaCompiler.Reflection.Types
 {
@@ -7,15 +8,14 @@ namespace JavaCompiler.Reflection.Types
     {
         public Enum()
         {
-            Constants = new List<object>();
+            Constants = new List<ICloneable>();
 
             Constructors = new List<Constructor>();
         }
 
         public Class Super { get; set; }
-        public Type GenericSuperclass { get; set; }
 
-        public List<object> Constants { get; private set; }
+        public List<ICloneable> Constants { get; private set; }
 
         public List<Constructor> Constructors { get; private set; }
 

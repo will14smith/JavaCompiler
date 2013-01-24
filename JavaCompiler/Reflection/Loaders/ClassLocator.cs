@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Reflection.Types.Internal;
+using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Reflection.Loaders
@@ -12,7 +13,7 @@ namespace JavaCompiler.Reflection.Loaders
 
         static ClassLocator()
         {
-            SearchPaths = new List<string> {@"C:\Program Files\Java\jre7\lib\rt.jar"};
+            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt.jar" };
         }
 
         public static List<string> SearchPaths { get; private set; }
@@ -29,11 +30,14 @@ namespace JavaCompiler.Reflection.Loaders
 
         public static Type Find(Type c, List<Package> importedPackages)
         {
+            var array = c as Array;
+            if (array != null)
+            {
+                return new Array(Find(array.ArrayType, importedPackages));
+            }
             if (c is PlaceholderType)
             {
                 var result = Find(c.Name, importedPackages);
-
-                result.ArrayDimensions = c.ArrayDimensions;
 
                 return result;
             }
@@ -60,7 +64,7 @@ namespace JavaCompiler.Reflection.Loaders
                 {
                     IClassLocator locator = location.EndsWith(".jar", StringComparison.CurrentCultureIgnoreCase)
                                                 ? new JarClassLocator(location)
-                                                : (IClassLocator) new DirectoryClassLocator(location);
+                                                : (IClassLocator)new DirectoryClassLocator(location);
 
                     results.AddRange(locator.Search(s, imports));
                 }

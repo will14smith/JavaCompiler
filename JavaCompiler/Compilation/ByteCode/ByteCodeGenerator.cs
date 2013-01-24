@@ -7,6 +7,7 @@ using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
+using Array = System.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation.ByteCode
@@ -95,7 +96,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 throw new ArgumentException("Argument_RedefinedLabel");
             }
 
-            labelList[labelValue] = length;
+            labelList[labelValue] = length + 1;
 
             ResolveLabel(labelValue);
             labelRefs.Remove(labelValue);
@@ -104,6 +105,8 @@ namespace JavaCompiler.Compilation.ByteCode
         private void ResolveLabel(int labelValue)
         {
             var refs = labelRefs[labelValue];
+
+            pendingStackMap = true;
 
             foreach (var l in refs)
             {
@@ -117,7 +120,6 @@ namespace JavaCompiler.Compilation.ByteCode
                 }
                 byteCodeStream[pos++] = (byte)((i >> 8) & 0xff);
                 byteCodeStream[pos] = (byte)(i & 0xff);
-
             }
         }
 
@@ -211,14 +213,14 @@ namespace JavaCompiler.Compilation.ByteCode
         public void PushScope()
         {
             aliveScope.Push(alive);
-            stack.PushScope();
+            //stack.PushScope();
 
             PushVariables();
         }
         public void PopScope()
         {
             alive = aliveScope.Pop();
-            stack.PopScope();
+            //stack.PopScope();
 
             PopVariables();
         }
@@ -287,9 +289,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 EmitShort((short)i);
             }
 
-            UpdateStackBranch(opcode, i);
-
-            pendingStackMap = true;
+            UpdateStackBranch(opcode);
         }
 
         public void EmitWide(OpCodeValue opcode, short s)
@@ -1050,7 +1050,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
         }
 
-        private void UpdateStackBranch(OpCodeValue opcode, int b)
+        private void UpdateStackBranch(OpCodeValue opcode)
         {
             switch (opcode)
             {

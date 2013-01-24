@@ -1,5 +1,4 @@
 ﻿using System;
-using JavaCompiler.Reflection.Interfaces;
 
 namespace JavaCompiler.Reflection.Types
 {

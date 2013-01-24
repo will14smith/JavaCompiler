@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
+using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Translators
@@ -13,18 +14,23 @@ namespace JavaCompiler.Translators
 
         public TypeTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int) JavaNodeType.TYPE);
+            Debug.Assert(node.Type == (int)JavaNodeType.TYPE);
 
             this.node = node;
         }
 
         public Type Walk()
         {
-            Type typeRef = ProcessClass(node.GetChild(0));
+            var typeRef = ProcessClass(node.GetChild(0));
 
             if (node.ChildCount > 1)
             {
-                typeRef.ArrayDimensions = ProcessArray(node.GetChild(1));
+                var arrayLevels = ProcessArray(node.GetChild(1));
+
+                for (var i = 0; i < arrayLevels; i++)
+                {
+                    typeRef = new Array(typeRef);
+                }
             }
 
             return typeRef;
@@ -32,7 +38,7 @@ namespace JavaCompiler.Translators
 
         private static Type ProcessClass(ITree node)
         {
-            switch ((JavaNodeType) node.Type)
+            switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.QUALIFIED_TYPE_IDENT:
                     return ProcessQualified(node);
@@ -59,7 +65,7 @@ namespace JavaCompiler.Translators
 
         private static Class ProcessQualified(ITree node)
         {
-            Debug.Assert(node.Type == (int) JavaNodeType.QUALIFIED_TYPE_IDENT);
+            Debug.Assert(node.Type == (int)JavaNodeType.QUALIFIED_TYPE_IDENT);
 
             string type = "";
             for (int i = 0; i < node.ChildCount; i++)
@@ -72,14 +78,14 @@ namespace JavaCompiler.Translators
                 type += node.GetChild(i).Text;
             }
 
-            return new PlaceholderType {Name = type};
+            return new PlaceholderType { Name = type };
         }
 
         public static int ProcessArray(ITree node)
         {
             if (node == null) return 0;
 
-            Debug.Assert(node.Type == (int) JavaNodeType.ARRAY_DECLARATOR_LIST);
+            Debug.Assert(node.Type == (int)JavaNodeType.ARRAY_DECLARATOR_LIST);
 
             return node.ChildCount;
         }

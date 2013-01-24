@@ -12,7 +12,6 @@ namespace JavaCompiler.Reflection.Types
 
         public Package Package { get; set; }
         public virtual string Name { get; set; }
-        public int ArrayDimensions { get; set; }
 
         public virtual bool Primitive
         {
@@ -38,27 +37,14 @@ namespace JavaCompiler.Reflection.Types
                 throw new NotImplementedException();
             }
 
-            var arrayDimensions = new string(Enumerable.Range(0, ArrayDimensions).Select(x => '[').ToArray());
-
-            var name = (Package != null ? Package.Name + "." : "") + Name;
+            var name = (Package != null && !string.IsNullOrEmpty(Package.Name) ? Package.Name + "." : "") + Name;
             name = name.Replace('.', '/');
 
             if (shortDescriptor)
             {
                 return name;
             }
-            return arrayDimensions + "L" + name + ";";
-        }
-
-        public virtual Type Clone()
-        {
-            return new Type
-            {
-                ArrayDimensions = ArrayDimensions,
-                Name = Name,
-                Package = Package.Clone(),
-                Synthetic = Synthetic
-            };
+            return "L" + name + ";";
         }
     }
 }

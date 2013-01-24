@@ -83,10 +83,5 @@ namespace JavaCompiler.Reflection
 
             return method;
         }
-
-        public Constructor Clone()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

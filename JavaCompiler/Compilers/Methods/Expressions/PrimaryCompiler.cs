@@ -10,6 +10,7 @@ using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
+using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -218,10 +219,9 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             new ExpressionCompiler(array.Index).Compile(generator).Load();
 
-            var result = item.Type.Clone();
-            result.ArrayDimensions -= 1;
-
-            return new IndexedItem(generator, result);
+            var result = item.Type as Array;
+            
+            return new IndexedItem(generator, result.ArrayType);
         }
 
         private static LocalItem TryLocal(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)

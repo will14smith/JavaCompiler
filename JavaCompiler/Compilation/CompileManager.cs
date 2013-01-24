@@ -7,6 +7,7 @@ using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
+using Array = System.Array;
 
 namespace JavaCompiler.Compilation
 {

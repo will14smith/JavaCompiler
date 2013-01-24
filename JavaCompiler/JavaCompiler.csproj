@@ -123,6 +123,7 @@
     <Compile Include="Reflection\Constructor.cs" />
     <Compile Include="Reflection\Interfaces\IGenericDeclaration.cs" />
     <Compile Include="Reflection\Interfaces\IMember.cs" />
+    <Compile Include="Reflection\Types\Array.cs" />
     <Compile Include="Reflection\Types\Internal\PlaceholderType.cs" />
     <Compile Include="Reflection\Loaders\DirectoryClassLocator.cs" />
     <Compile Include="Reflection\Loaders\IClassLocator.cs" />

@@ -25,16 +25,5 @@ namespace JavaCompiler.Reflection.Types
         {
             Super = ClassLocator.Find(Super, imports) as Class;
         }
-
-        public override Type Clone()
-        {
-            var type = (Class) base.Clone();
-
-            type.Super = (Class) Super.Clone();
-
-            type.Constructors = Constructors.Select(x => x.Clone()).ToList();
-
-            return type;
-        }
     }
 }
