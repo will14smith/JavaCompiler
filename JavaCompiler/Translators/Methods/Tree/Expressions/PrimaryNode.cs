@@ -202,7 +202,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
             public override string ToString()
             {
-                return Value;
+                return string.Format("\"{0}\"", Value);
             }
         }
 
