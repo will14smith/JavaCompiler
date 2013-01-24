@@ -65,7 +65,7 @@ namespace JavaCompiler.Compilers.Items
         {
             Load();
 
-            return new ConditionalItem(Generator, OpCodes.ifne);
+            return new ConditionalItem(Generator, OpCodeValue.ifne);
         }
 
         public virtual void Duplicate()
@@ -95,13 +95,13 @@ namespace JavaCompiler.Compilers.Items
                 var offset = targetcode1 > typecode1 ? targetcode1 - 1 : targetcode1;
                 var opcode = (int)OpCodeValue.i2l + (int)typecode1 * 3 + offset;
 
-                Generator.InternalEmit((OpCodeValue)opcode);
+                Generator.Emit((OpCodeValue)opcode);
             }
             if (targetCode != targetcode1)
             {
                 var opcode = (int)OpCodeValue.i2b + targetCode - ItemTypeCode.Byte;
 
-                Generator.InternalEmit((OpCodeValue)opcode);
+                Generator.Emit((OpCodeValue)opcode);
             }
 
             return TypeCodeHelper.StackItem(Generator, target);

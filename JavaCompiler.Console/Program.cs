@@ -8,7 +8,7 @@ namespace JavaCompiler.Console
         {
             var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 CompileFile(file);
             }

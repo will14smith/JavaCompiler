@@ -46,15 +46,15 @@ namespace JavaCompiler.Compilers.Items
 
             if (TypeCode == ItemTypeCode.Long || TypeCode == ItemTypeCode.Double)
             {
-                Generator.Emit(OpCodes.ldc2_w, index);
+                Generator.Emit(OpCodeValue.ldc2_w, index);
             }
             else if (index <= 255)
             {
-                Generator.Emit(OpCodes.ldc, (byte)index);
+                Generator.Emit(OpCodeValue.ldc, (byte)index);
             }
             else
             {
-                Generator.Emit(OpCodes.ldc_w, index);
+                Generator.Emit(OpCodeValue.ldc_w, index);
             }
         }
 
@@ -70,15 +70,15 @@ namespace JavaCompiler.Compilers.Items
 
                     if (-1 <= ival && ival <= 5)
                     {
-                        Generator.InternalEmit(OpCodeValue.iconst_0 + (byte)ival);
+                        Generator.Emit(OpCodeValue.iconst_0 + (byte)ival);
                     }
                     else if (byte.MinValue <= ival && ival <= byte.MaxValue)
                     {
-                        Generator.Emit(OpCodes.bipush, (byte)ival);
+                        Generator.Emit(OpCodeValue.bipush, (byte)ival);
                     }
                     else if (short.MinValue <= ival && ival <= short.MaxValue)
                     {
-                        Generator.Emit(OpCodes.sipush, (short)ival);
+                        Generator.Emit(OpCodeValue.sipush, (short)ival);
                     }
                     else
                     {
@@ -90,7 +90,7 @@ namespace JavaCompiler.Compilers.Items
 
                     if (lval == 0 || lval == 1)
                     {
-                        Generator.InternalEmit(OpCodeValue.lconst_0 + (byte)lval);
+                        Generator.Emit(OpCodeValue.lconst_0 + (byte)lval);
                     }
                     else
                     {
@@ -101,7 +101,7 @@ namespace JavaCompiler.Compilers.Items
                     var fval = (float)value;
                     if (fval == 0.0f || fval == 1.0f || fval == 2.0f)
                     {
-                        Generator.InternalEmit(OpCodeValue.fconst_0 + (byte)fval);
+                        Generator.Emit(OpCodeValue.fconst_0 + (byte)fval);
                     }
                     else
                     {
@@ -113,7 +113,7 @@ namespace JavaCompiler.Compilers.Items
 
                     if (dval == 0.0d || dval == 1.0d)
                     {
-                        Generator.InternalEmit(OpCodeValue.dconst_0 + (byte)dval);
+                        Generator.Emit(OpCodeValue.dconst_0 + (byte)dval);
                     }
                     else
                     {
@@ -134,7 +134,7 @@ namespace JavaCompiler.Compilers.Items
         {
             var ival = (int)value;
 
-            return new ConditionalItem(Generator, ival != 0 ? OpCodes.@goto : OpCodes.jsr);
+            return new ConditionalItem(Generator, ival != 0 ? OpCodeValue.@goto : OpCodeValue.jsr);
         }
 
         public override Item Coerce(Type target)

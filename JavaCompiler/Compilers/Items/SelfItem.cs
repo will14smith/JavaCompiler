@@ -21,7 +21,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            Generator.Emit(OpCodes.aload_0);
+            Generator.Emit(OpCodeValue.aload_0);
 
             return TypeCodeHelper.StackItem(Generator, Type);
         }

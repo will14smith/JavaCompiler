@@ -27,27 +27,27 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 throw new InvalidOperationException();
             }
 
-            OpCode opcode;
+            OpCodeValue opcode;
             if (node is EqualityNode.EqualityEqualNode)
             {
                 if (lhs.Type.Primitive && rhs.Type.Primitive)
                 {
-                    opcode = OpCodes.if_icmpeq;
+                    opcode = OpCodeValue.if_icmpeq;
                 }
                 else
                 {
-                    opcode = OpCodes.if_acmpeq;
+                    opcode = OpCodeValue.if_acmpeq;
                 }
             }
             else if (node is EqualityNode.EqualityNotEqualNode)
             {
                 if (lhs.Type.Primitive && rhs.Type.Primitive)
                 {
-                    opcode = OpCodes.if_icmpne;
+                    opcode = OpCodeValue.if_icmpne;
                 }
                 else
                 {
-                    opcode = OpCodes.if_acmpne;
+                    opcode = OpCodeValue.if_acmpne;
                 }
             }
             else

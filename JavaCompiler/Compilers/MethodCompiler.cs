@@ -3,7 +3,6 @@ using JavaCompiler.Compilation;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Methods.BlockStatements;
 using JavaCompiler.Reflection;
-using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Compilers
 {
@@ -52,7 +51,7 @@ namespace JavaCompiler.Compilers
 
             if (method.ReturnType.Name == "void")
             {
-                generator.Emit(OpCodes.@return);
+                generator.Emit(OpCodeValue.@return);
             }
 
             attributes.Add(new CompileAttributeCode
@@ -64,6 +63,12 @@ namespace JavaCompiler.Compilers
                 MaxLocals = generator.MaxVariables,
                 MaxStack = generator.MaxStack
             });
+
+            var stackMapTable = generator.StackMapTable;
+            if(stackMapTable != null)
+            {
+                attributes.Add(stackMapTable);
+            }
         }
     }
 }

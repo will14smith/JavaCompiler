@@ -14,29 +14,29 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            Generator.InternalEmit(OpCodeValue.iaload + (byte) TypeCode);
+            Generator.Emit(OpCodeValue.iaload + (byte)TypeCode);
 
             return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()
         {
-            Generator.InternalEmit(OpCodeValue.iastore + (byte) TypeCode);
+            Generator.Emit(OpCodeValue.iastore + (byte)TypeCode);
         }
 
         public override void Duplicate()
         {
-            Generator.Emit(OpCodes.dup2);
+            Generator.Emit(OpCodeValue.dup2);
         }
 
         public override void Drop()
         {
-            Generator.Emit(OpCodes.pop2);
+            Generator.Emit(OpCodeValue.pop2);
         }
 
         public override void Stash(ItemTypeCode code)
         {
-            Generator.InternalEmit(OpCodeValue.dup_x2 + (byte) (3*(TypeCodeHelper.Width(code) - 1)));
+            Generator.Emit(OpCodeValue.dup_x2 + (byte)(3 * (TypeCodeHelper.Width(code) - 1)));
         }
 
         public override int Width()

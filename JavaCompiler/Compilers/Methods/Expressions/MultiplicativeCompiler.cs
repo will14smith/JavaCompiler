@@ -56,16 +56,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             switch (typeCode)
             {
                 case ItemTypeCode.Int:
-                    generator.Emit(OpCodes.imul);
+                    generator.Emit(OpCodeValue.imul);
                     break;
                 case ItemTypeCode.Long:
-                    generator.Emit(OpCodes.lmul);
+                    generator.Emit(OpCodeValue.lmul);
                     break;
                 case ItemTypeCode.Float:
-                    generator.Emit(OpCodes.fmul);
+                    generator.Emit(OpCodeValue.fmul);
                     break;
                 case ItemTypeCode.Double:
-                    generator.Emit(OpCodes.dmul);
+                    generator.Emit(OpCodeValue.dmul);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -78,16 +78,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             switch (typeCode)
             {
                 case ItemTypeCode.Int:
-                    generator.Emit(OpCodes.idiv);
+                    generator.Emit(OpCodeValue.idiv);
                     break;
                 case ItemTypeCode.Long:
-                    generator.Emit(OpCodes.ldiv);
+                    generator.Emit(OpCodeValue.ldiv);
                     break;
                 case ItemTypeCode.Float:
-                    generator.Emit(OpCodes.fdiv);
+                    generator.Emit(OpCodeValue.fdiv);
                     break;
                 case ItemTypeCode.Double:
-                    generator.Emit(OpCodes.ddiv);
+                    generator.Emit(OpCodeValue.ddiv);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -100,16 +100,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             switch (typeCode)
             {
                 case ItemTypeCode.Int:
-                    generator.Emit(OpCodes.irem);
+                    generator.Emit(OpCodeValue.irem);
                     break;
                 case ItemTypeCode.Long:
-                    generator.Emit(OpCodes.lrem);
+                    generator.Emit(OpCodeValue.lrem);
                     break;
                 case ItemTypeCode.Float:
-                    generator.Emit(OpCodes.frem);
+                    generator.Emit(OpCodeValue.frem);
                     break;
                 case ItemTypeCode.Double:
-                    generator.Emit(OpCodes.drem);
+                    generator.Emit(OpCodeValue.drem);
                     break;
                 default:
                     throw new NotImplementedException();

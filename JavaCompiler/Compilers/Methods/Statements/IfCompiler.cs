@@ -24,6 +24,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
             new StatementCompiler(node.TrueBranch).Compile(generator);
             generator.PopScope();
 
+            generator.Emit(OpCodeValue.@goto, endOfIf);
             generator.MarkLabel(falseLabel);
 
             if (node.FalseBranch != null)

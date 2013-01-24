@@ -26,13 +26,11 @@ namespace JavaCompiler.Compilers.Items
         {
             if (reg <= 3)
             {
-                Generator.InternalEmit(
-                    (OpCodeValue) ((byte) OpCodeValue.iload_0 + (byte) TypeCodeHelper.Truncate(TypeCode)*4 + reg));
+                Generator.Emit((OpCodeValue)((byte)OpCodeValue.iload_0 + (byte)TypeCodeHelper.Truncate(TypeCode) * 4 + reg));
             }
             else
             {
-                Generator.InternalEmit(OpCodeValue.iload + (byte) TypeCodeHelper.Truncate(TypeCode));
-                Generator.InternalEmitShort(reg);
+                Generator.Emit(OpCodeValue.iload + (byte)TypeCodeHelper.Truncate(TypeCode), reg);
             }
 
             return TypeCodeHelper.StackItem(Generator, Type);
@@ -42,13 +40,11 @@ namespace JavaCompiler.Compilers.Items
         {
             if (reg <= 3)
             {
-                Generator.InternalEmit(
-                    (OpCodeValue) ((byte) OpCodeValue.istore_0 + (byte) TypeCodeHelper.Truncate(TypeCode)*4 + reg));
+                Generator.Emit((OpCodeValue)((byte)OpCodeValue.istore_0 + (byte)TypeCodeHelper.Truncate(TypeCode) * 4 + reg));
             }
             else
             {
-                Generator.InternalEmit(OpCodeValue.istore + (byte) TypeCodeHelper.Truncate(TypeCode));
-                Generator.InternalEmitShort(reg);
+                Generator.Emit(OpCodeValue.istore + (byte)TypeCodeHelper.Truncate(TypeCode), reg);
             }
 
             //TODO: code.setDefined(reg);

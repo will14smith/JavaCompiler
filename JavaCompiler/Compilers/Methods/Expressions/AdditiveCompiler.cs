@@ -49,16 +49,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             switch (typeCode)
             {
                 case ItemTypeCode.Int:
-                    generator.Emit(OpCodes.iadd);
+                    generator.Emit(OpCodeValue.iadd);
                     break;
                 case ItemTypeCode.Long:
-                    generator.Emit(OpCodes.ladd);
+                    generator.Emit(OpCodeValue.ladd);
                     break;
                 case ItemTypeCode.Float:
-                    generator.Emit(OpCodes.fadd);
+                    generator.Emit(OpCodeValue.fadd);
                     break;
                 case ItemTypeCode.Double:
-                    generator.Emit(OpCodes.dadd);
+                    generator.Emit(OpCodeValue.dadd);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -81,10 +81,9 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var sbInit = (Method)sb.Constructors.First(x => x.Parameters.Count == 0);
 
             var sbIndex = generator.Manager.AddConstantClass(sb);
-            var sbInitIndex = generator.Manager.AddConstantMethodref(sbInit);
 
-            generator.Emit(OpCodes.@new, sbIndex);
-            generator.Emit(OpCodes.dup);
+            generator.EmitNew(sbIndex, sb);
+            generator.Emit(OpCodeValue.dup);
 
             new MemberItem(generator, sbInit, true).Invoke();
         }

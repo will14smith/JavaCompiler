@@ -7,17 +7,17 @@ namespace JavaCompiler.Compilers.Items
 {
     public class ConditionalItem : Item
     {
-        public OpCode OpCode { get; private set; }
+        public OpCodeValue OpCode { get; private set; }
 
         public Label TrueLabel { get; private set; }
         public Label FalseLabel { get; private set; }
 
-        public ConditionalItem(ByteCodeGenerator generator, OpCode opCode)
+        public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode)
             : this(generator, opCode, null, null)
         {
             OpCode = opCode;
         }
-        public ConditionalItem(ByteCodeGenerator generator, OpCode opCode, Label trueLabel, Label falseLabel)
+        public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode, Label trueLabel, Label falseLabel)
             : base(generator, PrimativeTypes.Byte)
         {
             OpCode = opCode;
@@ -28,28 +28,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            Label trueChain = null;
-            Label falseChain = JumpFalse();
-
-            if (!IsFalse())
-            {
-                Generator.MarkLabel(TrueLabel);
-                Generator.Emit(OpCodes.iconst_1);
-                //TODO: trueChain = code.branch(goto_);
-            }
-
-            if (falseChain != null)
-            {
-                Generator.MarkLabel(falseChain);
-                Generator.Emit(OpCodes.iconst_0);
-            }
-
-            if (trueChain != null)
-            {
-                Generator.MarkLabel(trueChain);
-            }
-
-            return TypeCodeHelper.StackItem(Generator, Type);
+            throw new NotImplementedException();
         }
 
         public override void Duplicate()
@@ -73,19 +52,19 @@ namespace JavaCompiler.Compilers.Items
 
         public Label JumpTrue()
         {
-            if (TrueLabel != null) throw new NotImplementedException();
+            var label = Generator.DefineLabel();
 
-            TrueLabel = Generator.DefineLabel();
+            Generator.Emit(OpCode, label);
 
-            return TrueLabel;
+            return label;
         }
         public Label JumpFalse()
         {
-            if(FalseLabel != null) throw new NotImplementedException();
+            var label = Generator.DefineLabel();
 
-            FalseLabel = Generator.DefineLabel();
+            Generator.Emit(OpCodes.Negate(OpCode), label);
 
-            return FalseLabel;
+            return label;
         }
 
         public ConditionalItem Negate()
@@ -102,11 +81,11 @@ namespace JavaCompiler.Compilers.Items
 
         private bool IsTrue()
         {
-            return FalseLabel == null && OpCode.Value == OpCodeValue.@goto;
+            return FalseLabel == null && OpCode == OpCodeValue.@goto;
         }
         private bool IsFalse()
         {
-            return TrueLabel == null && OpCode.Value == OpCodeValue.jsr;
+            return TrueLabel == null && OpCode == OpCodeValue.jsr;
         }
 
         public new String ToString()

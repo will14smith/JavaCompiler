@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Utilities;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation
 {
@@ -100,7 +102,7 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 12 + Code.Length + ExceptionTable.Count()*8 + Attributes.Sum(x => x.Length); }
+            get { return 12 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Sum(x => x.Length); }
         }
 
         public short MaxStack { get; set; }
@@ -118,7 +120,7 @@ namespace JavaCompiler.Compilation
             writer.Write(Code.Length);
             writer.Write(Code);
 
-            writer.Write((short) ExceptionTable.Count());
+            writer.Write((short)ExceptionTable.Count());
             foreach (ExceptionTableEntry ex in ExceptionTable)
             {
                 writer.Write(ex.StartPC);
@@ -127,7 +129,7 @@ namespace JavaCompiler.Compilation
                 writer.Write(ex.CatchType);
             }
 
-            writer.Write((short) Attributes.Count());
+            writer.Write((short)Attributes.Count());
             foreach (CompileAttribute attr in Attributes)
             {
                 attr.Write(writer);
@@ -188,14 +190,14 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 2 + ExceptionTable.Count()*2; }
+            get { return 2 + ExceptionTable.Count() * 2; }
         }
 
         public List<short> ExceptionTable { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) ExceptionTable.Count());
+            writer.Write((short)ExceptionTable.Count());
             foreach (short ex in ExceptionTable)
             {
                 writer.Write(ex);
@@ -225,17 +227,17 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 2 + Classes.Count()*8; }
+            get { return 2 + Classes.Count() * 8; }
         }
 
         public List<InnerClass> Classes { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) Classes.Count());
+            writer.Write((short)Classes.Count());
             foreach (InnerClass c in Classes)
             {
-                int modifierValue = (short) c.InnerModifier & 0x631;
+                int modifierValue = (short)c.InnerModifier & 0x631;
 
                 writer.Write(c.InnerClassInfo);
                 writer.Write(c.OuterClassInfo);
@@ -256,7 +258,7 @@ namespace JavaCompiler.Compilation
                 c.InnerClassInfo = reader.ReadInt16();
                 c.OuterClassInfo = reader.ReadInt16();
                 c.InnerName = reader.ReadInt16();
-                c.InnerModifier = (Modifier) reader.ReadInt16();
+                c.InnerModifier = (Modifier)reader.ReadInt16();
 
                 Classes.Add(c);
             }
@@ -335,14 +337,14 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 2 + LineNumbers.Count()*4; }
+            get { return 2 + LineNumbers.Count() * 4; }
         }
 
         public List<LineNumberTableEntry> LineNumbers { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) LineNumbers.Count());
+            writer.Write((short)LineNumbers.Count());
             foreach (LineNumberTableEntry ln in LineNumbers)
             {
                 writer.Write(ln.StartPC);
@@ -388,14 +390,14 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 2 + Variables.Count()*10; }
+            get { return 2 + Variables.Count() * 10; }
         }
 
         public List<VariableTableEntry> Variables { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) Variables.Count());
+            writer.Write((short)Variables.Count());
             foreach (VariableTableEntry ln in Variables)
             {
                 writer.Write(ln.StartPC);
@@ -492,13 +494,13 @@ namespace JavaCompiler.Compilation
             get { return 2 + Entries.Sum(x => x.Length); }
         }
 
-        public List<StackFrame> Entries { get; set; }
+        public List<StackMapFrame> Entries { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) Entries.Count());
+            writer.Write((short)Entries.Count());
 
-            foreach (StackFrame entry in Entries)
+            foreach (var entry in Entries)
             {
                 writer.Write(entry.Type);
                 if (entry.Type <= 63)
@@ -513,24 +515,24 @@ namespace JavaCompiler.Compilation
                 else if (entry.Type == 247)
                 {
                     // SAME_LOCALS_1_STACK_ITEM_EXTENDED
-                    writer.Write(entry.OffsetDelta);
+                    writer.Write((short)entry.OffsetDelta);
                     entry.Stack[0].Write(writer);
                 }
                 else if (entry.Type >= 248 && entry.Type <= 250)
                 {
                     // CHOP
-                    writer.Write(entry.OffsetDelta);
+                    writer.Write((short)entry.OffsetDelta);
                 }
                 else if (entry.Type == 251)
                 {
                     // SAME_FRAME_EXTENDED
-                    writer.Write(entry.OffsetDelta);
+                    writer.Write((short)entry.OffsetDelta);
                 }
                 else if (entry.Type >= 252 && entry.Type <= 254)
                 {
                     // APPEND
-                    writer.Write(entry.OffsetDelta);
-                    var type = (short) entry.Type;
+                    writer.Write((short)entry.OffsetDelta);
+                    var type = (short)entry.Type;
                     for (int i = 251; i < type; i++)
                     {
                         entry.Locals[i - 251].Write(writer);
@@ -546,15 +548,15 @@ namespace JavaCompiler.Compilation
                 else if (entry.Type == 255)
                 {
                     // FULL_FRAME
-                    writer.Write(entry.OffsetDelta);
+                    writer.Write((short)entry.OffsetDelta);
 
-                    writer.Write((short) entry.Locals.Count());
+                    writer.Write((short)entry.Locals.Count());
                     for (int i = 0; i < entry.Locals.Count(); i++)
                     {
                         entry.Locals[i].Write(writer);
                     }
 
-                    writer.Write((short) entry.Stack.Count());
+                    writer.Write((short)entry.Stack.Count());
                     for (int i = 0; i < entry.Stack.Count(); i++)
                     {
                         entry.Stack[i].Write(writer);
@@ -562,15 +564,14 @@ namespace JavaCompiler.Compilation
                 }
             }
         }
-
         public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
         {
-            Entries = new List<StackFrame>();
+            Entries = new List<StackMapFrame>();
 
             short entryCount = reader.ReadInt16();
             for (int i = 0; i < entryCount; i++)
             {
-                var entry = new StackFrame();
+                var entry = new StackMapFrame();
 
                 entry.Type = reader.ReadByte();
                 if (entry.Type <= 63)
@@ -610,7 +611,7 @@ namespace JavaCompiler.Compilation
                     // APPEND
                     entry.OffsetDelta = reader.ReadInt16();
 
-                    var type = (short) entry.Type;
+                    var type = (short)entry.Type;
                     for (int x = 251; x < type; x++)
                     {
                         var item = new VerificationTypeInfo();
@@ -649,24 +650,121 @@ namespace JavaCompiler.Compilation
             return this;
         }
 
-        #region Nested type: StackFrame
+        #region Nested type: StackMapFrame
 
-        public class StackFrame
+        public class StackMapFrame
         {
-            public StackFrame()
+            private const byte SameFrameSize = 64;
+            private const byte SameLocals1StackItemExtended = 247;
+            private const byte SameFrameExtended = 251;
+            private const byte FullFrame = 255;
+            private const byte MaxLocalLengthDiff = 4;
+
+            public StackMapFrame()
             {
                 Locals = new List<VerificationTypeInfo>();
                 Stack = new List<VerificationTypeInfo>();
             }
 
             public byte Type { get; set; }
-            public short OffsetDelta { get; set; }
+            public int OffsetDelta { get; set; }
             public List<VerificationTypeInfo> Locals { get; set; }
             public List<VerificationTypeInfo> Stack { get; set; }
 
             public int Length
             {
                 get { throw new NotImplementedException(); }
+            }
+
+            internal static StackMapFrame GetInstance(ByteCodeGenerator.StackMapFrame thisFrame, int prevPC, Type[] prevLocals)
+            {
+                var locals = thisFrame.Locals;
+                var stack = thisFrame.Stack;
+                var offsetDelta = thisFrame.PC - prevPC - 1;
+
+                switch (stack.Length)
+                {
+                    case 1:
+                        if (locals.Length == prevLocals.Length && Compare(prevLocals, locals) == 0)
+                        {
+                            return new StackMapFrame
+                            {
+                                Type = (byte)((offsetDelta < SameFrameSize) ? (SameFrameSize + offsetDelta) : SameLocals1StackItemExtended),
+                                OffsetDelta = offsetDelta,
+                                Stack = new List<VerificationTypeInfo> { GetTypeInfo(stack[0]) }
+                            };
+                        }
+                        break;
+                    case 0:
+                        {
+                            var diffLength = Compare(prevLocals, locals);
+                            if (diffLength == 0)
+                            {
+                                return new StackMapFrame
+                                {
+                                    Type = (byte)((offsetDelta < SameFrameSize) ? offsetDelta : SameFrameExtended),
+                                    OffsetDelta = offsetDelta
+                                };
+                            }
+                            if (-MaxLocalLengthDiff < diffLength && diffLength < 0)
+                            {
+                                // APPEND
+                                var localDiff = new Type[-diffLength];
+                                for (int i = prevLocals.Length, j = 0; i < locals.Length; i++, j++)
+                                {
+                                    localDiff[j] = locals[i];
+                                }
+
+                                return new StackMapFrame
+                                {
+                                    Type = (byte)(SameFrameExtended - diffLength),
+                                    OffsetDelta = offsetDelta,
+                                    Locals = locals.Select(GetTypeInfo).ToList()
+                                };
+                            }
+                            if (0 < diffLength && diffLength < MaxLocalLengthDiff)
+                            {
+                                // CHOP
+                                return new StackMapFrame
+                                {
+                                    Type = (byte)(SameFrameExtended - diffLength),
+                                    OffsetDelta = offsetDelta
+                                };
+                            }
+                        }
+                        break;
+                }
+                // FULL_FRAME
+                return new StackMapFrame
+                {
+                    Type = FullFrame,
+                    OffsetDelta = offsetDelta,
+                    Locals = locals.Select(GetTypeInfo).ToList(),
+                    Stack = stack.Select(GetTypeInfo).ToList()
+                };
+            }
+
+            private static int Compare(IList<Type> arr1, IList<Type> arr2)
+            {
+                var diffLength = arr1.Count - arr2.Count;
+                if (diffLength > MaxLocalLengthDiff || diffLength < -MaxLocalLengthDiff)
+                {
+                    return int.MaxValue;
+                }
+
+                var len = (diffLength > 0) ? arr2.Count : arr1.Count;
+                for (var i = 0; i < len; i++)
+                {
+                    if (arr1[i].GetDescriptor() != arr2[i].GetDescriptor())
+                    {
+                        return int.MaxValue;
+                    }
+                }
+                return diffLength;
+            }
+            private static VerificationTypeInfo GetTypeInfo(Type type)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -681,7 +779,7 @@ namespace JavaCompiler.Compilation
 
             public void Write(EndianBinaryWriter writer)
             {
-                writer.Write((byte) Tag);
+                writer.Write((byte)Tag);
 
                 if (Tag == VerificationType.Uninitialized ||
                     Tag == VerificationType.Object)
@@ -692,7 +790,7 @@ namespace JavaCompiler.Compilation
 
             public void Read(EndianBinaryReader reader)
             {
-                Tag = (VerificationType) reader.ReadByte();
+                Tag = (VerificationType)reader.ReadByte();
 
                 if (Tag == VerificationType.Uninitialized ||
                     Tag == VerificationType.Object)
@@ -798,14 +896,14 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 2 + Variables.Count()*10; }
+            get { return 2 + Variables.Count() * 10; }
         }
 
         public List<VariableTypeTableEntry> Variables { get; set; }
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) Variables.Count());
+            writer.Write((short)Variables.Count());
             foreach (VariableTypeTableEntry ln in Variables)
             {
                 writer.Write(ln.StartPC);
@@ -872,7 +970,7 @@ namespace JavaCompiler.Compilation
 
         public override void Write(EndianBinaryWriter writer)
         {
-            writer.Write((short) Annotations.Count());
+            writer.Write((short)Annotations.Count());
             foreach (Annotation annotation in Annotations)
             {
                 WriteAnnotation(annotation, writer);
@@ -894,7 +992,7 @@ namespace JavaCompiler.Compilation
         {
             writer.Write(annotation.TypeIndex);
 
-            writer.Write((short) annotation.ElementValues.Count());
+            writer.Write((short)annotation.ElementValues.Count());
             foreach (var value in annotation.ElementValues)
             {
                 writer.Write(value.Item1);
@@ -905,7 +1003,7 @@ namespace JavaCompiler.Compilation
 
         private void WriteElementValue(ElementValue value, EndianBinaryWriter writer)
         {
-            switch ((char) value.Tag)
+            switch ((char)value.Tag)
             {
                 case 'B':
                 case 'C':
@@ -929,7 +1027,7 @@ namespace JavaCompiler.Compilation
                     WriteAnnotation(value.AnnotationValue, writer);
                     break;
                 case '[':
-                    writer.Write((short) value.Values.Count());
+                    writer.Write((short)value.Values.Count());
                     foreach (ElementValue ev in value.Values)
                     {
                         WriteElementValue(ev, writer);
@@ -963,7 +1061,7 @@ namespace JavaCompiler.Compilation
 
             value.Tag = reader.ReadByte();
 
-            switch ((char) value.Tag)
+            switch ((char)value.Tag)
             {
                 case 'B':
                 case 'C':

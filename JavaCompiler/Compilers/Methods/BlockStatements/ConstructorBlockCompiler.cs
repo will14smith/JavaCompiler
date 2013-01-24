@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Items;
 using JavaCompiler.Compilers.Methods.Expressions;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Types;
@@ -43,7 +44,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
             new BlockCompiler(tree).Compile(generator);
 
-            generator.Emit(OpCodes.@return);
+            generator.Emit(OpCodeValue.@return);
         }
 
         private void CompileSuperCall(ByteCodeGenerator generator)
@@ -64,8 +65,8 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
             short index = generator.Manager.AddConstantMethodref(superMethod);
 
-            generator.Emit(OpCodes.aload_0);
-            generator.EmitInvoke(OpCodes.invokespecial, (short)superMethod.Parameters.Count, index);
+            new SelfItem(generator, superClass, true).Load();
+            new MemberItem(generator, superMethod, true).Invoke();
         }
 
         private void CompileSuperCall(ByteCodeGenerator generator, PrimaryNode.TermConstructorCallExpression call)

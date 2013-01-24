@@ -47,6 +47,8 @@
     <Compile Include="Compilation\ByteCode\OpCode.cs" />
     <Compile Include="Compilation\ByteCode\OpCodes.cs" />
     <Compile Include="Compilation\ByteCode\OpCodeValue.cs" />
+    <Compile Include="Compilation\ByteCode\TypeStack.cs" />
+    <Compile Include="Compilation\ByteCode\UninitializedType.cs" />
     <Compile Include="Compilation\ByteCode\Variable.cs" />
     <Compile Include="Compilation\CompileAttribute.cs" />
     <Compile Include="Compilation\CompileConstant.cs" />
@@ -240,6 +242,7 @@
     <Compile Include="Utilities\ITreeExtensions.cs" />
     <Compile Include="Utilities\JavaTextEncoding.cs" />
     <Compile Include="Utilities\LittleEndianBitConverter.cs" />
+    <Compile Include="Utilities\StackList.cs" />
     <Compile Include="Utilities\TypeCodeHelper.cs" />
   </ItemGroup>
   <ItemGroup />

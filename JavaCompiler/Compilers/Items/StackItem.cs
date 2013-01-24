@@ -18,18 +18,17 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Duplicate()
         {
-            Generator.Emit(Width() == 2 ? OpCodes.dup2 : OpCodes.dup);
+            Generator.Emit(Width() == 2 ? OpCodeValue.dup2 : OpCodeValue.dup);
         }
 
         public override void Drop()
         {
-            Generator.Emit(Width() == 2 ? OpCodes.pop2 : OpCodes.pop);
+            Generator.Emit(Width() == 2 ? OpCodeValue.pop2 : OpCodeValue.pop);
         }
 
         public override void Stash(ItemTypeCode code)
         {
-            Generator.InternalEmit((Width() == 2 ? OpCodeValue.dup_x2 : OpCodeValue.dup_x1) +
-                                   (byte) (3*(TypeCodeHelper.Width(code) - 1)));
+            Generator.Emit((Width() == 2 ? OpCodeValue.dup_x2 : OpCodeValue.dup_x1) + (byte)(3 * (TypeCodeHelper.Width(code) - 1)));
         }
 
         public override int Width()

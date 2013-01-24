@@ -18,11 +18,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         {
             if (node is AssignmentNode)
             {
-                Item item = new AssignmentCompiler(node as AssignmentNode).Compile(generator);
-
-                item.Drop();
-
-                return new VoidItem(generator);
+                return new AssignmentCompiler(node as AssignmentNode).Compile(generator);
             }
             if (node is ConditionalNode)
             {

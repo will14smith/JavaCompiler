@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
@@ -22,6 +24,10 @@ namespace JavaCompiler.Utilities
             }
         }
 
+        public static int Width(Type type)
+        {
+            return Width(TypeCode(type));
+        }
         public static int Width(ItemTypeCode typeCode)
         {
             switch (typeCode)
@@ -94,6 +100,11 @@ namespace JavaCompiler.Utilities
             }
 
             return new StackItem(generator, type);
+        }
+
+        public static int Width(IEnumerable<Type> typeCode)
+        {
+            return typeCode.Sum(x => Width(x));
         }
     }
 }

@@ -17,18 +17,20 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field)member);
+            var field = (Field)member;
+            short index = Generator.Manager.AddConstantFieldref(field);
 
-            Generator.Emit(OpCodes.getstatic, index);
+            Generator.EmitGetstatic(index, field);
 
             return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field)member);
+            var field = (Field)member;
+            short index = Generator.Manager.AddConstantFieldref(field);
 
-            Generator.Emit(OpCodes.putstatic, index);
+            Generator.EmitPutstatic(index, field);
         }
 
         public override Item Invoke()
@@ -36,7 +38,7 @@ namespace JavaCompiler.Compilers.Items
             var method = (Method)member;
             var index = Generator.Manager.AddConstantMethodref(method);
 
-            Generator.EmitInvoke(OpCodes.invokestatic, (short)method.Parameters.Count, index);
+            Generator.EmitInvokestatic(index, method);
 
             return TypeCodeHelper.StackItem(Generator, member.ReturnType);
         }

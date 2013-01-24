@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JavaCompiler.Compilation.ByteCode
+﻿namespace JavaCompiler.Compilation.ByteCode
 {
     public class OpCodes
     {
@@ -494,12 +492,12 @@ namespace JavaCompiler.Compilation.ByteCode
                                                 OpCodeModeWide.Unused, true);
 
         // ReSharper restore InconsistentNaming
-        public static OpCode Negate(OpCode opCode)
+        public static OpCodeValue Negate(OpCodeValue opcode)
         {
-            if (opCode.Value == OpCodeValue.ifnull) return ifnonnull;
-            if (opCode.Value == OpCodeValue.ifnonnull) return ifnull;
+            if (opcode == OpCodeValue.ifnull) return OpCodeValue.ifnonnull;
+            if (opcode == OpCodeValue.ifnonnull) return OpCodeValue.ifnull;
 
-            throw new NotImplementedException();
+            return (OpCodeValue)(((int)opcode + 1) ^ 1) - 1;
         }
     }
 }

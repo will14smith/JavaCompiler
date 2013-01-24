@@ -18,76 +18,83 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             this.node = node;
         }
 
-        public Item Compile(ByteCodeGenerator generator)
+        public void Compile(ByteCodeGenerator generator)
         {
+            Item item = null;
+
             if (node is MethodTree)
             {
                 new BlockCompiler(node as MethodTree).Compile(generator);
+            }
+            else if (node is ExpressionNode)
+            {
+                item = new ExpressionCompiler(node as ExpressionNode).Compile(generator);
+            }
+            else if (node is AssertNode)
+            {
+                item = new AssertCompiler(node as AssertNode).Compile(generator);
+            }
+            else if (node is IfNode)
+            {
+                item = new IfCompiler(node as IfNode).Compile(generator);
+            }
+            else if (node is ForNode)
+            {
+                item = new ForCompiler(node as ForNode).Compile(generator);
+            }
+            else if (node is ForEachNode)
+            {
+                item = new ForEachCompiler(node as ForEachNode).Compile(generator);
+            }
+            else if (node is WhileNode)
+            {
+                item = new WhileCompiler(node as WhileNode).Compile(generator);
+            }
+            else if (node is DoNode)
+            {
+                item = new DoCompiler(node as DoNode).Compile(generator);
+            }
+            else if (node is TryNode)
+            {
+                item = new TryCompiler(node as TryNode).Compile(generator);
+            }
+            else if (node is SwitchNode)
+            {
+                item = new SwitchCompiler(node as SwitchNode).Compile(generator);
+            }
+            else if (node is SynchronizedNode)
+            {
+                item = new SynchronizedCompiler(node as SynchronizedNode).Compile(generator);
+            }
+            else if (node is ReturnNode)
+            {
+                item = new ReturnCompiler(node as ReturnNode).Compile(generator);
+            }
+            else if (node is ThrowNode)
+            {
+                item = new ThrowCompiler(node as ThrowNode).Compile(generator);
+            }
+            else if (node is BreakNode)
+            {
+                item = new BreakCompiler(node as BreakNode).Compile(generator);
+            }
+            else if (node is ContinueNode)
+            {
+                item = new ContinueCompiler(node as ContinueNode).Compile(generator);
+            }
+            else if (node is LabelNode)
+            {
+                item = new LabelCompiler(node as LabelNode).Compile(generator);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
 
-                return new VoidItem(generator);
-            }
-            if (node is ExpressionNode)
+            if (item != null)
             {
-                return new ExpressionCompiler(node as ExpressionNode).Compile(generator);
+                item.Drop();
             }
-            if (node is AssertNode)
-            {
-                return new AssertCompiler(node as AssertNode).Compile(generator);
-            }
-            if (node is IfNode)
-            {
-                return new IfCompiler(node as IfNode).Compile(generator);
-            }
-            if (node is ForNode)
-            {
-                return new ForCompiler(node as ForNode).Compile(generator);
-            }
-            if (node is ForEachNode)
-            {
-                return new ForEachCompiler(node as ForEachNode).Compile(generator);
-            }
-            if (node is WhileNode)
-            {
-                return new WhileCompiler(node as WhileNode).Compile(generator);
-            }
-            if (node is DoNode)
-            {
-                return new DoCompiler(node as DoNode).Compile(generator);
-            }
-            if (node is TryNode)
-            {
-                return new TryCompiler(node as TryNode).Compile(generator);
-            }
-            if (node is SwitchNode)
-            {
-                return new SwitchCompiler(node as SwitchNode).Compile(generator);
-            }
-            if (node is SynchronizedNode)
-            {
-                return new SynchronizedCompiler(node as SynchronizedNode).Compile(generator);
-            }
-            if (node is ReturnNode)
-            {
-                return new ReturnCompiler(node as ReturnNode).Compile(generator);
-            }
-            if (node is ThrowNode)
-            {
-                return new ThrowCompiler(node as ThrowNode).Compile(generator);
-            }
-            if (node is BreakNode)
-            {
-                return new BreakCompiler(node as BreakNode).Compile(generator);
-            }
-            if (node is ContinueNode)
-            {
-                return new ContinueCompiler(node as ContinueNode).Compile(generator);
-            }
-            if (node is LabelNode)
-            {
-                return new LabelCompiler(node as LabelNode).Compile(generator);
-            }
-
-            throw new NotImplementedException();
         }
     }
 }

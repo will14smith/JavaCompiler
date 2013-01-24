@@ -26,7 +26,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
                     throw new InvalidOperationException();
                 }
 
-                generator.Emit(OpCodes.@return);
+                generator.Emit(OpCodeValue.@return);
 
                 return new VoidItem(generator);
             }
@@ -46,19 +46,19 @@ namespace JavaCompiler.Compilers.Methods.Statements
             switch (typeCode)
             {
                 case ItemTypeCode.Int:
-                    generator.Emit(OpCodes.ireturn);
+                    generator.Emit(OpCodeValue.ireturn);
                     break;
                 case ItemTypeCode.Long:
-                    generator.Emit(OpCodes.lreturn);
+                    generator.Emit(OpCodeValue.lreturn);
                     break;
                 case ItemTypeCode.Float:
-                    generator.Emit(OpCodes.freturn);
+                    generator.Emit(OpCodeValue.freturn);
                     break;
                 case ItemTypeCode.Double:
-                    generator.Emit(OpCodes.dreturn);
+                    generator.Emit(OpCodeValue.dreturn);
                     break;
                 case ItemTypeCode.Object:
-                    generator.Emit(OpCodes.areturn);
+                    generator.Emit(OpCodeValue.areturn);
                     break;
                 default:
                     throw new NotImplementedException();

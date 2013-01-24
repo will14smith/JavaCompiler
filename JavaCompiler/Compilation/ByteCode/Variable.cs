@@ -24,6 +24,12 @@ namespace JavaCompiler.Compilation.ByteCode
         internal string Name { get; private set; }
         internal Type Type { get; private set; }
 
+        public bool IsDefined
+        {
+            get { return true; }
+            set { throw new NotImplementedException(); }
+        }
+
         public bool IsAssignableTo(Type c)
         {
             throw new NotImplementedException();
