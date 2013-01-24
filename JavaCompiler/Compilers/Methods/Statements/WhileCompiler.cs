@@ -29,18 +29,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
             // Run Body
             generator.PushScope();
 
-            if (node.Statement is MethodTree)
-            {
-                new BlockCompiler(node.Statement as MethodTree).Compile(generator);
-            }
-            else if (node.Statement is StatementNode)
-            {
-                new StatementCompiler(node.Statement as StatementNode).Compile(generator);
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            new StatementCompiler(node.Statement).Compile(generator);
 
             generator.PopScope();
             generator.Emit(OpCodes.@goto, startOfWhile);
