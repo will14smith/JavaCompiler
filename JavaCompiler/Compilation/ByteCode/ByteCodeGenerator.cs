@@ -43,11 +43,6 @@ namespace JavaCompiler.Compilation.ByteCode
 
             stackSize = 0;
             MaxStack = 0;
-
-            StackItem = new Item[(int)ItemTypeCode.TypeCodeCount];
-            for (int i = 0; i < (int)ItemTypeCode.Void; i++)
-                StackItem[i] = new StackItem(this, TypeCodeHelper.Type((ItemTypeCode)i));
-            StackItem[(int)ItemTypeCode.Void] = new VoidItem(this);
         }
 
         #region Labels

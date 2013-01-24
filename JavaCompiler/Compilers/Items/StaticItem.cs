@@ -21,7 +21,7 @@ namespace JavaCompiler.Compilers.Items
 
             Generator.Emit(OpCodes.getstatic, index);
 
-            return StackItem[(int)TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()
@@ -33,14 +33,12 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Invoke()
         {
-            ItemTypeCode rescode = TypeCodeHelper.TypeCode(member.ReturnType);
-
             var method = (Method)member;
-            short index = Generator.Manager.AddConstantMethodref(method);
+            var index = Generator.Manager.AddConstantMethodref(method);
 
             Generator.EmitInvoke(OpCodes.invokestatic, (short)method.Parameters.Count, index);
 
-            return StackItem[(int)rescode];
+            return TypeCodeHelper.StackItem(Generator, member.ReturnType);
         }
 
         public override string ToString()

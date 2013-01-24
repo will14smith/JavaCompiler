@@ -19,7 +19,7 @@ namespace JavaCompiler.Compilers.Items
             lhs.Stash(TypeCode);
             lhs.Store();
 
-            return StackItem[(int) TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Duplicate()

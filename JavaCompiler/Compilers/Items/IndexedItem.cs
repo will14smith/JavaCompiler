@@ -16,7 +16,7 @@ namespace JavaCompiler.Compilers.Items
         {
             Generator.InternalEmit(OpCodeValue.iaload + (byte) TypeCode);
 
-            return StackItem[(int) TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()

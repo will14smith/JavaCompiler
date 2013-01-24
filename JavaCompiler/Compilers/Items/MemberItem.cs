@@ -24,7 +24,7 @@ namespace JavaCompiler.Compilers.Items
 
             Generator.Emit(OpCodes.getfield, index);
 
-            return StackItem[(int)TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()
@@ -36,44 +36,42 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Invoke()
         {
-            ItemTypeCode rescode = TypeCodeHelper.TypeCode(member.ReturnType);
-
             var method = (Method)member;
             if (member.DeclaringType is Interface)
             {
-                short index = Generator.Manager.AddConstantInterfaceMethodref(method);
+                var index = Generator.Manager.AddConstantInterfaceMethodref(method);
 
                 Generator.EmitInvoke(OpCodes.invokeinterface, (short)method.Parameters.Count, index, (byte)method.Parameters.Count, 0);
             }
             else if (nonVirtual)
             {
-                short index = Generator.Manager.AddConstantMethodref(method);
+                var index = Generator.Manager.AddConstantMethodref(method);
 
-                Generator.EmitInvoke(OpCodes.invokespecial, (short) method.Parameters.Count, index);
+                Generator.EmitInvoke(OpCodes.invokespecial, (short)method.Parameters.Count, index);
             }
             else
             {
-                short index = Generator.Manager.AddConstantMethodref(method);
+                var index = Generator.Manager.AddConstantMethodref(method);
 
                 Generator.EmitInvoke(OpCodes.invokevirtual, (short)method.Parameters.Count, index);
             }
 
-            return StackItem[(int)rescode];
+            return TypeCodeHelper.StackItem(Generator, member.ReturnType);
         }
 
         public override void Duplicate()
         {
-            StackItem[(int)ItemTypeCode.Object].Duplicate();
+            TypeCodeHelper.StackItem(Generator, Type).Duplicate();
         }
 
         public override void Drop()
         {
-            StackItem[(int)ItemTypeCode.Object].Drop();
+            TypeCodeHelper.StackItem(Generator, Type).Drop();
         }
 
         public override void Stash(ItemTypeCode code)
         {
-            StackItem[(int)ItemTypeCode.Object].Stash(code);
+            TypeCodeHelper.StackItem(Generator, Type).Stash(code);
         }
 
         public override int Width()

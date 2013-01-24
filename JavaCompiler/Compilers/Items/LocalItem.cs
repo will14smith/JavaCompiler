@@ -35,7 +35,7 @@ namespace JavaCompiler.Compilers.Items
                 Generator.InternalEmitShort(reg);
             }
 
-            return StackItem[(int) TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Store()

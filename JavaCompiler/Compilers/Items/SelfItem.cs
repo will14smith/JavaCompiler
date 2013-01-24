@@ -1,5 +1,6 @@
 ﻿using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Types;
+using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
@@ -22,7 +23,7 @@ namespace JavaCompiler.Compilers.Items
         {
             Generator.Emit(OpCodes.aload_0);
 
-            return StackItem[(int) TypeCode];
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override string ToString()

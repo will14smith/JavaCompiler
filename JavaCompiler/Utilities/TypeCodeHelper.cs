@@ -1,4 +1,5 @@
 ﻿using System;
+using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
@@ -80,6 +81,19 @@ namespace JavaCompiler.Utilities
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public static Item StackItem(ByteCodeGenerator generator, Type type)
+        {
+            if(type.Primitive)
+            {
+                if(TypeCode(type) == ItemTypeCode.Void)
+                {
+                    return new VoidItem(generator);
+                }
+            }
+
+            return new StackItem(generator, type);
         }
     }
 }

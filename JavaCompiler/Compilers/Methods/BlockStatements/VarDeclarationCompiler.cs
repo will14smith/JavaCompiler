@@ -24,7 +24,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
                                            {
                                                Left = new PrimaryNode.TermIdentifierExpression {Identifier = node.Name},
                                                Right = node.Initialiser
-                                           }).Compile(generator).Store();
+                                           }).Compile(generator);
             }
         }
     }

@@ -4,7 +4,7 @@ using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
 {
-    internal class StackItem : Item
+    public class StackItem : Item
     {
         public StackItem(ByteCodeGenerator generator, Type type)
             : base(generator, type)

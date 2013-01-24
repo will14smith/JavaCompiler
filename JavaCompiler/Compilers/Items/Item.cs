@@ -28,9 +28,10 @@ namespace JavaCompiler.Compilers.Items
         {
             Generator = generator;
 
-            if (type is DefinedType)
+            var definedType = type as DefinedType;
+            if (definedType != null)
             {
-                ((DefinedType) type).Resolve(generator.Manager.Imports);
+                definedType.Resolve(generator.Manager.Imports);
             }
 
             Type = type;
@@ -39,11 +40,6 @@ namespace JavaCompiler.Compilers.Items
 
         public ItemTypeCode TypeCode { get; private set; }
         public Type Type { get; private set; }
-
-        protected Item[] StackItem
-        {
-            get { return Generator.StackItem; }
-        }
 
         public virtual Item Load()
         {
@@ -62,7 +58,7 @@ namespace JavaCompiler.Compilers.Items
 
         public virtual void Stash(ItemTypeCode code)
         {
-            StackItem[(int) code].Duplicate();
+            TypeCodeHelper.StackItem(Generator, Type).Duplicate();
         }
 
         public virtual void Duplicate()
@@ -75,32 +71,33 @@ namespace JavaCompiler.Compilers.Items
             throw new InvalidOperationException();
         }
 
-        public virtual Item Coerce(ItemTypeCode targetCode)
+        public virtual Item Coerce(Type target)
         {
+            var targetCode = TypeCodeHelper.TypeCode(target);
+
             if (TypeCode == targetCode)
                 return this;
 
             Load();
 
-            ItemTypeCode typecode1 = TypeCodeHelper.Truncate(TypeCode);
-            ItemTypeCode targetcode1 = TypeCodeHelper.Truncate(targetCode);
+            var typecode1 = TypeCodeHelper.Truncate(TypeCode);
+            var targetcode1 = TypeCodeHelper.Truncate(targetCode);
 
             if (typecode1 != targetcode1)
             {
-                ItemTypeCode offset = targetcode1 > typecode1 ? targetcode1 - 1 : targetcode1;
+                var offset = targetcode1 > typecode1 ? targetcode1 - 1 : targetcode1;
+                var opcode = (int)OpCodeValue.i2l + (int)typecode1 * 3 + offset;
 
-                ItemTypeCode opcode = (int) OpCodeValue.i2l + (int) typecode1*3 + offset;
-
-                Generator.InternalEmit((OpCodeValue) opcode);
+                Generator.InternalEmit((OpCodeValue)opcode);
             }
             if (targetCode != targetcode1)
             {
-                int opcode = (int) OpCodeValue.i2b + targetCode - ItemTypeCode.Byte;
+                var opcode = (int)OpCodeValue.i2b + targetCode - ItemTypeCode.Byte;
 
-                Generator.InternalEmit((OpCodeValue) opcode);
+                Generator.InternalEmit((OpCodeValue)opcode);
             }
 
-            return StackItem[(int) targetCode];
+            return TypeCodeHelper.StackItem(Generator, target);
         }
 
         public virtual int Width()
