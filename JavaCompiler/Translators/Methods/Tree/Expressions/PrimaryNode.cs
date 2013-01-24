@@ -142,6 +142,20 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         #endregion
 
+        #region Nested type: TermArrayExpression
+
+        public class TermArrayExpression : PrimaryNode
+        {
+            public ExpressionNode Index { get; set; }
+
+            public override string ToString()
+            {
+                return string.Format("{0}[{1}]", Child, Index);
+            }
+        }
+
+        #endregion
+
         #region Nested type: TermMethodCallExpression
 
         public class TermMethodCallExpression : PrimaryNode

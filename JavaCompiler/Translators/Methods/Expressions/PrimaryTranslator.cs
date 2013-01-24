@@ -25,7 +25,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
                 return WalkLiteral();
             }
 
-            switch ((JavaNodeType) node.Type)
+            switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.THIS:
                     return new PrimaryNode.TermThisExpression();
@@ -39,6 +39,8 @@ namespace JavaCompiler.Translators.Methods.Expressions
                                };
                 case JavaNodeType.METHOD_CALL:
                     return WalkMethodCall();
+                case JavaNodeType.ARRAY_ELEMENT_ACCESS:
+                    return WalkArrayAccess();
                 case JavaNodeType.SUPER_CONSTRUCTOR_CALL:
                 case JavaNodeType.THIS_CONSTRUCTOR_CALL:
                     return WalkConstructorCall();
@@ -49,26 +51,24 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         private PrimaryNode WalkLiteral()
         {
-            switch ((JavaNodeType) node.Type)
+            switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.HEX_LITERAL:
-                    return new PrimaryNode.TermDecimalLiteralExpression
-                               {Value = Convert.ToInt32(node.Text.Substring(2), 16)};
+                    return new PrimaryNode.TermDecimalLiteralExpression { Value = Convert.ToInt32(node.Text.Substring(2), 16) };
                 case JavaNodeType.OCTAL_LITERAL:
-                    return new PrimaryNode.TermDecimalLiteralExpression {Value = Convert.ToInt32(node.Text, 8)};
+                    return new PrimaryNode.TermDecimalLiteralExpression { Value = Convert.ToInt32(node.Text, 8) };
                 case JavaNodeType.DECIMAL_LITERAL:
-                    return new PrimaryNode.TermDecimalLiteralExpression {Value = int.Parse(node.Text)};
+                    return new PrimaryNode.TermDecimalLiteralExpression { Value = int.Parse(node.Text) };
                 case JavaNodeType.FLOATING_POINT_LITERAL:
-                    return new PrimaryNode.TermFloatLiteralExpression {Value = float.Parse(node.Text)};
+                    return new PrimaryNode.TermFloatLiteralExpression { Value = float.Parse(node.Text) };
                 case JavaNodeType.CHARACTER_LITERAL:
-                    return new PrimaryNode.TermCharLiteralExpression {Value = char.Parse(node.Text)};
+                    return new PrimaryNode.TermCharLiteralExpression { Value = char.Parse(node.Text) };
                 case JavaNodeType.STRING_LITERAL:
-                    return new PrimaryNode.TermStringLiteralExpression
-                               {Value = node.Text.Substring(1, node.Text.Length - 2)};
+                    return new PrimaryNode.TermStringLiteralExpression { Value = node.Text.Substring(1, node.Text.Length - 2) };
                 case JavaNodeType.TRUE:
-                    return new PrimaryNode.TermBoolLiteralExpression {Value = true};
+                    return new PrimaryNode.TermBoolLiteralExpression { Value = true };
                 case JavaNodeType.FALSE:
-                    return new PrimaryNode.TermBoolLiteralExpression {Value = false};
+                    return new PrimaryNode.TermBoolLiteralExpression { Value = false };
                 case JavaNodeType.NULL:
                     return new PrimaryNode.TermNullExpression();
                 default:
@@ -96,7 +96,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         private PrimaryNode WalkConstructorCall()
         {
-            bool isSuper = node.Type == (int) JavaNodeType.SUPER_CONSTRUCTOR_CALL;
+            bool isSuper = node.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL;
 
             var arguments = new List<ExpressionNode>();
             ITree argumentList = node.GetChild(0);
@@ -110,6 +110,15 @@ namespace JavaCompiler.Translators.Methods.Expressions
                            IsSuper = isSuper,
                            Arguments = arguments
                        };
+        }
+
+        private PrimaryNode WalkArrayAccess()
+        {
+            return new PrimaryNode.TermArrayExpression
+            {
+                Child = new PrimaryTranslator(node.GetChild(0)).Walk(),
+                Index = new ExpressionTranslator(node.GetChild(1)).Walk()
+            };
         }
     }
 }

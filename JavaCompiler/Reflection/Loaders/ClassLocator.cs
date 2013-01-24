@@ -31,7 +31,11 @@ namespace JavaCompiler.Reflection.Loaders
         {
             if (c is PlaceholderType)
             {
-                return Find(c.Name, importedPackages);
+                var result = Find(c.Name, importedPackages);
+
+                result.ArrayDimensions = c.ArrayDimensions;
+
+                return result;
             }
 
             return c;

@@ -70,7 +70,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "Z";
             }
@@ -108,7 +108,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "B";
             }
@@ -141,7 +141,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "C";
             }
@@ -197,7 +197,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "D";
             }
@@ -235,7 +235,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "F";
             }
@@ -272,7 +272,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "I";
             }
@@ -307,7 +307,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "J";
             }
@@ -343,7 +343,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "S";
             }
@@ -377,7 +377,7 @@ namespace JavaCompiler.Reflection.Types
                 get { return true; }
             }
 
-            public override string GetDescriptor()
+            public override string GetDescriptor(bool b)
             {
                 return "V";
             }

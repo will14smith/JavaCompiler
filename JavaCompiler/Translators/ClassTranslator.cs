@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
+using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree;
@@ -15,7 +16,7 @@ namespace JavaCompiler.Translators
 
         public ClassTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int) JavaNodeType.CLASS);
+            Debug.Assert(node.Type == (int)JavaNodeType.CLASS);
 
             this.node = node;
         }
@@ -31,12 +32,12 @@ namespace JavaCompiler.Translators
             int i = 2;
             ITree child = node.GetChild(i++);
 
-            if ((JavaNodeType) child.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
+            if ((JavaNodeType)child.Type == JavaNodeType.GENERIC_TYPE_PARAM_LIST)
             {
                 child = node.GetChild(i++);
             }
 
-            if ((JavaNodeType) child.Type == JavaNodeType.EXTENDS_CLAUSE)
+            if ((JavaNodeType)child.Type == JavaNodeType.EXTENDS_CLAUSE)
             {
                 @class.Super = new TypeTranslator(child.GetChild(0)).Walk() as Class;
 
@@ -44,10 +45,10 @@ namespace JavaCompiler.Translators
             }
             else
             {
-                @class.Super = new PlaceholderType {Name = "java.lang.Object"};
+                @class.Super = new PlaceholderType { Name = "java.lang.Object" };
             }
 
-            if ((JavaNodeType) child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
+            if ((JavaNodeType)child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)
             {
                 child = node.GetChild(i);
             }
@@ -58,7 +59,7 @@ namespace JavaCompiler.Translators
 
             if (@class.Constructors.Count == 0)
             {
-                @class.Constructors.Add(new Constructor {DeclaringType = @class, Body = new MethodTree()});
+                @class.Constructors.Add(new Constructor { DeclaringType = @class, Body = new MethodTree(), Modifiers = Modifier.Public });
             }
 
             return @class;
@@ -66,13 +67,13 @@ namespace JavaCompiler.Translators
 
         public void WalkBody(ITree body)
         {
-            Debug.Assert(body.Type == (int) JavaNodeType.CLASS_TOP_LEVEL_SCOPE);
+            Debug.Assert(body.Type == (int)JavaNodeType.CLASS_TOP_LEVEL_SCOPE);
 
             for (int i = 0; i < body.ChildCount; i++)
             {
                 ITree child = body.GetChild(i);
 
-                switch ((JavaNodeType) child.Type)
+                switch ((JavaNodeType)child.Type)
                 {
                     case JavaNodeType.CLASS_INSTANCE_INITIALIZER:
                         throw new NotImplementedException();

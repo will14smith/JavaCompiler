@@ -24,7 +24,7 @@ namespace JavaCompiler.Translators
 
             if (node.ChildCount > 1)
             {
-                //TODO: typeRef.PlaceholderArray = ProcessArray(node.GetChild(1));
+                typeRef.ArrayDimensions = ProcessArray(node.GetChild(1));
             }
 
             return typeRef;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Compilers.Methods.Expressions;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree;
@@ -51,7 +52,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             Class superClass = thisClass.Super;
             Method thisConstructor = generator.Method;
 
-            var superMethod = (Method) superClass.Constructors
+            var superMethod = (Method)superClass.Constructors
                                            .OrderByDescending(x => x.Parameters.Count)
                                            .FirstOrDefault(x => x.Parameters.Count <= thisConstructor.Parameters.Count);
             if (superMethod == null)
@@ -67,7 +68,21 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
         private void CompileSuperCall(ByteCodeGenerator generator, PrimaryNode.TermConstructorCallExpression call)
         {
-            throw new NotImplementedException();
+            var target = call.IsSuper
+                ? (PrimaryNode)new PrimaryNode.TermSuperExpression()
+                : (PrimaryNode)new PrimaryNode.TermThisExpression();
+
+            new PrimaryCompiler(
+                new PrimaryNode.TermMethodCallExpression
+                {
+                    Child = new PrimaryNode.TermFieldExpression
+                    {
+                        Child = target,
+                        SecondChild = new PrimaryNode.TermIdentifierExpression { Identifier = "<init>" }
+                    },
+                    Arguments = call.Arguments
+                }
+            ).Compile(generator);
         }
     }
 }

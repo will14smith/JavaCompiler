@@ -5,6 +5,7 @@ namespace JavaCompiler.Reflection.Types
 {
     public class Type
     {
+        public Package Package { get; set; }
         public virtual string Name { get; set; }
         public int ArrayDimensions { get; set; }
 
@@ -25,7 +26,7 @@ namespace JavaCompiler.Reflection.Types
             return c.IsAssignableTo(this);
         }
 
-        public virtual string GetDescriptor()
+        public virtual string GetDescriptor(bool shortDescriptor = false)
         {
             if (Primitive)
             {
@@ -34,7 +35,14 @@ namespace JavaCompiler.Reflection.Types
 
             var arrayDimensions = new string(Enumerable.Range(0, ArrayDimensions).Select(x => '[').ToArray());
 
-            return arrayDimensions + "L" + Name + ";";
+            var name = (Package != null ? Package.Name + "." : "") + Name;
+            name = name.Replace('.', '/');
+
+            if (shortDescriptor)
+            {
+                return name;
+            }
+            return arrayDimensions + "L" + name + ";";
         }
     }
 }

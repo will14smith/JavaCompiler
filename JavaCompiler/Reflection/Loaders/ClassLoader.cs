@@ -29,7 +29,7 @@ namespace JavaCompiler.Reflection.Loaders
 
             CompileConstant[] constants = ReadConstants(reader);
 
-            var modifiers = (ClassModifier) reader.ReadInt16();
+            var modifiers = (ClassModifier)reader.ReadInt16();
 
             short thisClass = reader.ReadInt16();
             short superClass = reader.ReadInt16();
@@ -52,7 +52,7 @@ namespace JavaCompiler.Reflection.Loaders
             List<Method> javaMethods = methods.Select(x => GetMethod(c, x, constants)).ToList();
 
             c.Methods.AddRange(javaMethods.Where(x => x.Name != "<init>"));
-            c.Constructors.AddRange(javaMethods.Where(x => x.Name == "<init>").Select(x => (Constructor) x));
+            c.Constructors.AddRange(javaMethods.Where(x => x.Name == "<init>").Select(x => (Constructor)x));
 
             return c;
         }
@@ -64,7 +64,7 @@ namespace JavaCompiler.Reflection.Loaders
 
             for (int i = 1; i < constantCount; i++)
             {
-                var tag = (CompileConstants) reader.ReadByte();
+                var tag = (CompileConstants)reader.ReadByte();
                 switch (tag)
                 {
                     case CompileConstants.Class:
@@ -141,7 +141,7 @@ namespace JavaCompiler.Reflection.Loaders
             {
                 var field = new CompileFieldInfo();
 
-                field.Modifiers = (Modifier) reader.ReadInt16();
+                field.Modifiers = (Modifier)reader.ReadInt16();
                 field.Name = reader.ReadInt16();
                 field.Descriptor = reader.ReadInt16();
 
@@ -162,7 +162,7 @@ namespace JavaCompiler.Reflection.Loaders
             {
                 var method = new CompileMethodInfo();
 
-                method.Modifiers = (Modifier) reader.ReadInt16();
+                method.Modifiers = (Modifier)reader.ReadInt16();
                 method.Name = reader.ReadInt16();
                 method.Descriptor = reader.ReadInt16();
 
@@ -210,7 +210,7 @@ namespace JavaCompiler.Reflection.Loaders
             string methodDescriptor = GetUtf8(method.Descriptor, constants);
             Tuple<List<Type>, Type> methodTypes = GetMethodTypeFromDescriptor(methodDescriptor);
 
-            m.Parameters.AddRange(methodTypes.Item1.Select(x => new Method.Parameter {Type = x}));
+            m.Parameters.AddRange(methodTypes.Item1.Select(x => new Method.Parameter { Type = x }));
             m.ReturnType = methodTypes.Item2;
 
             return m;
@@ -259,7 +259,7 @@ namespace JavaCompiler.Reflection.Loaders
             {
                 Type primType = GetTypeFromDescriptor(descriptor);
 
-                return new Type {ArrayDimensions = arrayDimensions, Name = primType.Name};
+                return new Type { ArrayDimensions = arrayDimensions, Name = primType.Name };
             }
 
             if (descriptor[0] != 'L') throw new ArgumentException();
@@ -291,7 +291,7 @@ namespace JavaCompiler.Reflection.Loaders
                     case 'J':
                     case 'S':
                     case 'Z':
-                        parameterTypes.Add(GetTypeFromDescriptor(new string(new[] {descriptor[i - 1]})));
+                        parameterTypes.Add(GetTypeFromDescriptor(new string(new[] { descriptor[i - 1] })));
                         break;
                     case 'L':
                         {
@@ -302,7 +302,7 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderType {Name = typeName});
+                            parameterTypes.Add(new PlaceholderType { Name = typeName.Replace('/', '.') });
                         }
                         break;
                     case '[':
@@ -325,11 +325,11 @@ namespace JavaCompiler.Reflection.Loaders
                             }
                             else
                             {
-                                typeName = GetTypeFromDescriptor(new string(new[] {descriptor[i]})).Name;
+                                typeName = GetTypeFromDescriptor(new string(new[] { descriptor[i] })).Name;
                             }
                             i++;
 
-                            parameterTypes.Add(new PlaceholderType {Name = typeName, ArrayDimensions = arrayDimensions});
+                            parameterTypes.Add(new PlaceholderType { Name = typeName.Replace('/', '.'), ArrayDimensions = arrayDimensions });
                         }
                         break;
                     default:
@@ -351,7 +351,7 @@ namespace JavaCompiler.Reflection.Loaders
             var compileConstantClass = constant as CompileConstantClass;
             if (compileConstantClass != null)
             {
-                return new PlaceholderType {Name = GetUtf8(compileConstantClass.NameIndex, constants)};
+                return new PlaceholderType { Name = GetUtf8(compileConstantClass.NameIndex, constants).Replace('/', '.') };
             }
 
             throw new InvalidOperationException();

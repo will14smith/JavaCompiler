@@ -137,7 +137,7 @@ namespace JavaCompiler.Compilation
         {
             if (c == null) return 0;
 
-            short nameIndex = AddConstantUtf8(c.Name);
+            short nameIndex = AddConstantUtf8(c.GetDescriptor(true));
             CompileConstantClass classConst =
                 ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
 
