@@ -22,9 +22,9 @@ namespace JavaCompiler.Compilers.Methods.Statements
 
             generator.PushScope();
             new StatementCompiler(node.TrueBranch).Compile(generator);
+            generator.Emit(OpCodeValue.@goto, endOfIf);
             generator.PopScope();
 
-            generator.Emit(OpCodeValue.@goto, endOfIf);
             generator.MarkLabel(falseLabel);
 
             if (node.FalseBranch != null)
@@ -36,7 +36,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
 
             generator.MarkLabel(endOfIf);
 
-            return item;
+            return null;
         }
     }
 }

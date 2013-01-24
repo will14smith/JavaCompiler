@@ -104,5 +104,10 @@ namespace JavaCompiler.Reflection
         }
 
         #endregion
+
+        public Method Clone()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

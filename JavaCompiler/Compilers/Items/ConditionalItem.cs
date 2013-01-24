@@ -28,7 +28,24 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            throw new NotImplementedException();
+            Label trueChain = null;
+            Label falseChain = JumpFalse();
+            if (!IsFalse())
+            {
+                Generator.MarkLabel(TrueLabel);
+                Generator.Emit(OpCodeValue.iconst_1);
+
+                trueChain = Generator.DefineLabel();
+            }
+            if (falseChain != null)
+            {
+                Generator.MarkLabel(falseChain);
+                Generator.Emit(OpCodeValue.iconst_0);
+            }
+
+            Generator.MarkLabel(trueChain);
+
+            return TypeCodeHelper.StackItem(Generator, Type);
         }
 
         public override void Duplicate()

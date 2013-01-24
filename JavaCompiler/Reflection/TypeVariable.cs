@@ -15,5 +15,10 @@ namespace JavaCompiler.Reflection
 
         public List<Type> Bounds { get; private set; }
         public Type GenericDeclaration { get; set; }
+
+        public TypeVariable Clone()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

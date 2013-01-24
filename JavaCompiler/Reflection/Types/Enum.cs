@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using JavaCompiler.Reflection.Interfaces;
 
 namespace JavaCompiler.Reflection.Types
 {
-    public class Enum : DefinedType, IGenericDeclaration
+    public class Enum : DefinedType
     {
         public Enum()
         {

@@ -65,8 +65,10 @@ namespace JavaCompiler.Compilers
             });
 
             var stackMapTable = generator.StackMapTable;
-            if(stackMapTable != null)
+            if (stackMapTable != null)
             {
+                stackMapTable.NameIndex = manager.AddConstantUtf8(stackMapTable.Name);
+
                 attributes.Add(stackMapTable);
             }
         }

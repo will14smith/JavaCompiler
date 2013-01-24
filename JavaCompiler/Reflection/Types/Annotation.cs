@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using JavaCompiler.Reflection.Interfaces;
 
 namespace JavaCompiler.Reflection.Types
 {
-    public class Annotation : DefinedType, IGenericDeclaration
+    public class Annotation : DefinedType
     {
         public Annotation()
         {

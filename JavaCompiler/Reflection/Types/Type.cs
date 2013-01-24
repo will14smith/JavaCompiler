@@ -5,6 +5,11 @@ namespace JavaCompiler.Reflection.Types
 {
     public class Type
     {
+        public Type()
+        {
+            Package = new Package();
+        }
+
         public Package Package { get; set; }
         public virtual string Name { get; set; }
         public int ArrayDimensions { get; set; }
@@ -43,6 +48,17 @@ namespace JavaCompiler.Reflection.Types
                 return name;
             }
             return arrayDimensions + "L" + name + ";";
+        }
+
+        public virtual Type Clone()
+        {
+            return new Type
+            {
+                ArrayDimensions = ArrayDimensions,
+                Name = Name,
+                Package = Package.Clone(),
+                Synthetic = Synthetic
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
@@ -72,6 +73,24 @@ namespace JavaCompiler.Compilation.ByteCode
         public void Pop(Type type)
         {
             Pop(TypeCodeHelper.Width(type));
+        }
+
+        private readonly Stack<Type[]> stackScope = new Stack<Type[]>();
+        public void PushScope()
+        {
+            var newArray = array.Clone() as Type[];
+
+            stackScope.Push(newArray);
+            version++;
+        }
+        public void PopScope()
+        {
+            var oldArray = stackScope.Pop();
+
+            Clear();
+
+            array = oldArray;
+            version++;
         }
     }
 }

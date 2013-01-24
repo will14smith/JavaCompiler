@@ -29,5 +29,10 @@ namespace JavaCompiler.Reflection
         }
 
         #endregion
+
+        public Field Clone()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

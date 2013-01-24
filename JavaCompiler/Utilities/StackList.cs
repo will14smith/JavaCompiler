@@ -8,8 +8,8 @@ namespace JavaCompiler.Utilities
     [Serializable]
     public class StackList<T> : ICollection<T>, ICollection
     {
-        private T[] array;
-        private int version;
+        protected T[] array;
+        protected int version;
 
         [NonSerialized]
         private object syncRoot;

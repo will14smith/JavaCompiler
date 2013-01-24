@@ -9,6 +9,10 @@ namespace JavaCompiler.Compilers.Items
         {
         }
 
+        public override void Drop()
+        {
+        }
+
         public override string ToString()
         {
             return "void";

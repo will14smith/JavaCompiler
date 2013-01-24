@@ -22,11 +22,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
         {
             Item item = null;
 
-            if (node is MethodTree)
-            {
-                new BlockCompiler(node as MethodTree).Compile(generator);
-            }
-            else if (node is ExpressionNode)
+            if (node is ExpressionNode)
             {
                 item = new ExpressionCompiler(node as ExpressionNode).Compile(generator);
             }
@@ -48,7 +44,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             }
             else if (node is WhileNode)
             {
-                item = new WhileCompiler(node as WhileNode).Compile(generator);
+                new WhileCompiler(node as WhileNode).Compile(generator);
             }
             else if (node is DoNode)
             {
@@ -85,6 +81,10 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             else if (node is LabelNode)
             {
                 item = new LabelCompiler(node as LabelNode).Compile(generator);
+            }
+            else if (node is MethodTree)
+            {
+                new BlockCompiler(node as MethodTree).Compile(generator);
             }
             else
             {

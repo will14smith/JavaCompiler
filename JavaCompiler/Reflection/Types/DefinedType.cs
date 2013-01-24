@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using JavaCompiler.Reflection.Enums;
 
 namespace JavaCompiler.Reflection.Types
@@ -13,13 +14,9 @@ namespace JavaCompiler.Reflection.Types
             Types = new List<Type>();
 
             Interfaces = new List<Interface>();
-
-            TypeParameters = new List<TypeVariable>();
         }
 
         public ClassModifier Modifiers { get; set; }
-
-        public Package Package { get; set; }
 
         public Class DeclaringClass { get; set; }
         public Class ComponentType { get; set; }
@@ -31,10 +28,27 @@ namespace JavaCompiler.Reflection.Types
 
         public List<Interface> Interfaces { get; private set; }
 
-        public List<TypeVariable> TypeParameters { get; private set; }
-
         public virtual void Resolve(List<Package> imports)
         {
+        }
+
+        public override Type Clone()
+        {
+            var type = (DefinedType)base.Clone();
+
+            type.Modifiers = Modifiers;
+
+            type.DeclaringClass = (Class)DeclaringClass.Clone();
+            type.ComponentType = (Class)ComponentType.Clone();
+
+            type.Fields = Fields.Select(x => x.Clone()).ToList();
+            type.Methods = Methods.Select(x => x.Clone()).ToList();
+
+            type.Types = Types.Select(x => x.Clone()).ToList();
+
+            type.Interfaces = Interfaces.Select(x => (Interface)x.Clone()).ToList();
+
+            return type;
         }
     }
 }

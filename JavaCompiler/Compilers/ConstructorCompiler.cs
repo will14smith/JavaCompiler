@@ -59,6 +59,15 @@ namespace JavaCompiler.Compilers
                 MaxLocals = generator.MaxVariables,
                 MaxStack = generator.MaxStack
             });
+
+            var stackMapTable = generator.StackMapTable;
+            if (stackMapTable != null)
+            {
+                stackMapTable.NameIndex = manager.AddConstantUtf8(stackMapTable.Name);
+
+                attributes.Add(stackMapTable);
+            }
+
         }
     }
 }

@@ -13,7 +13,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
             this.node = node;
         }
 
-        public Item Compile(ByteCodeGenerator generator)
+        public void Compile(ByteCodeGenerator generator)
         {
             var startOfWhile = generator.MarkLabel();
 
@@ -25,14 +25,12 @@ namespace JavaCompiler.Compilers.Methods.Statements
             generator.PushScope();
 
             new StatementCompiler(node.Statement).Compile(generator);
+            generator.Emit(OpCodeValue.@goto, startOfWhile);
 
             generator.PopScope();
-            generator.Emit(OpCodeValue.@goto, startOfWhile);
 
             // End
             generator.MarkLabel(endOfWhile);
-
-            return new VoidItem(generator);
         }
     }
 }

@@ -113,7 +113,15 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 if (item != null) return item;
 
                 item = TryInstance(generator, generator.Method.DeclaringType, id);
-                if (item != null) return item;
+                if (item != null)
+                {
+                    if (item is MemberItem)
+                    {
+                        new SelfItem(generator, generator.Method.DeclaringType, false).Load();
+                    }
+
+                    return item;
+                }
 
                 item = TryClass(generator, id);
                 if (item != null) return item;
@@ -210,7 +218,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             new ExpressionCompiler(array.Index).Compile(generator).Load();
 
-            var result = item.Type;
+            var result = item.Type.Clone();
             result.ArrayDimensions -= 1;
 
             return new IndexedItem(generator, result);
@@ -263,9 +271,9 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             if (!methods.Any()) return null;
 
             //TODO: Find best method
-            foreach(var method in methods)
+            foreach (var method in methods)
             {
-                if(method.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a.Type))).All(x => x))
+                if (method.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a.Type))).All(x => x))
                 {
                     return method;
                 }

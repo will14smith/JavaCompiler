@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
 
@@ -533,7 +534,7 @@ namespace JavaCompiler.Compilation
                     // APPEND
                     writer.Write((short)entry.OffsetDelta);
                     var type = (short)entry.Type;
-                    for (int i = 251; i < type; i++)
+                    for (int i = 251; i <= type; i++)
                     {
                         entry.Locals[i - 251].Write(writer);
 
@@ -673,10 +674,42 @@ namespace JavaCompiler.Compilation
 
             public int Length
             {
-                get { throw new NotImplementedException(); }
+                get
+                {
+                    if (Type < 64)
+                    {
+                        return 1;
+                    }
+                    if (Type < 128)
+                    {
+                        return 1 + Stack.Sum(x => x.Length);
+                    }
+                    if (Type == 247)
+                    {
+                        return 3 + Stack.Sum(x => x.Length);
+                    }
+                    if (Type >= 248 && Type <= 250)
+                    {
+                        return 3;
+                    }
+                    if (Type == 251)
+                    {
+                        return 3;
+                    }
+                    if (Type >= 252 && Type <= 254)
+                    {
+                        return 3 + Locals.Sum(x => x.Length);
+                    }
+                    if (Type == 255)
+                    {
+                        return 7 + Locals.Sum(x => x.Length) + Stack.Sum(x => x.Length);
+                    }
+
+                    throw new NotImplementedException();
+                }
             }
 
-            internal static StackMapFrame GetInstance(ByteCodeGenerator.StackMapFrame thisFrame, int prevPC, Type[] prevLocals)
+            internal static StackMapFrame GetInstance(ByteCodeGenerator generator, ByteCodeGenerator.StackMapFrame thisFrame, int prevPC, Type[] prevLocals)
             {
                 var locals = thisFrame.Locals;
                 var stack = thisFrame.Stack;
@@ -691,7 +724,7 @@ namespace JavaCompiler.Compilation
                             {
                                 Type = (byte)((offsetDelta < SameFrameSize) ? (SameFrameSize + offsetDelta) : SameLocals1StackItemExtended),
                                 OffsetDelta = offsetDelta,
-                                Stack = new List<VerificationTypeInfo> { GetTypeInfo(stack[0]) }
+                                Stack = new List<VerificationTypeInfo> { GetTypeInfo(generator, stack[0]) }
                             };
                         }
                         break;
@@ -719,7 +752,7 @@ namespace JavaCompiler.Compilation
                                 {
                                     Type = (byte)(SameFrameExtended - diffLength),
                                     OffsetDelta = offsetDelta,
-                                    Locals = locals.Select(GetTypeInfo).ToList()
+                                    Locals = locals.Select(x => GetTypeInfo(generator, x)).ToList()
                                 };
                             }
                             if (0 < diffLength && diffLength < MaxLocalLengthDiff)
@@ -739,8 +772,8 @@ namespace JavaCompiler.Compilation
                 {
                     Type = FullFrame,
                     OffsetDelta = offsetDelta,
-                    Locals = locals.Select(GetTypeInfo).ToList(),
-                    Stack = stack.Select(GetTypeInfo).ToList()
+                    Locals = locals.Select(x => GetTypeInfo(generator, x)).ToList(),
+                    Stack = stack.Select(x => GetTypeInfo(generator, x)).ToList()
                 };
             }
 
@@ -762,8 +795,29 @@ namespace JavaCompiler.Compilation
                 }
                 return diffLength;
             }
-            private static VerificationTypeInfo GetTypeInfo(Type type)
+            private static VerificationTypeInfo GetTypeInfo(ByteCodeGenerator generator, Type type)
             {
+                //Top = 0,
+                //Integer = 1,
+                if (type == PrimativeTypes.Int) return new VerificationTypeInfo { Tag = VerificationType.Integer };
+                //Float = 2,
+                if (type == PrimativeTypes.Float) return new VerificationTypeInfo { Tag = VerificationType.Float };
+                //Long = 4,
+                if (type == PrimativeTypes.Long) return new VerificationTypeInfo { Tag = VerificationType.Long };
+                //Double = 3,
+                if (type == PrimativeTypes.Double) return new VerificationTypeInfo { Tag = VerificationType.Double };
+                //Null = 5,
+                //UninitializedThis = 6,
+                //Object = 7,
+                if (!type.Primitive)
+                {
+                    return new VerificationTypeInfo
+                               {
+                                   Tag = VerificationType.Object,
+                                   Value = generator.Manager.AddConstantClass(type as DefinedType)
+                               };
+                }
+                //Uninitialized = 8
                 throw new NotImplementedException();
             }
         }
@@ -776,6 +830,11 @@ namespace JavaCompiler.Compilation
         {
             public VerificationType Tag { get; set; }
             public short Value { get; set; }
+
+            public int Length
+            {
+                get { return Tag == VerificationType.Object || Tag == VerificationType.Uninitialized ? 3 : 1; }
+            }
 
             public void Write(EndianBinaryWriter writer)
             {

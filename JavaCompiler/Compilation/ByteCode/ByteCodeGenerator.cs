@@ -82,6 +82,8 @@ namespace JavaCompiler.Compilation.ByteCode
         }
         public void MarkLabel(Label loc)
         {
+            if (loc == null) return;
+
             var labelValue = loc.GetLabelValue();
 
             if (labelValue < 0 || labelValue >= labelList.Length)
@@ -106,7 +108,7 @@ namespace JavaCompiler.Compilation.ByteCode
             foreach (var l in refs)
             {
                 var pos = l.Item1;
-                var i = labelList[labelValue] - (pos - 1);
+                var i = labelList[labelValue] - pos;
 
                 if (l.Item2 == 4)
                 {
@@ -204,12 +206,20 @@ namespace JavaCompiler.Compilation.ByteCode
 
         #region Scope
 
+        private readonly Stack<bool> aliveScope = new Stack<bool>();
+
         public void PushScope()
         {
+            aliveScope.Push(alive);
+            stack.PushScope();
+
             PushVariables();
         }
         public void PopScope()
         {
+            alive = aliveScope.Pop();
+            stack.PopScope();
+
             PopVariables();
         }
 
@@ -251,7 +261,7 @@ namespace JavaCompiler.Compilation.ByteCode
         }
         public void Emit(OpCodeValue opcode, Label l)
         {
-            var capacity = opcode == OpCodeValue.goto_w || opcode == OpCodeValue.jsr_w ? 3 : 5;
+            var capacity = opcode == OpCodeValue.goto_w || opcode == OpCodeValue.jsr_w ? 5 : 3;
 
             EnsureCapacity(capacity);
 
@@ -549,11 +559,22 @@ namespace JavaCompiler.Compilation.ByteCode
 
         #region Stack
 
-        public CompileAttributeStackMapTable StackMapTable { get; private set; }
+        public CompileAttributeStackMapTable StackMapTable
+        {
+            get
+            {
+                if (stackMapTableBuffer == null || stackMapTableBuffer.Length == 0 || stackMapTableBuffer.All(x => x == null))
+                {
+                    return null;
+                }
+
+                return new CompileAttributeStackMapTable { Entries = stackMapTableBuffer.Where(x => x != null).ToList() };
+            }
+        }
 
         private bool pendingStackMap = false;
         public short MaxStack { get { return (short)stack.MaxStack; } }
-        private readonly TypeStack stack;
+        private TypeStack stack;
 
         private void UpdateStack0(OpCodeValue opcode)
         {
@@ -999,7 +1020,7 @@ namespace JavaCompiler.Compilation.ByteCode
                     stack.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.ldc:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s]));
+                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
                     break;
                 default:
                     throw new NotImplementedException();
@@ -1012,6 +1033,33 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.@new:
                 case OpCodeValue.sipush:
                     stack.Push(PrimativeTypes.Int);
+                    break;
+                case OpCodeValue.ldc2_w:
+                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
+                    break;
+                case OpCodeValue.instanceof:
+                    stack.Pop(1);
+                    stack.Push(PrimativeTypes.Int);
+                    break;
+                case OpCodeValue.ldc_w:
+                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+        }
+
+        private void UpdateStackBranch(OpCodeValue opcode, int b)
+        {
+            switch (opcode)
+            {
+                case OpCodeValue.@goto:
+                case OpCodeValue.goto_w:
+                    MarkDead();
+                    break;
+                case OpCodeValue.jsr:
+                case OpCodeValue.jsr_w:
                     break;
                 case OpCodeValue.ifnull:
                 case OpCodeValue.ifnonnull:
@@ -1032,38 +1080,6 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.if_acmpeq:
                 case OpCodeValue.if_acmpne:
                     stack.Pop(2);
-                    break;
-                case OpCodeValue.@goto:
-                    MarkDead();
-                    break;
-                case OpCodeValue.ldc2_w:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s]));
-                    break;
-                case OpCodeValue.instanceof:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Int);
-                    break;
-                case OpCodeValue.ldc_w:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s]));
-                    break;
-                case OpCodeValue.jsr:
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
-        }
-
-        private void UpdateStackBranch(OpCodeValue opcode, int b)
-        {
-            switch (opcode)
-            {
-                case OpCodeValue.@goto:
-                case OpCodeValue.goto_w:
-                    MarkDead();
-                    break;
-                case OpCodeValue.jsr:
-                case OpCodeValue.jsr_w:
                     break;
                 default:
                     throw new NotImplementedException();
@@ -1203,7 +1219,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
                 stackMapTableBuffer = newStackMapTableBuffer;
             }
-            stackMapTableBuffer[stackMapBufferSize++] = CompileAttributeStackMapTable.StackMapFrame.GetInstance(frame, lastFrame.PC, lastFrame.Locals);
+            stackMapTableBuffer[stackMapBufferSize++] = CompileAttributeStackMapTable.StackMapFrame.GetInstance(this, frame, lastFrame.PC, lastFrame.Locals);
 
             frameBeforeLast = lastFrame;
             lastFrame = frame;
