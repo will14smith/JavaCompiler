@@ -1,7 +1,6 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
-using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -18,7 +17,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         public Item Compile(ByteCodeGenerator generator)
         {
             var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-            var rhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
+            var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
 
             lhs.Load();
             rhs.Load();
