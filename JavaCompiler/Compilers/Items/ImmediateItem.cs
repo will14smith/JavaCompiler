@@ -130,6 +130,13 @@ namespace JavaCompiler.Compilers.Items
             return TypeCodeHelper.StackItem(Generator, Type);
         }
 
+        public override ConditionalItem Conditional()
+        {
+            var ival = (int)value;
+
+            return new ConditionalItem(Generator, ival != 0 ? OpCodes.@goto : OpCodes.jsr);
+        }
+
         public override Item Coerce(Type target)
         {
             var targetCode = TypeCodeHelper.TypeCode(target);

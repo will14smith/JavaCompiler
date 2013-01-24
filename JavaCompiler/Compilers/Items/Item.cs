@@ -61,6 +61,13 @@ namespace JavaCompiler.Compilers.Items
             TypeCodeHelper.StackItem(Generator, Type).Duplicate();
         }
 
+        public virtual ConditionalItem Conditional()
+        {
+            Load();
+
+            return new ConditionalItem(Generator, OpCodes.ifne);
+        }
+
         public virtual void Duplicate()
         {
             throw new InvalidOperationException();

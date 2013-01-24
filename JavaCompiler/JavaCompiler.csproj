@@ -58,6 +58,7 @@
     <Compile Include="Compilers\ConstructorCompiler.cs" />
     <Compile Include="Compilers\Items\AssignItem.cs" />
     <Compile Include="Compilers\Items\ClassItem.cs" />
+    <Compile Include="Compilers\Items\ConditionalItem.cs" />
     <Compile Include="Compilers\Items\ImmediateItem.cs" />
     <Compile Include="Compilers\Items\IndexedItem.cs" />
     <Compile Include="Compilers\Items\Item.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Compilers\Methods\BlockStatements\ConstructorBlockCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\StatementCompiler.cs" />
     <Compile Include="Compilers\Methods\BlockStatements\VarDeclarationCompiler.cs" />
+    <Compile Include="Compilers\Methods\ConditionCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\AdditiveCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\AndCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\ArrayInitialiserCompiler.cs" />
