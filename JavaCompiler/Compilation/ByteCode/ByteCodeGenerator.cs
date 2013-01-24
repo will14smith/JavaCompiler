@@ -92,15 +92,15 @@ namespace JavaCompiler.Compilation.ByteCode
         private short variableCount;
         private Variable[] variableList;
 
-        public void PushVariables()
+        private void PushVariables()
         {
             variableListStack.Push(new Tuple<short, Variable[]>(variableCount, variableList));
 
             variableList = (Variable[])variableList.Clone();
         }
-
-        public void PopVariables()
+        private void PopVariables()
         {
+            //TODO: Undeclare variables
             Tuple<short, Variable[]> vars = variableListStack.Pop();
 
             variableCount = vars.Item1;
@@ -157,6 +157,19 @@ namespace JavaCompiler.Compilation.ByteCode
             variableList[index] = null;
 
             variableCount--;
+        }
+
+        #endregion
+
+        #region Scope
+
+        public void PushScope()
+        {
+            PushVariables();
+        }
+        public void PopScope()
+        {
+            PopVariables();
         }
 
         #endregion

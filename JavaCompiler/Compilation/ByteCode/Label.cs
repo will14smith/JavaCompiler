@@ -2,8 +2,7 @@
 
 namespace JavaCompiler.Compilation.ByteCode
 {
-    [Serializable]
-    public struct Label
+    public class Label
     {
         internal readonly int Index;
 
@@ -29,6 +28,15 @@ namespace JavaCompiler.Compilation.ByteCode
 
         public static bool operator ==(Label a, Label b)
         {
+            if ((object)a == null && (object)b == null)
+            {
+                return true;
+            }
+            if ((object)a == null || (object)b == null)
+            {
+                return false;
+            }
+
             return a.Equals(b);
         }
 

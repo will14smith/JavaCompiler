@@ -76,22 +76,6 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
             ByteCodeGenerator target = new ByteCodeGenerator(manager, null);
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
-
-        /// <summary>
-        ///A test for DefineLabel
-        ///</summary>
-        [TestMethod()]
-        public void DefineLabelTest()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
-            Label expected = new Label(); // TODO: Initialize to an appropriate value
-            Label actual;
-            actual = target.DefineLabel();
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
         /// <summary>
         ///A test for DefineVariable
         ///</summary>
@@ -164,20 +148,6 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
             byte b1 = 0; // TODO: Initialize to an appropriate value
             byte b2 = 0; // TODO: Initialize to an appropriate value
             target.Emit(opcode, s, b1, b2);
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
-
-        /// <summary>
-        ///A test for Emit
-        ///</summary>
-        [TestMethod()]
-        public void EmitTest4()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
-            OpCode opcode = null; // TODO: Initialize to an appropriate value
-            Label l = new Label(); // TODO: Initialize to an appropriate value
-            target.Emit(opcode, l);
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
 
@@ -270,42 +240,6 @@ namespace JavaCompiler.Tests.Compilation.ByteCode
             Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
-        /// <summary>
-        ///A test for MarkLabel
-        ///</summary>
-        [TestMethod()]
-        public void MarkLabelTest()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
-            Label loc = new Label(); // TODO: Initialize to an appropriate value
-            target.MarkLabel(loc);
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
-
-        /// <summary>
-        ///A test for PopVariables
-        ///</summary>
-        [TestMethod()]
-        public void PopVariablesTest()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
-            target.PopVariables();
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
-
-        /// <summary>
-        ///A test for PushVariables
-        ///</summary>
-        [TestMethod()]
-        public void PushVariablesTest()
-        {
-            CompileManager manager = null; // TODO: Initialize to an appropriate value
-            ByteCodeGenerator target = new ByteCodeGenerator(manager, null); // TODO: Initialize to an appropriate value
-            target.PushVariables();
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
 
         /// <summary>
         ///A test for UndefineVariable

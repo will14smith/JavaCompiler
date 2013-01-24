@@ -1,8 +1,10 @@
-﻿namespace JavaCompiler.Compilation.ByteCode
+﻿using System;
+
+namespace JavaCompiler.Compilation.ByteCode
 {
     public class OpCodes
     {
-// ReSharper disable InconsistentNaming
+        // ReSharper disable InconsistentNaming
         public static OpCode nop = new OpCode(OpCodeValue.nop, OpCodeMode.Simple, OpCodeModeWide.Unused, true);
 
         public static OpCode aconst_null = new OpCode(OpCodeValue.aconst_null, OpCodeMode.Simple, OpCodeModeWide.Unused,
@@ -492,5 +494,12 @@
                                                 OpCodeModeWide.Unused, true);
 
         // ReSharper restore InconsistentNaming
+        public static OpCode Negate(OpCode opCode)
+        {
+            if (opCode.Value == OpCodeValue.ifnull) return ifnonnull;
+            if (opCode.Value == OpCodeValue.ifnonnull) return ifnull;
+
+            throw new NotImplementedException();
+        }
     }
 }
