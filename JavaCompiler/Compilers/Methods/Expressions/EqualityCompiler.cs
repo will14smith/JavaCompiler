@@ -1,6 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -16,7 +17,46 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            throw new NotImplementedException();
+            var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
+            var rhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
+
+            lhs.Load();
+            rhs.Load();
+
+            if ((!lhs.Type.Primitive || !rhs.Type.Primitive) && (lhs.Type.Primitive || rhs.Type.Primitive))
+            {
+                throw new InvalidOperationException();
+            }
+
+            OpCode opcode;
+            if (node is EqualityNode.EqualityEqualNode)
+            {
+                if (lhs.Type.Primitive && rhs.Type.Primitive)
+                {
+                    opcode = OpCodes.if_icmpeq;
+                }
+                else
+                {
+                    opcode = OpCodes.if_acmpeq;
+                }
+            }
+            else if (node is EqualityNode.EqualityNotEqualNode)
+            {
+                if (lhs.Type.Primitive && rhs.Type.Primitive)
+                {
+                    opcode = OpCodes.if_icmpne;
+                }
+                else
+                {
+                    opcode = OpCodes.if_acmpne;
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return new ConditionalItem(generator, opcode);
         }
     }
 }

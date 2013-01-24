@@ -95,6 +95,20 @@
     <Compile Include="Compilers\Methods\Expressions\UnaryOtherCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\VariableInitialiserCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\XorCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\AssertCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\BreakCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\ContinueCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\DoTranslator.cs" />
+    <Compile Include="Compilers\Methods\Statements\ForEachCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\ForCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\IfCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\LabelCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\ReturnCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\SwitchCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\SynchronizedCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\ThrowCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\TryCompiler.cs" />
+    <Compile Include="Compilers\Methods\Statements\WhileCompiler.cs" />
     <Compile Include="JavaLexer.cs" />
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
@@ -163,6 +177,7 @@
     <Compile Include="Translators\Methods\Tree\Statements\AssertNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\BreakNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\ContinueNode.cs" />
+    <Compile Include="Translators\Methods\Tree\Statements\ForEachNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\DoNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\ExpressionBlockNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\ForNode.cs" />
@@ -227,9 +242,7 @@
     <Compile Include="Utilities\LittleEndianBitConverter.cs" />
     <Compile Include="Utilities\TypeCodeHelper.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Compilers\Methods\Statements\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
