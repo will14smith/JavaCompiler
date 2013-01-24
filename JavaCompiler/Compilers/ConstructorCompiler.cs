@@ -56,8 +56,8 @@ namespace JavaCompiler.Compilers
                 Code = generator.GetBytes(),
                 Attributes = new List<CompileAttribute>(),
                 ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
-                MaxLocals = 4,
-                MaxStack = 2
+                MaxLocals = generator.MaxVariables,
+                MaxStack = generator.MaxStack
             });
         }
     }

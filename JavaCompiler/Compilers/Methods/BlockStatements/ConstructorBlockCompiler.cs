@@ -63,7 +63,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             short index = generator.Manager.AddConstantMethodref(superMethod);
 
             generator.Emit(OpCodes.aload_0);
-            generator.Emit(OpCodes.invokespecial, index);
+            generator.EmitInvoke(OpCodes.invokespecial, (short) superMethod.Parameters.Count, index);
         }
 
         private void CompileSuperCall(ByteCodeGenerator generator, PrimaryNode.TermConstructorCallExpression call)

@@ -17,16 +17,16 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field) member);
+            short index = Generator.Manager.AddConstantFieldref((Field)member);
 
             Generator.Emit(OpCodes.getstatic, index);
 
-            return StackItem[(int) TypeCode];
+            return StackItem[(int)TypeCode];
         }
 
         public override void Store()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field) member);
+            short index = Generator.Manager.AddConstantFieldref((Field)member);
 
             Generator.Emit(OpCodes.putstatic, index);
         }
@@ -35,12 +35,12 @@ namespace JavaCompiler.Compilers.Items
         {
             ItemTypeCode rescode = TypeCodeHelper.TypeCode(member.ReturnType);
 
-            var method = (Method) member;
+            var method = (Method)member;
             short index = Generator.Manager.AddConstantMethodref(method);
 
-            Generator.Emit(OpCodes.invokestatic, index);
+            Generator.EmitInvoke(OpCodes.invokestatic, (short)method.Parameters.Count, index);
 
-            return StackItem[(int) rescode];
+            return StackItem[(int)rescode];
         }
 
         public override string ToString()

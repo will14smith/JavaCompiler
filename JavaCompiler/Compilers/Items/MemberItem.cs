@@ -20,16 +20,16 @@ namespace JavaCompiler.Compilers.Items
 
         public override Item Load()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field) member);
+            short index = Generator.Manager.AddConstantFieldref((Field)member);
 
             Generator.Emit(OpCodes.getfield, index);
 
-            return StackItem[(int) TypeCode];
+            return StackItem[(int)TypeCode];
         }
 
         public override void Store()
         {
-            short index = Generator.Manager.AddConstantFieldref((Field) member);
+            short index = Generator.Manager.AddConstantFieldref((Field)member);
 
             Generator.Emit(OpCodes.putfield, index);
         }
@@ -38,42 +38,42 @@ namespace JavaCompiler.Compilers.Items
         {
             ItemTypeCode rescode = TypeCodeHelper.TypeCode(member.ReturnType);
 
-            var method = (Method) member;
+            var method = (Method)member;
             if (member.DeclaringType is Interface)
             {
                 short index = Generator.Manager.AddConstantInterfaceMethodref(method);
 
-                Generator.Emit(OpCodes.invokeinterface, index, (byte) method.Parameters.Count, 0);
+                Generator.EmitInvoke(OpCodes.invokeinterface, (short)method.Parameters.Count, index, (byte)method.Parameters.Count, 0);
             }
             else if (nonVirtual)
             {
                 short index = Generator.Manager.AddConstantMethodref(method);
 
-                Generator.Emit(OpCodes.invokespecial, index);
+                Generator.EmitInvoke(OpCodes.invokespecial, (short) method.Parameters.Count, index);
             }
             else
             {
                 short index = Generator.Manager.AddConstantMethodref(method);
 
-                Generator.Emit(OpCodes.invokevirtual, index);
+                Generator.EmitInvoke(OpCodes.invokevirtual, (short)method.Parameters.Count, index);
             }
 
-            return StackItem[(int) rescode];
+            return StackItem[(int)rescode];
         }
 
         public override void Duplicate()
         {
-            StackItem[(int) ItemTypeCode.Object].Duplicate();
+            StackItem[(int)ItemTypeCode.Object].Duplicate();
         }
 
         public override void Drop()
         {
-            StackItem[(int) ItemTypeCode.Object].Drop();
+            StackItem[(int)ItemTypeCode.Object].Drop();
         }
 
         public override void Stash(ItemTypeCode code)
         {
-            StackItem[(int) ItemTypeCode.Object].Stash(code);
+            StackItem[(int)ItemTypeCode.Object].Stash(code);
         }
 
         public override int Width()
