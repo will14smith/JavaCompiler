@@ -18,7 +18,8 @@ namespace JavaCompiler.Reflection.Types
 
         public override bool IsAssignableTo(Type c)
         {
-            throw new NotImplementedException();
+            //TODO: Improve
+            return c.GetDescriptor() == GetDescriptor();
         }
 
         public override void Resolve(List<Package> imports)

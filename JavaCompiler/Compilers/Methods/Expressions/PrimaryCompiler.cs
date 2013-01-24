@@ -186,15 +186,18 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             parentType = ClassLocator.Find(parentType, generator.Manager.Imports) as DefinedType;
             if (parentType == null) throw new InvalidOperationException();
 
-            IMember member = TryMember(generator, methodName, parentType, method.Arguments);
+            var args = new List<Item>();
+            foreach (var parameter in method.Arguments)
+            {
+                var arg = new ExpressionCompiler(parameter).Compile(generator).Load();
+
+                args.Add(arg);
+            }
+
+            IMember member = TryMember(generator, methodName, parentType, args);
             if (member == null) throw new InvalidOperationException();
 
             bool isStatic = (member.Modifiers & Modifier.Static) == Modifier.Static;
-
-            foreach (ExpressionNode parameter in method.Arguments)
-            {
-                new ExpressionCompiler(parameter).Compile(generator).Load();
-            }
 
             return isStatic
                        ? new StaticItem(generator, member).Invoke()
@@ -242,7 +245,14 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                        ? new StaticItem(generator, field)
                        : (Item)new MemberItem(generator, field, nonVirtual);
         }
-        private static IMember TryMember(ByteCodeGenerator generator, string name, DefinedType parentType, List<ExpressionNode> arguments)
+        private static ClassItem TryClass(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)
+        {
+            var c = ClassLocator.Find(id.Identifier, generator.Manager.Imports);
+
+            return c == null ? null : new ClassItem(generator, c);
+        }
+
+        private static IMember TryMember(ByteCodeGenerator generator, string name, DefinedType parentType, List<Item> arguments)
         {
             var sourceMethods = name == "<init>"
                 ? (parentType as Class).Constructors.Select(x => (Method)x).ToList()
@@ -253,13 +263,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             if (!methods.Any()) return null;
 
             //TODO: Find best method
-            return methods.First();
-        }
-        private static ClassItem TryClass(ByteCodeGenerator generator, PrimaryNode.TermIdentifierExpression id)
-        {
-            var c = ClassLocator.Find(id.Identifier, generator.Manager.Imports);
+            foreach(var method in methods)
+            {
+                if(method.Parameters.Zip(arguments, (p, a) => (a.Type.CanAssignTo(p.Type))).All(x => x))
+                {
+                    return method;
+                }
+            }
 
-            return c == null ? null : new ClassItem(generator, c);
+            return null;
         }
+
     }
 }
