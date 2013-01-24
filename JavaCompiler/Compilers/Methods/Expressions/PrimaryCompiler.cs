@@ -265,7 +265,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             //TODO: Find best method
             foreach(var method in methods)
             {
-                if(method.Parameters.Zip(arguments, (p, a) => (a.Type.CanAssignTo(p.Type))).All(x => x))
+                if(method.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a.Type))).All(x => x))
                 {
                     return method;
                 }
