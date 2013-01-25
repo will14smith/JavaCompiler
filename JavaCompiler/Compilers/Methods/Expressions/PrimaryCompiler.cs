@@ -88,13 +88,6 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
                 return new ImmediateItem(generator, new PlaceholderType { Name = "java.lang.String" }, s.Value);
             }
-
-            if (node is PrimaryNode.TermMethodCallExpression)
-            {
-                var method = node as PrimaryNode.TermMethodCallExpression;
-
-                return CompileMethodCall(generator, scope, method);
-            }
             if (node is PrimaryNode.TermMethodExpression)
             {
                 var method = node as PrimaryNode.TermMethodExpression;
@@ -218,11 +211,6 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                        ? (Item)new StaticItem(generator, method)
                        : new MemberItem(generator, method, method.Name == "<init>");
 
-        }
-
-        private static Item CompileMethodCall(ByteCodeGenerator generator, Item scope, PrimaryNode.TermMethodCallExpression method)
-        {
-            return new PrimaryCompiler(method.Child).Compile(generator, scope);
         }
         private static Item CompileArray(ByteCodeGenerator generator, Item scope, PrimaryNode.TermArrayExpression array)
         {

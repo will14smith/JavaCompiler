@@ -76,7 +76,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
                 : (PrimaryNode)new PrimaryNode.TermThisExpression();
 
             new PrimaryCompiler(
-                new PrimaryNode.TermMethodCallExpression
+                new PrimaryNode.TermMethodExpression
                 {
                     Child = new PrimaryNode.TermFieldExpression
                     {

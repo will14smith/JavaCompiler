@@ -116,11 +116,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
             meth.Arguments = arguments;
 
-            return new PrimaryNode.TermMethodCallExpression
-            {
-                Child = key,
-                Arguments = arguments
-            };
+            return key;
         }
 
         private PrimaryNode WalkConstructorCall()

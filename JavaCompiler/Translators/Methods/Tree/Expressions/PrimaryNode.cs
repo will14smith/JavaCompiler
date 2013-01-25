@@ -180,32 +180,6 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         #endregion
 
-        #region Nested type: TermMethodCallExpression
-
-        public class TermMethodCallExpression : PrimaryNode
-        {
-            public List<ExpressionNode> Arguments { get; set; }
-
-            public override string ToString()
-            {
-                string arguments = "";
-
-                for (int i = 0; i < Arguments.Count(); i++)
-                {
-                    if (i > 0)
-                    {
-                        arguments += ", ";
-                    }
-
-                    arguments += Arguments[i];
-                }
-
-                return Child + "(" + arguments + ")";
-            }
-        }
-
-        #endregion
-
         #region Nested type: TermNullExpression
 
         public class TermNullExpression : PrimaryNode

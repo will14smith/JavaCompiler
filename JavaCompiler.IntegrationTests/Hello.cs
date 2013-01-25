@@ -18,22 +18,22 @@ namespace JavaCompiler.IntegrationTests
             ExpectedTree =
                 new MethodTree
                 {
-                    new PrimaryNode.TermMethodCallExpression
+                    new PrimaryNode.TermFieldExpression
                     {
                         Child = new PrimaryNode.TermFieldExpression
                         {
-                            Child = new PrimaryNode.TermFieldExpression
-                            {
-                                Child = new PrimaryNode.TermIdentifierExpression { Identifier = "System" },
-                                SecondChild = new PrimaryNode.TermIdentifierExpression { Identifier = "out" }
-                            },
-                            SecondChild = new PrimaryNode.TermIdentifierExpression { Identifier = "println" }
+                            Child = new PrimaryNode.TermIdentifierExpression { Identifier = "System" },
+                            SecondChild = new PrimaryNode.TermIdentifierExpression { Identifier = "out" }
                         },
-                        Arguments = new List<ExpressionNode>
+                        SecondChild = new PrimaryNode.TermMethodExpression
                         {
-                            new PrimaryNode.TermStringLiteralExpression { Value = "\"Hello\"" }
+                            Identifier = "println",
+                            Arguments = new List<ExpressionNode>
+                            {
+                                new PrimaryNode.TermStringLiteralExpression { Value = "\"Hello\"" }
+                            }
                         }
-                    }
+                    },
                 };
         }
     }
