@@ -31,6 +31,10 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator, Item scope)
         {
+            var scopeType = (scope == null
+                ? generator.Method.DeclaringType
+                : ClassLocator.Find(scope.Type, generator.Manager.Imports)) as DefinedType;
+
             if (node is PrimaryNode.TermIdentifierExpression)
             {
                 var id = node as PrimaryNode.TermIdentifierExpression;
@@ -45,14 +49,11 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             }
             if (node is PrimaryNode.TermThisExpression)
             {
-                Type selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
-
-                return new SelfItem(generator, selfScope, false);
+                return new SelfItem(generator, scopeType, false);
             }
             if (node is PrimaryNode.TermSuperExpression)
             {
-                Type selfScope = (scope == null) ? generator.Method.DeclaringType : scope.Type;
-                Class superScope = (selfScope as Class).Super;
+                Class superScope = (scopeType as Class).Super;
 
                 return new SelfItem(generator, superScope, true);
             }
@@ -92,8 +93,15 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var method = node as PrimaryNode.TermMethodCallExpression;
 
-                return CompileMethod(generator, scope, method);
+                return CompileMethodCall(generator, scope, method);
             }
+            if (node is PrimaryNode.TermMethodExpression)
+            {
+                var method = node as PrimaryNode.TermMethodExpression;
+
+                return CompileMethod(generator, scopeType, method);
+            }
+
             if (node is PrimaryNode.TermArrayExpression)
             {
                 var array = node as PrimaryNode.TermArrayExpression;
@@ -158,59 +166,63 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             item.Load();
             return new PrimaryCompiler(field.SecondChild).Compile(generator, item);
         }
-        private static Item CompileMethod(ByteCodeGenerator generator, Item scope, PrimaryNode.TermMethodCallExpression method)
+        private static Item CompileMethod(ByteCodeGenerator generator, DefinedType parentType, PrimaryNode.TermMethodExpression method)
         {
-            string methodName;
+            var name = method.Identifier;
+            var arguments = method.Arguments;
 
-            DefinedType parentType;
-            if (method.Child is PrimaryNode.TermIdentifierExpression)
-            {
-                var id = method.Child as PrimaryNode.TermIdentifierExpression;
-
-                methodName = id.Identifier;
-
-                var thisItem = new PrimaryCompiler(new PrimaryNode.TermThisExpression()).Compile(generator, scope);
-
-                thisItem.Load();
-                parentType = thisItem.Type as DefinedType;
-            }
-            else if (method.Child is PrimaryNode.TermFieldExpression)
-            {
-                var field = method.Child as PrimaryNode.TermFieldExpression;
-                var id = field.SecondChild as PrimaryNode.TermIdentifierExpression;
-
-                if (id == null) throw new InvalidOperationException();
-                methodName = id.Identifier;
-
-                var objectItem = new PrimaryCompiler(field.Child).Compile(generator);
-
-                objectItem.Load();
-                parentType = objectItem.Type as DefinedType;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-
-            parentType = ClassLocator.Find(parentType, generator.Manager.Imports) as DefinedType;
-            if (parentType == null) throw new InvalidOperationException();
+            var sourceMethods = name == "<init>"
+                ? (parentType as Class).Constructors.Select(x => (Method)x).ToList()
+                : parentType.Methods.Where(x => x.Name == name);
 
             var args = new List<Item>();
             foreach (var parameter in method.Arguments)
             {
-                var arg = new ExpressionCompiler(parameter).Compile(generator).Load();
-
-                args.Add(arg);
+                args.Add(new ExpressionCompiler(parameter).Compile(generator));
             }
 
-            IMember member = TryMember(generator, methodName, parentType, args);
-            if (member == null) throw new InvalidOperationException();
+            var item = TryMethod(generator, sourceMethods, args);
+            if (item == null) throw new InvalidOperationException();
 
-            bool isStatic = (member.Modifiers & Modifier.Static) == Modifier.Static;
+            foreach (var arg in args)
+            {
+                arg.Load();
+            }
+
+            return item.Invoke();
+        }
+
+        private static Item TryMethod(ByteCodeGenerator generator, IEnumerable<Method> sourceMethods, IList<Item> args)
+        {
+            var methods = sourceMethods.Where(x => x.Parameters.Count == args.Count).ToList();
+            if (!methods.Any()) return null;
+
+            var arguments = args.Select(x => ClassLocator.Find(x.Type, generator.Manager.Imports)).ToList();
+
+            IMember method = null;
+            //TODO: Find best method
+            foreach (var meth in methods)
+            {
+                if (meth.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a))).All(x => x))
+                {
+                    method = meth;
+                    break;
+                }
+            }
+
+            if (method == null) return null;
+
+            bool isStatic = (method.Modifiers & Modifier.Static) == Modifier.Static;
 
             return isStatic
-                       ? new StaticItem(generator, member).Invoke()
-                       : new MemberItem(generator, member, member.Name == "<init>").Invoke();
+                       ? (Item)new StaticItem(generator, method)
+                       : new MemberItem(generator, method, method.Name == "<init>");
+
+        }
+
+        private static Item CompileMethodCall(ByteCodeGenerator generator, Item scope, PrimaryNode.TermMethodCallExpression method)
+        {
+            return new PrimaryCompiler(method.Child).Compile(generator, scope);
         }
         private static Item CompileArray(ByteCodeGenerator generator, Item scope, PrimaryNode.TermArrayExpression array)
         {
@@ -220,7 +232,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             new ExpressionCompiler(array.Index).Compile(generator).Load();
 
             var result = item.Type as Array;
-            
+
             return new IndexedItem(generator, result.ArrayType);
         }
 
@@ -259,28 +271,5 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             return c == null ? null : new ClassItem(generator, c);
         }
-
-        private static IMember TryMember(ByteCodeGenerator generator, string name, DefinedType parentType, List<Item> arguments)
-        {
-            var sourceMethods = name == "<init>"
-                ? (parentType as Class).Constructors.Select(x => (Method)x).ToList()
-                : parentType.Methods;
-
-            var methods =
-                sourceMethods.Where(x => x.Name == name && x.Parameters.Count == arguments.Count).ToList();
-            if (!methods.Any()) return null;
-
-            //TODO: Find best method
-            foreach (var method in methods)
-            {
-                if (method.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a.Type))).All(x => x))
-                {
-                    return method;
-                }
-            }
-
-            return null;
-        }
-
     }
 }

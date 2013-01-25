@@ -87,11 +87,40 @@ namespace JavaCompiler.Translators.Methods.Expressions
                 arguments.Add(new ExpressionTranslator(argumentList.GetChild(i)).Walk());
             }
 
+            PrimaryNode.TermMethodExpression meth;
+            if (key is PrimaryNode.TermIdentifierExpression)
+            {
+                var id = key as PrimaryNode.TermIdentifierExpression;
+
+                meth = new PrimaryNode.TermMethodExpression { Identifier = id.Identifier };
+
+                key = meth;
+            }
+            else if (key is PrimaryNode.TermFieldExpression)
+            {
+                var field = key as PrimaryNode.TermFieldExpression;
+                var id = field.SecondChild as PrimaryNode.TermIdentifierExpression;
+
+                meth = new PrimaryNode.TermMethodExpression { Identifier = id.Identifier };
+
+                key = new PrimaryNode.TermFieldExpression
+                {
+                    Child = field.Child,
+                    SecondChild = meth
+                };
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            meth.Arguments = arguments;
+
             return new PrimaryNode.TermMethodCallExpression
-                       {
-                           Child = key,
-                           Arguments = arguments
-                       };
+            {
+                Child = key,
+                Arguments = arguments
+            };
         }
 
         private PrimaryNode WalkConstructorCall()

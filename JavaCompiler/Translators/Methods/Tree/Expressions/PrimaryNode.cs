@@ -156,6 +156,30 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         #endregion
 
+        #region Nested type: TermMethodExpression
+
+        public class TermMethodExpression : PrimaryNode
+        {
+            public TermMethodExpression()
+            {
+            }
+
+            public TermMethodExpression(ITree node)
+            {
+                Identifier = node.Text;
+            }
+
+            public string Identifier { get; set; }
+            public List<ExpressionNode> Arguments { get; set; }
+
+            public override string ToString()
+            {
+                return Identifier;
+            }
+        }
+
+        #endregion
+
         #region Nested type: TermMethodCallExpression
 
         public class TermMethodCallExpression : PrimaryNode
