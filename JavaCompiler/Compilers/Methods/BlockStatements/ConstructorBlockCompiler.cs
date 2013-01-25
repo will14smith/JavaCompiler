@@ -76,15 +76,11 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
                 : (PrimaryNode)new PrimaryNode.TermThisExpression();
 
             new PrimaryCompiler(
-                new PrimaryNode.TermMethodExpression
-                {
-                    Child = new PrimaryNode.TermFieldExpression
+                    new PrimaryNode.TermFieldExpression
                     {
                         Child = target,
-                        SecondChild = new PrimaryNode.TermIdentifierExpression { Identifier = "<init>" }
-                    },
-                    Arguments = call.Arguments
-                }
+                        SecondChild = new PrimaryNode.TermMethodExpression { Identifier = "<init>", Arguments = call.Arguments }
+                    }
             ).Compile(generator);
         }
     }
