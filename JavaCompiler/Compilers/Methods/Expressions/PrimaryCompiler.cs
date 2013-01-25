@@ -159,43 +159,52 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             item.Load();
             return new PrimaryCompiler(field.SecondChild).Compile(generator, item);
         }
-        private static Item CompileMethod(ByteCodeGenerator generator, DefinedType parentType, PrimaryNode.TermMethodExpression method)
+        private static Item CompileMethod(ByteCodeGenerator generator, DefinedType parentType, PrimaryNode.TermMethodExpression id)
         {
-            var name = method.Identifier;
-            var arguments = method.Arguments;
+            var name = id.Identifier;
+            var arguments = id.Arguments;
 
             var sourceMethods = name == "<init>"
                 ? (parentType as Class).Constructors.Select(x => (Method)x).ToList()
                 : parentType.Methods.Where(x => x.Name == name);
 
             var args = new List<Item>();
-            foreach (var parameter in method.Arguments)
+            foreach (var parameter in id.Arguments)
             {
                 args.Add(new ExpressionCompiler(parameter).Compile(generator));
             }
 
-            var item = TryMethod(generator, sourceMethods, args);
-            if (item == null) throw new InvalidOperationException();
+            var method = TryMethod(generator, sourceMethods, args);
+            if (method == null) throw new InvalidOperationException();
 
-            foreach (var arg in args)
+            bool isStatic = (method.Modifiers & Modifier.Static) == Modifier.Static;
+
+            var item = isStatic
+                       ? (Item)new StaticItem(generator, method)
+                       : new MemberItem(generator, method, method.Name == "<init>");
+
+
+            foreach (var arg in method.Parameters.Zip(args, (dst, src) => new { dst, src }))
             {
-                arg.Load();
+                arg.src.Coerce(arg.dst.Type).Load();
             }
 
             return item.Invoke();
         }
 
-        private static Item TryMethod(ByteCodeGenerator generator, IEnumerable<Method> sourceMethods, IList<Item> args)
+        private static Method TryMethod(ByteCodeGenerator generator, IEnumerable<Method> sourceMethods, IList<Item> args)
         {
             var methods = sourceMethods.Where(x => x.Parameters.Count == args.Count).ToList();
             if (!methods.Any()) return null;
 
             var arguments = args.Select(x => ClassLocator.Find(x.Type, generator.Manager.Imports)).ToList();
 
-            IMember method = null;
+            Method method = null;
             //TODO: Find best method
             foreach (var meth in methods)
             {
+                meth.Resolve(generator.Manager.Imports);
+
                 if (meth.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a))).All(x => x))
                 {
                     method = meth;
@@ -203,14 +212,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 }
             }
 
-            if (method == null) return null;
-
-            bool isStatic = (method.Modifiers & Modifier.Static) == Modifier.Static;
-
-            return isStatic
-                       ? (Item)new StaticItem(generator, method)
-                       : new MemberItem(generator, method, method.Name == "<init>");
-
+            return method ?? null;
         }
         private static Item CompileArray(ByteCodeGenerator generator, Item scope, PrimaryNode.TermArrayExpression array)
         {

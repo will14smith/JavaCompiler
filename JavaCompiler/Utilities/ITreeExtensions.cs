@@ -114,7 +114,9 @@ namespace JavaCompiler.Utilities
                 child.Type == (int)JavaNodeType.UNARY_PLUS ||
                 child.Type == (int)JavaNodeType.UNARY_MINUS ||
                 child.Type == (int)JavaNodeType.PRE_INC ||
-                child.Type == (int)JavaNodeType.PRE_DEC;
+                child.Type == (int)JavaNodeType.PRE_DEC ||
+                child.Type == (int)JavaNodeType.POST_INC ||
+                child.Type == (int)JavaNodeType.POST_DEC;
         }
 
         public static bool IsUnaryOtherExpression(this ITree child)

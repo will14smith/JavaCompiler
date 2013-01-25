@@ -99,7 +99,10 @@ namespace JavaCompiler.Reflection
 
             public void Resolve(List<Package> imports)
             {
-                Type = ClassLocator.Find(Type, imports);
+                if (!Type.Primitive)
+                {
+                    Type = ClassLocator.Find(Type, imports);
+                }
             }
         }
 

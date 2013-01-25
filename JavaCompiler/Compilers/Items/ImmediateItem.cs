@@ -154,19 +154,19 @@ namespace JavaCompiler.Compilers.Items
                         return this;
                     }
 
-                    return new ImmediateItem(Generator, PrimativeTypes.Int, (int)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Int, Convert.ToInt32(value));
                 case ItemTypeCode.Long:
-                    return new ImmediateItem(Generator, PrimativeTypes.Long, (long)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Long, Convert.ToInt64(value));
                 case ItemTypeCode.Float:
-                    return new ImmediateItem(Generator, PrimativeTypes.Float, (float)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Float, Convert.ToSingle(value));
                 case ItemTypeCode.Double:
-                    return new ImmediateItem(Generator, PrimativeTypes.Double, (double)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Double, Convert.ToDouble(value));
                 case ItemTypeCode.Byte:
-                    return new ImmediateItem(Generator, PrimativeTypes.Byte, (byte)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Byte, Convert.ToInt32(value));
                 case ItemTypeCode.Char:
-                    return new ImmediateItem(Generator, PrimativeTypes.Char, (char)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Char, Convert.ToInt32(value));
                 case ItemTypeCode.Short:
-                    return new ImmediateItem(Generator, PrimativeTypes.Short, (short)value);
+                    return new ImmediateItem(Generator, PrimativeTypes.Short, Convert.ToInt32(value));
                 default:
                     return base.Coerce(target);
             }

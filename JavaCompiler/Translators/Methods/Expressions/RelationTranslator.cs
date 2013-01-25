@@ -19,7 +19,30 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         public RelationNode Walk()
         {
-            throw new NotImplementedException();
+            RelationNode relationNode;
+
+            switch((JavaNodeType)node.Type)
+            {
+                case JavaNodeType.LESS_OR_EQUAL:
+                    relationNode = new RelationNode.LessThanEqNode();
+                    break;
+                case JavaNodeType.GREATER_OR_EQUAL:
+                    relationNode = new RelationNode.GreaterThanEqNode();
+                    break;
+                case JavaNodeType.LESS_THAN:
+                    relationNode = new RelationNode.LessThanNode();
+                    break;
+                case JavaNodeType.GREATER_THAN:
+                    relationNode = new RelationNode.GreaterThanNode();
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            relationNode.LeftChild = new ExpressionTranslator(node.GetChild(0)).Walk();
+            relationNode.RightChild = new ExpressionTranslator(node.GetChild(1)).Walk();
+
+            return relationNode;
         }
     }
 }

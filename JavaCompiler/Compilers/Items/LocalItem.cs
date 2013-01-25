@@ -1,5 +1,6 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
 
@@ -54,6 +55,31 @@ namespace JavaCompiler.Compilers.Items
         public override String ToString()
         {
             return "localItem(type=" + type + "; reg=" + reg + ")";
+        }
+
+        public void Incr(int x)
+        {
+            if (TypeCode == ItemTypeCode.Int && x >= -32768 && x <= 32767)
+            {
+                Generator.EmitWide(OpCodeValue.iinc, reg, (short)x);
+            }
+            else
+            {
+                Load();
+                if (x >= 0)
+                {
+                    new ImmediateItem(Generator, PrimativeTypes.Int, x).Load();
+                    Generator.Emit(OpCodeValue.iadd);
+                }
+                else
+                {
+                    new ImmediateItem(Generator, PrimativeTypes.Int, -x).Load();
+                    Generator.Emit(OpCodeValue.isub);
+                }
+
+                new StackItem(Generator, PrimativeTypes.Int).Coerce(Type);
+                Store();
+            }
         }
     }
 }

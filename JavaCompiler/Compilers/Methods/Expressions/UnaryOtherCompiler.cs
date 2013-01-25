@@ -16,6 +16,13 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
+            if(node is UnaryOtherNode.UnaryCastNode)
+            {
+                var cast = node as UnaryOtherNode.UnaryCastNode;
+
+                return new ExpressionCompiler(cast.Expression).Compile(generator).Coerce(cast.Type).Load();
+            }
+
             throw new NotImplementedException();
         }
     }

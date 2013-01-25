@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
 
@@ -31,15 +32,27 @@ namespace JavaCompiler.Translators
             }
 
             // import decl*
-            if ((JavaNodeType) child.Type == JavaNodeType.IMPORT)
+            while ((JavaNodeType) child.Type == JavaNodeType.IMPORT)
             {
-                child = node.GetChild(i);
+                program.Imports.Add(new Package { Name = GetName(child.GetChild(0)) });
+
+                child = node.GetChild(i++);
             }
 
             // type decl
             program.Type = new TypeDeclarationTranslator(child).Walk();
 
             return program;
+        }
+
+        private static string GetName(ITree tree)
+        {
+            if((JavaNodeType)tree.Type == JavaNodeType.DOT)
+            {
+                return GetName(tree.GetChild(0)) + "." + GetName(tree.GetChild(1));
+            }
+
+            return tree.Text;
         }
     }
 }

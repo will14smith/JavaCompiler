@@ -36,7 +36,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             }
             else if (node is ForNode)
             {
-                item = new ForCompiler(node as ForNode).Compile(generator);
+                new ForCompiler(node as ForNode).Compile(generator);
             }
             else if (node is ForEachNode)
             {

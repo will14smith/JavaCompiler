@@ -100,7 +100,7 @@
     <Compile Include="Compilers\Methods\Statements\AssertCompiler.cs" />
     <Compile Include="Compilers\Methods\Statements\BreakCompiler.cs" />
     <Compile Include="Compilers\Methods\Statements\ContinueCompiler.cs" />
-    <Compile Include="Compilers\Methods\Statements\DoTranslator.cs" />
+    <Compile Include="Compilers\Methods\Statements\DoCompiler.cs" />
     <Compile Include="Compilers\Methods\Statements\ForEachCompiler.cs" />
     <Compile Include="Compilers\Methods\Statements\ForCompiler.cs" />
     <Compile Include="Compilers\Methods\Statements\IfCompiler.cs" />

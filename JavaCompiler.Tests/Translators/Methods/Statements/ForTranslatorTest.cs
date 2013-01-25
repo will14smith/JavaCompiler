@@ -76,21 +76,5 @@ namespace JavaCompiler.Tests.Translators.Methods.Statements
             ForTranslator target = new ForTranslator(node);
             Assert.Inconclusive("TODO: Implement code to verify target");
         }
-
-        /// <summary>
-        ///A test for Walk
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("JavaCompiler.dll")]
-        public void WalkTest()
-        {
-
-            ForTranslator target = new ForTranslator(null); // TODO: Initialize to an appropriate value
-            MethodTree expected = null; // TODO: Initialize to an appropriate value
-            MethodTree actual;
-            actual = target.Walk();
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
     }
 }
