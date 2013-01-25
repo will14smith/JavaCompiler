@@ -96,7 +96,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 throw new ArgumentException("Argument_RedefinedLabel");
             }
 
-            labelList[labelValue] = length + 1;
+            labelList[labelValue] = length;
 
             ResolveLabel(labelValue);
             labelRefs.Remove(labelValue);
@@ -111,7 +111,7 @@ namespace JavaCompiler.Compilation.ByteCode
             foreach (var l in refs)
             {
                 var pos = l.Item1;
-                var i = labelList[labelValue] - pos;
+                var i = labelList[labelValue] - (pos - 1);
 
                 if (l.Item2 == 4)
                 {

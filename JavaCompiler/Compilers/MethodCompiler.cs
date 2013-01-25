@@ -54,7 +54,7 @@ namespace JavaCompiler.Compilers
                 generator.Emit(OpCodeValue.@return);
             }
 
-            attributes.Add(new CompileAttributeCode
+            var code = new CompileAttributeCode
             {
                 NameIndex = manager.AddConstantUtf8(new CompileAttributeCode().Name),
                 Code = generator.GetBytes(),
@@ -62,15 +62,17 @@ namespace JavaCompiler.Compilers
                 ExceptionTable = new List<CompileAttributeCode.ExceptionTableEntry>(),
                 MaxLocals = generator.MaxVariables,
                 MaxStack = generator.MaxStack
-            });
+            };
 
             var stackMapTable = generator.StackMapTable;
             if (stackMapTable != null)
             {
                 stackMapTable.NameIndex = manager.AddConstantUtf8(stackMapTable.Name);
 
-                attributes.Add(stackMapTable);
+                code.Attributes.Add(stackMapTable);
             }
+
+            attributes.Add(code);
         }
     }
 }

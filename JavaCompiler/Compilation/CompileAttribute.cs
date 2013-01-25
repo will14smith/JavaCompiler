@@ -103,7 +103,7 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { return 12 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Sum(x => x.Length); }
+            get { return 12 + Code.Length + ExceptionTable.Count() * 8 + Attributes.Sum(x => 6 + x.Length); }
         }
 
         public short MaxStack { get; set; }
@@ -131,8 +131,11 @@ namespace JavaCompiler.Compilation
             }
 
             writer.Write((short)Attributes.Count());
-            foreach (CompileAttribute attr in Attributes)
+            foreach (var attr in Attributes)
             {
+                writer.Write(attr.NameIndex);
+                writer.Write(attr.Length);
+
                 attr.Write(writer);
             }
         }
@@ -534,7 +537,7 @@ namespace JavaCompiler.Compilation
                     // APPEND
                     writer.Write((short)entry.OffsetDelta);
                     var type = (short)entry.Type;
-                    for (int i = 251; i <= type; i++)
+                    for (int i = 251; i < type; i++)
                     {
                         entry.Locals[i - 251].Write(writer);
 
@@ -752,7 +755,7 @@ namespace JavaCompiler.Compilation
                                 {
                                     Type = (byte)(SameFrameExtended - diffLength),
                                     OffsetDelta = offsetDelta,
-                                    Locals = locals.Select(x => GetTypeInfo(generator, x)).ToList()
+                                    Locals = localDiff.Select(x => GetTypeInfo(generator, x)).ToList()
                                 };
                             }
                             if (0 < diffLength && diffLength < MaxLocalLengthDiff)
