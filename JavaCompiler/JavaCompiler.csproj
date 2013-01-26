@@ -55,6 +55,7 @@
     <Compile Include="Compilation\CompileFieldInfo.cs" />
     <Compile Include="Compilation\CompileManager.cs" />
     <Compile Include="Compilation\CompileMethodInfo.cs" />
+    <Compile Include="Compilation\CompileTypeInfo.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compilers\ClassCompiler.cs" />
     <Compile Include="Compilers\ConstructorCompiler.cs" />
@@ -115,6 +116,11 @@
     <Compile Include="JavaNodeType.cs" />
     <Compile Include="JavaParser.cs" />
     <Compile Include="Compilers\ProgramCompiler.cs" />
+    <Compile Include="Jbt\IO\JbtReader.cs" />
+    <Compile Include="Jbt\IO\JbtWriter.cs" />
+    <Compile Include="Jbt\JbtConverter.cs" />
+    <Compile Include="Jbt\Tree\BTree.cs" />
+    <Compile Include="Jbt\Tree\BTreeNode.cs" />
     <Compile Include="Reflection\AccessibleObject.cs" />
     <Compile Include="Reflection\Enums\ClassModifier.cs" />
     <Compile Include="Reflection\Loaders\ClassLoader.cs" />
@@ -123,6 +129,7 @@
     <Compile Include="Reflection\Constructor.cs" />
     <Compile Include="Reflection\Interfaces\IGenericDeclaration.cs" />
     <Compile Include="Reflection\Interfaces\IMember.cs" />
+    <Compile Include="Reflection\Loaders\JbtClassLocator.cs" />
     <Compile Include="Reflection\Types\Array.cs" />
     <Compile Include="Reflection\Types\Internal\PlaceholderType.cs" />
     <Compile Include="Reflection\Loaders\DirectoryClassLocator.cs" />
@@ -246,7 +253,6 @@
     <Compile Include="Utilities\StackList.cs" />
     <Compile Include="Utilities\TypeCodeHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

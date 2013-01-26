@@ -17,9 +17,9 @@ namespace JavaCompiler.Compilation
         public short NameIndex { get; set; }
 
         public abstract void Write(EndianBinaryWriter writer);
-        public abstract CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length);
+        public abstract CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length);
 
-        public static CompileAttribute ReadAttribute(EndianBinaryReader reader, CompileConstant[] constants)
+        public static CompileAttribute ReadAttribute(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             short nameIndex = reader.ReadInt16();
             int attributeLength = reader.ReadInt32();
@@ -61,9 +61,43 @@ namespace JavaCompiler.Compilation
                     return new CompileAttributeLocalVariableTypeTable().Read(reader, constants, attributeLength);
                 case "RuntimeVisibleAnnotations":
                     return new CompileAttributeRuntimeVisibleAnnotations().Read(reader, constants, attributeLength);
+                case "RuntimeInvisibleAnnotations":
+                    return new CompileAttributeRuntimeInvisibleAnnotations().Read(reader, constants, attributeLength);
+                case "RuntimeVisibleParameterAnnotations":
+                    return new CompileAttributeRuntimeVisibleParameterAnnotations().Read(reader, constants, attributeLength);
+                case "RuntimeInvisibleParameterAnnotations":
+                    return new CompileAttributeRuntimeInvisibleParameterAnnotations().Read(reader, constants, attributeLength);
                 default:
-                    throw new NotImplementedException();
+                    return new CompileAttributeGeneric(name).Read(reader, constants, attributeLength);
             }
+        }
+    }
+
+    public class CompileAttributeGeneric : CompileAttribute
+    {
+        public CompileAttributeGeneric(string name)
+        {
+            this.name = name;
+        }
+
+        private readonly string name;
+        public override string Name { get { return name; } }
+
+        public override int Length { get { return Data.Length; } }
+
+
+        public byte[] Data { get; set; }
+
+        public override void Write(EndianBinaryWriter writer)
+        {
+            writer.Write(Data);
+        }
+
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
+        {
+            Data =reader.ReadBytes(length);
+
+            return this;
         }
     }
 
@@ -86,7 +120,7 @@ namespace JavaCompiler.Compilation
             writer.Write(ValueIndex);
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             ValueIndex = reader.ReadInt16();
 
@@ -140,7 +174,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             MaxStack = reader.ReadInt16();
             MaxLocals = reader.ReadInt16();
@@ -208,7 +242,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             ExceptionTable = new List<short>();
 
@@ -250,7 +284,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             Classes = new List<InnerClass>();
 
@@ -299,7 +333,7 @@ namespace JavaCompiler.Compilation
         {
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             return this;
         }
@@ -324,7 +358,7 @@ namespace JavaCompiler.Compilation
             writer.Write(SourceFile);
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             SourceFile = reader.ReadInt16();
 
@@ -356,7 +390,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             LineNumbers = new List<LineNumberTableEntry>();
 
@@ -412,7 +446,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             Variables = new List<VariableTableEntry>();
 
@@ -463,7 +497,7 @@ namespace JavaCompiler.Compilation
         {
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             return this;
         }
@@ -544,8 +578,7 @@ namespace JavaCompiler.Compilation
                         if (entry.Locals[i - 251].Tag == VerificationType.Long ||
                             entry.Locals[i - 251].Tag == VerificationType.Double)
                         {
-                            i++;
-                            type++;
+
                         }
                     }
                 }
@@ -568,7 +601,7 @@ namespace JavaCompiler.Compilation
                 }
             }
         }
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             Entries = new List<StackMapFrame>();
 
@@ -886,7 +919,7 @@ namespace JavaCompiler.Compilation
             writer.Write(MethodIndex);
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             ClassIndex = reader.ReadInt16();
             MethodIndex = reader.ReadInt16();
@@ -914,7 +947,7 @@ namespace JavaCompiler.Compilation
             writer.Write(SignatureIndex);
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             SignatureIndex = reader.ReadInt16();
 
@@ -941,7 +974,7 @@ namespace JavaCompiler.Compilation
             writer.Write(DebugExtension);
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             DebugExtension = reader.ReadBytes(length);
 
@@ -976,7 +1009,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             Variables = new List<VariableTypeTableEntry>();
 
@@ -1025,7 +1058,7 @@ namespace JavaCompiler.Compilation
 
         public override int Length
         {
-            get { throw new NotImplementedException(); }
+            get { return 2 + Annotations.Sum(x => x.Length); }
         }
 
         public List<Annotation> Annotations { get; set; }
@@ -1039,7 +1072,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        public override CompileAttribute Read(EndianBinaryReader reader, CompileConstant[] constants, int length)
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
         {
             short annotationCount = reader.ReadInt16();
             for (int i = 0; i < annotationCount; i++)
@@ -1050,7 +1083,7 @@ namespace JavaCompiler.Compilation
             return this;
         }
 
-        private void WriteAnnotation(Annotation annotation, EndianBinaryWriter writer)
+        internal static void WriteAnnotation(Annotation annotation, EndianBinaryWriter writer)
         {
             writer.Write(annotation.TypeIndex);
 
@@ -1063,7 +1096,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        private void WriteElementValue(ElementValue value, EndianBinaryWriter writer)
+        private static void WriteElementValue(ElementValue value, EndianBinaryWriter writer)
         {
             switch ((char)value.Tag)
             {
@@ -1098,7 +1131,7 @@ namespace JavaCompiler.Compilation
             }
         }
 
-        private Annotation ReadAnnotation(EndianBinaryReader reader, CompileConstant[] constants)
+        internal static Annotation ReadAnnotation(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             var annotation = new Annotation();
 
@@ -1117,7 +1150,7 @@ namespace JavaCompiler.Compilation
             return annotation;
         }
 
-        private ElementValue ReadElementValue(EndianBinaryReader reader, CompileConstant[] constants)
+        private static ElementValue ReadElementValue(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             var value = new ElementValue();
 
@@ -1169,6 +1202,12 @@ namespace JavaCompiler.Compilation
 
             public short TypeIndex { get; set; }
             public List<Tuple<short, ElementValue>> ElementValues { get; set; }
+
+            public int Length
+            {
+                get { return 4 + ElementValues.Sum(x => 2 + x.Item2.Length); }
+                set { throw new NotImplementedException(); }
+            }
         }
 
         #endregion
@@ -1180,6 +1219,35 @@ namespace JavaCompiler.Compilation
             public ElementValue()
             {
                 Values = new List<ElementValue>();
+            }
+
+            public int Length
+            {
+                get
+                {
+                    switch ((char)Tag)
+                    {
+                        case 'B':
+                        case 'C':
+                        case 'D':
+                        case 'F':
+                        case 'I':
+                        case 'J':
+                        case 'S':
+                        case 'Z':
+                        case 's':
+                        case 'c':
+                            return 2;
+                        case 'e':
+                            return 4;
+                        case '@':
+                            return 2 + AnnotationValue.Length;
+                        case '[':
+                            return 2 + Values.Sum(x => x.Length);
+                    }
+
+                    throw new NotImplementedException();
+                }
             }
 
             public byte Tag { get; set; }
@@ -1197,5 +1265,57 @@ namespace JavaCompiler.Compilation
         }
 
         #endregion
+    }
+    public class CompileAttributeRuntimeInvisibleAnnotations : CompileAttributeRuntimeVisibleAnnotations
+    {
+
+    }
+
+    public class CompileAttributeRuntimeVisibleParameterAnnotations : CompileAttribute
+    {
+        public override string Name { get { return "RuntimeVisibleParameterAnnotations"; } }
+
+        public override int Length { get { return 1 + ParameterAnnotations.Sum(x => 2 + x.Sum(y => y.Length)); } }
+
+        public List<List<CompileAttributeRuntimeVisibleAnnotations.Annotation>> ParameterAnnotations { get; set; }
+
+        public override void Write(EndianBinaryWriter writer)
+        {
+            writer.Write((byte)ParameterAnnotations.Count());
+            foreach (var annotations in ParameterAnnotations)
+            {
+                writer.Write((short)annotations.Count());
+                foreach (var annotation in annotations)
+                {
+                    CompileAttributeRuntimeVisibleAnnotations.WriteAnnotation(annotation, writer);
+                }
+            }
+        }
+        public override CompileAttribute Read(EndianBinaryReader reader, List<CompileConstant> constants, int length)
+        {
+            var parameterCount = reader.ReadByte();
+
+            ParameterAnnotations = new List<List<CompileAttributeRuntimeVisibleAnnotations.Annotation>>();
+            for (var i = 0; i < parameterCount; i++)
+            {
+                var parameter = new List<CompileAttributeRuntimeVisibleAnnotations.Annotation>();
+
+                var annotationCount = reader.ReadInt16();
+                for (var x = 0; x < annotationCount; x++)
+                {
+                    var annotation = CompileAttributeRuntimeVisibleAnnotations.ReadAnnotation(reader, constants);
+
+                    parameter.Add(annotation);
+                }
+
+                ParameterAnnotations.Add(parameter);
+            }
+
+            return this;
+        }
+    }
+    public class CompileAttributeRuntimeInvisibleParameterAnnotations : CompileAttributeRuntimeVisibleParameterAnnotations
+    {
+
     }
 }

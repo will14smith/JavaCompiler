@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using JavaCompiler.Jbt;
+using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Console
 {
@@ -13,7 +15,9 @@ namespace JavaCompiler.Console
                 CompileFile(file);
             }*/
 
-            CompileFile(@"Tests\Tutorial1\Exercise3.java");
+            // CompileFile(@"Tests\Tutorial1\Exercise1.java");
+            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
+            ConvertJar(@"E:\Projects\picture_processing\junit.jar");
         }
 
         static void CompileFile(string filePath)
@@ -26,6 +30,17 @@ namespace JavaCompiler.Console
             compiler.ClassPath.Add(directory);
 
             File.WriteAllBytes(Path.Combine(directory, fileName + ".class"), compiler.Compile());
+        }
+
+        static void ConvertJar(string filePath)
+        {
+            var directory = Path.GetDirectoryName(filePath);
+            var fileName = Path.GetFileNameWithoutExtension(filePath);
+            var writePath = Path.Combine(directory, fileName + ".jbt");
+
+            var jbtConverter = new JbtConverter(File.OpenRead(filePath));
+
+            jbtConverter.Convert(new EndianBinaryWriter(EndianBitConverter.Big, File.OpenWrite(writePath)));
         }
     }
 }

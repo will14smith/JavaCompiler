@@ -30,6 +30,9 @@ namespace JavaCompiler.Reflection.Loaders
 
         public static Type Find(Type c, List<Package> importedPackages)
         {
+            if (c == null) return null;
+            if (c.Primitive) return c;
+
             var array = c as Array;
             if (array != null)
             {

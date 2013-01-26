@@ -28,7 +28,7 @@ namespace JavaCompiler.Reflection.Loaders
             short minorVersion = reader.ReadInt16();
             short majorVersion = reader.ReadInt16();
 
-            CompileConstant[] constants = ReadConstants(reader);
+            List<CompileConstant> constants = new List<CompileConstant>(ReadConstants(reader));
 
             var modifiers = (ClassModifier)reader.ReadInt16();
 
@@ -133,7 +133,7 @@ namespace JavaCompiler.Reflection.Loaders
             return interfaces;
         }
 
-        private static IEnumerable<CompileFieldInfo> ReadFields(EndianBinaryReader reader, CompileConstant[] constants)
+        private static IEnumerable<CompileFieldInfo> ReadFields(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             short fieldCount = reader.ReadInt16();
             var fields = new CompileFieldInfo[fieldCount];
@@ -154,7 +154,7 @@ namespace JavaCompiler.Reflection.Loaders
             return fields;
         }
 
-        private static IEnumerable<CompileMethodInfo> ReadMethods(EndianBinaryReader reader, CompileConstant[] constants)
+        private static IEnumerable<CompileMethodInfo> ReadMethods(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             short methodCount = reader.ReadInt16();
             var methods = new CompileMethodInfo[methodCount];
@@ -175,7 +175,7 @@ namespace JavaCompiler.Reflection.Loaders
             return methods;
         }
 
-        private static CompileAttribute[] ReadAttributes(EndianBinaryReader reader, CompileConstant[] constants)
+        private static CompileAttribute[] ReadAttributes(EndianBinaryReader reader, List<CompileConstant> constants)
         {
             short attributeCount = reader.ReadInt16();
             var attributes = new CompileAttribute[attributeCount];
@@ -188,7 +188,7 @@ namespace JavaCompiler.Reflection.Loaders
             return attributes;
         }
 
-        public static Field GetField(Class c, CompileFieldInfo field, CompileConstant[] constants)
+        public static Field GetField(Class c, CompileFieldInfo field, List<CompileConstant> constants)
         {
             return new Field
                        {
@@ -199,7 +199,7 @@ namespace JavaCompiler.Reflection.Loaders
                        };
         }
 
-        public static Method GetMethod(Class c, CompileMethodInfo method, CompileConstant[] constants)
+        public static Method GetMethod(Class c, CompileMethodInfo method, List<CompileConstant> constants)
         {
             var m = new Method
                         {
@@ -217,7 +217,7 @@ namespace JavaCompiler.Reflection.Loaders
             return m;
         }
 
-        private static Type GetType(short p, CompileConstant[] constants)
+        private static Type GetType(short p, List<CompileConstant> constants)
         {
             string descriptor = GetUtf8(p, constants);
 
@@ -328,22 +328,24 @@ namespace JavaCompiler.Reflection.Loaders
                                 i++;
                             }
 
-                            string typeName = "";
 
+                            Type type;
                             if (descriptor[i] == 'L')
                             {
+                                var typeName = "";
+
                                 while (descriptor[i] != ';')
                                 {
                                     typeName += descriptor[i++];
                                 }
+
+                                type = new PlaceholderType { Name = typeName.Replace('/', '.') };
                             }
                             else
                             {
-                                typeName = GetTypeFromDescriptor(new string(new[] { descriptor[i] })).Name;
+                                type = GetTypeFromDescriptor(new string(new[] { descriptor[i] }));
                             }
                             i++;
-
-                            Type type = new PlaceholderType { Name = typeName.Replace('/', '.') };
 
                             for (var x = 0; x < arrayDimensions; x++)
                             {
@@ -365,7 +367,7 @@ namespace JavaCompiler.Reflection.Loaders
             return new Tuple<List<Type>, Type>(parameterTypes, returnType);
         }
 
-        private static DefinedType GetClass(short index, CompileConstant[] constants)
+        private static DefinedType GetClass(short index, List<CompileConstant> constants)
         {
             CompileConstant constant = constants[index];
 
@@ -378,7 +380,7 @@ namespace JavaCompiler.Reflection.Loaders
             throw new InvalidOperationException();
         }
 
-        private static string GetUtf8(short index, CompileConstant[] constants)
+        private static string GetUtf8(short index, List<CompileConstant> constants)
         {
             CompileConstant constant = constants[index];
 
