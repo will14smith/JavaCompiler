@@ -1,5 +1,4 @@
-﻿using System;
-using JavaCompiler.Utilities;
+﻿using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Jbt.Tree
 {
@@ -11,8 +10,7 @@ namespace JavaCompiler.Jbt.Tree
         public int EntryCount;
 
         public readonly BTreeNode[] Values = new BTreeNode[BTree.Order];
-
-
+        
         public BTreeNode(int entryCount)
         {
             EntryCount = entryCount;

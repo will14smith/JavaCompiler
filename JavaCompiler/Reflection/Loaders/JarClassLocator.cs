@@ -19,7 +19,7 @@ namespace JavaCompiler.Reflection.Loaders
             var jbtPath = Path.Combine(diretoryName, fileName + ".jbt");
             if (File.Exists(jbtPath))
             {
-                JbtLocator = new JbtClassLocator(jbtPath);
+                JbtLocator = JbtClassLocator.Get(jbtPath);
             }
         }
 

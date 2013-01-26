@@ -9,7 +9,18 @@ namespace JavaCompiler.Reflection.Loaders
 {
     class JbtClassLocator : IClassLocator
     {
-        public JbtClassLocator(string jbtFile)
+        private static readonly Dictionary<string, JbtClassLocator> Locators = new Dictionary<string, JbtClassLocator>();
+        public static JbtClassLocator Get(string jbtFile)
+        {
+            if (!Locators.ContainsKey(jbtFile))
+            {
+                Locators.Add(jbtFile, new JbtClassLocator(jbtFile));
+            }
+
+            return Locators[jbtFile];
+        }
+
+        private JbtClassLocator(string jbtFile)
         {
             JbtFile = jbtFile;
 

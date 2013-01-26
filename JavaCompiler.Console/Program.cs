@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using JavaCompiler.Jbt;
+using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Console
@@ -8,18 +9,18 @@ namespace JavaCompiler.Console
     {
         static void Main(string[] args)
         {
-            /*var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
+            var files = Directory.GetFiles("Tests\\Constructors", "*.java", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {
                 CompileFile(file);
-            }*/
+            }
 
             //ConvertJar(@"C:\Program Files\Java\jre7\lib\plugin.jar");
-            ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
+            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
             //ConvertJar(@"E:\Projects\picture_processing\junit.jar");
 
-            CompileFile(@"Tests\Tutorial1\Exercise1.java");
+            //CompileFile(@"Tests\Tutorial1\Exercise1.java");
         }
 
         static void CompileFile(string filePath)

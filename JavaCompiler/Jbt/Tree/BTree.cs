@@ -24,21 +24,7 @@ namespace JavaCompiler.Jbt.Tree
         {
             if (x == null) return null;
 
-            for(var j = 0; j < x.EntryCount; j++)
-            {
-                if (x.Entries[j].Key == key)
-                {
-                    return x.Entries[j].Value;
-                }
-
-                var item = Search(x.Values[j], key);
-
-                if (item != null) return item;
-            }
-
-            return Search(x.Values[x.EntryCount], key);
-
-            /*for (var j = 0; j < x.EntryCount; j++)
+            for (var j = 0; j < x.EntryCount; j++)
             {
                 if (key == x.Entries[j].Key)
                 {
@@ -49,11 +35,10 @@ namespace JavaCompiler.Jbt.Tree
                 {
                     return Search(x.Values[j], key);
                 }
-                
+
             }
 
-            return Search(x.Values[x.EntryCount], key);*/
-
+            return Search(x.Values[x.EntryCount], key);
         }
 
 
@@ -73,7 +58,7 @@ namespace JavaCompiler.Jbt.Tree
             t.Values[0] = new BTreeNode(SplitMedian); // lt nodes
             t.Values[1] = u; // gt nodes
 
-            for (var i = 0; i < SplitMedian; i++)
+            for (var i = 0; i <= SplitMedian; i++)
             {
                 t.Values[0].Entries[i] = root.Entries[i];
                 t.Values[0].Values[i] = root.Values[i];
@@ -98,6 +83,13 @@ namespace JavaCompiler.Jbt.Tree
             {
                 for (j = 0; j < h.EntryCount; j++)
                 {
+                    if (key == h.Entries[j].Key)
+                    {
+                        h.Entries[j].Value.Add(value);
+
+                        return null;
+                    }
+
                     if (key <= h.Entries[j].Key) break;
                 }
             }
@@ -107,6 +99,13 @@ namespace JavaCompiler.Jbt.Tree
                 for (j = 0; j < h.EntryCount; j++)
                 {
                     if ((j + 1 != h.EntryCount) && key >= h.Entries[j + 1].Key) continue;
+
+                    if (key == h.Entries[j].Key)
+                    {
+                        h.Entries[j].Value.Add(value);
+
+                        return null;
+                    }
 
                     var offs = (key >= h.Entries[j].Key ? 1 : 0);
 
@@ -170,34 +169,6 @@ namespace JavaCompiler.Jbt.Tree
             }
 
             return t;
-        }
-
-        // for debugging
-        public override String ToString()
-        {
-            return ToString(root, Height, "") + "\n";
-        }
-
-        private static String ToString(BTreeNode h, int ht, String indent)
-        {
-            var s = "";
-
-            if (ht == 0)
-            {
-                for (var j = 0; j < h.EntryCount; j++)
-                {
-                    s += indent + h.Entries[j].Key + " " + h.Entries[j].Value + "\n";
-                }
-            }
-            else
-            {
-                for (var j = 0; j < h.EntryCount; j++)
-                {
-                    if (j > 0) s += indent + "(" + h.Entries[j].Key + ")\n";
-                    s += ToString(h.Values[j], ht - 1, indent + "     ");
-                }
-            }
-            return s;
         }
 
         public void Write(EndianBinaryWriter writer)
