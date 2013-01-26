@@ -8,7 +8,6 @@ namespace JavaCompiler.Jbt.IO
 {
     public class JbtWriter
     {
-
         private bool hasFlushed;
         private readonly BTree tree;
 
@@ -60,7 +59,7 @@ namespace JavaCompiler.Jbt.IO
             writer.Seek(-length, SeekOrigin.Current);
             writer.Write(length);
             writer.Seek(length, SeekOrigin.Current);
-            
+
             // Add Leaf to Tree
             tree.Add(key, pos);
         }

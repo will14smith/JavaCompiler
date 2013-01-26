@@ -19,6 +19,17 @@ namespace JavaCompiler.Reflection.Loaders
 
         public List<Type> Search(string s, List<string> imports)
         {
+            {
+                var diretoryName = Path.GetDirectoryName(s);
+                var fileName = Path.GetFileNameWithoutExtension(s);
+
+                var jbtPath = Path.Combine(diretoryName, fileName + ".jbt");
+                if (File.Exists(jbtPath))
+                {
+                    return new JbtClassLocator(jbtPath).Search(s, imports);
+                }
+            }
+
             var zf = new ZipFile(JarFile);
 
             string[] classParts = s.Split('.');
