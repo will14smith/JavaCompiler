@@ -11,23 +11,29 @@ namespace JavaCompiler.Reflection.Loaders
         public JarClassLocator(string jarFile)
         {
             JarFile = jarFile;
+
+
+            var diretoryName = Path.GetDirectoryName(JarFile);
+            var fileName = Path.GetFileNameWithoutExtension(JarFile);
+
+            var jbtPath = Path.Combine(diretoryName, fileName + ".jbt");
+            if (File.Exists(jbtPath))
+            {
+                JbtLocator = new JbtClassLocator(jbtPath);
+            }
         }
 
         public string JarFile { get; private set; }
+        public JbtClassLocator JbtLocator { get; private set; }
 
         #region IClassLocator Members
 
         public List<Type> Search(string s, List<string> imports)
         {
-            {
-                var diretoryName = Path.GetDirectoryName(s);
-                var fileName = Path.GetFileNameWithoutExtension(s);
 
-                var jbtPath = Path.Combine(diretoryName, fileName + ".jbt");
-                if (File.Exists(jbtPath))
-                {
-                    return new JbtClassLocator(jbtPath).Search(s, imports);
-                }
+            if (JbtLocator != null)
+            {
+                return JbtLocator.Search(s, imports);
             }
 
             var zf = new ZipFile(JarFile);

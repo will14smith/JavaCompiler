@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using JavaCompiler.Jbt;
-using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Console
@@ -16,9 +15,11 @@ namespace JavaCompiler.Console
                 CompileFile(file);
             }*/
 
-            CompileFile(@"Tests\Tutorial1\Exercise1.java");
-            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
+            //ConvertJar(@"C:\Program Files\Java\jre7\lib\plugin.jar");
+            ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
             //ConvertJar(@"E:\Projects\picture_processing\junit.jar");
+
+            CompileFile(@"Tests\Tutorial1\Exercise1.java");
         }
 
         static void CompileFile(string filePath)

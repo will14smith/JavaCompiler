@@ -24,6 +24,18 @@ namespace JavaCompiler.Jbt.Tree
                 writer.Write(t);
             }
         }
+        public void Read(EndianBinaryReader reader)
+        {
+            Key = reader.ReadInt32();
+
+            var values = reader.ReadInt32();
+            Value = new List<long>(values);
+
+            for (var i = 0; i < values; i++)
+            {
+                Value.Add(reader.ReadInt64());
+            }
+        }
 
         public override string ToString()
         {

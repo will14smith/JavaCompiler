@@ -22,20 +22,38 @@ namespace JavaCompiler.Jbt.Tree
         public List<long> Get(int key) { return Search(root, key); }
         private static List<long> Search(BTreeNode x, int key)
         {
-            for (var j = 0; j < x.EntryCount; j++)
+            if (x == null) return null;
+
+            for(var j = 0; j < x.EntryCount; j++)
+            {
+                if (x.Entries[j].Key == key)
+                {
+                    return x.Entries[j].Value;
+                }
+
+                var item = Search(x.Values[j], key);
+
+                if (item != null) return item;
+            }
+
+            return Search(x.Values[x.EntryCount], key);
+
+            /*for (var j = 0; j < x.EntryCount; j++)
             {
                 if (key == x.Entries[j].Key)
                 {
                     return x.Entries[j].Value;
                 }
 
-                if (j + 1 == x.EntryCount || key < x.Entries[j + 1].Key)
+                if (key < x.Entries[j].Key)
                 {
-                    return Search(x.Values[j + 1], key);
+                    return Search(x.Values[j], key);
                 }
+                
             }
 
-            return null;
+            return Search(x.Values[x.EntryCount], key);*/
+
         }
 
 
@@ -80,7 +98,7 @@ namespace JavaCompiler.Jbt.Tree
             {
                 for (j = 0; j < h.EntryCount; j++)
                 {
-                    if (key < h.Entries[j].Key) break;
+                    if (key <= h.Entries[j].Key) break;
                 }
             }
             // internal BTreeNode
@@ -88,9 +106,9 @@ namespace JavaCompiler.Jbt.Tree
             {
                 for (j = 0; j < h.EntryCount; j++)
                 {
-                    if ((j + 1 != h.EntryCount) && key > h.Entries[j + 1].Key) continue;
+                    if ((j + 1 != h.EntryCount) && key >= h.Entries[j + 1].Key) continue;
 
-                    var offs = (key > h.Entries[j].Key ? 1 : 0);
+                    var offs = (key >= h.Entries[j].Key ? 1 : 0);
 
                     if (h.Values[j + offs] == null) h.Values[j + offs] = new BTreeNode(0);
 
@@ -185,6 +203,13 @@ namespace JavaCompiler.Jbt.Tree
         public void Write(EndianBinaryWriter writer)
         {
             root.Write(writer);
+        }
+
+        public void Read(EndianBinaryReader reader)
+        {
+            root = new BTreeNode(0);
+
+            root.Read(reader);
         }
     }
 }

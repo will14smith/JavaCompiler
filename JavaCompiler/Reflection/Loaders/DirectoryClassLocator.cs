@@ -27,15 +27,6 @@ namespace JavaCompiler.Reflection.Loaders
 
             var classes = new List<Type>();
 
-            /*{
-                var path = Path.Combine(Directory, s + ".class");
-
-                if(File.Exists(path))
-                {
-                    classes.Add(ClassLoader.Load(path));
-                }
-            }*/
-
             var usedFiles = new List<string>();
 
             foreach (string import in imports)

@@ -29,7 +29,12 @@ namespace JavaCompiler.Jbt
 
                 type.Read(zf.GetInputStream(ze));
 
-                jbtWriter.Write(type);
+                var reader = new BinaryReader(zf.GetInputStream(ze));
+
+                var buffer = new byte[ze.Size];
+                reader.Read(buffer, 0, (int)ze.Size);
+
+                jbtWriter.Write(type.Name, buffer);
             }
 
             jbtWriter.Flush();

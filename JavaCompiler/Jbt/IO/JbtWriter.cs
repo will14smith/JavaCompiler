@@ -40,28 +40,29 @@ namespace JavaCompiler.Jbt.IO
             tree = new BTree();
         }
 
-        public void Write(CompileTypeInfo type)
+        public void Write(string name, byte[] bytes)
         {
             if (hasFlushed) throw new InvalidOperationException();
 
-            var key = type.GetHashCode();
-
-            var pos = writer.BaseStream.Position;
+            //var key = type.GetHashCode();
+            var key = name.GetHashCode();
 
             // Placeholder for length
-            writer.Write(0);
+            writer.Write(bytes.Length);
 
+            var pos = writer.BaseStream.Position;
             // Write Type
-            type.Write(writer);
+            writer.Write(bytes);
+            //type.Write(writer);
 
-            var length = (int)(writer.BaseStream.Position - pos);
+            /*var length = (int)(writer.BaseStream.Position - pos);
 
-            writer.Seek(-length, SeekOrigin.Current);
+            writer.Seek(-length - 1, SeekOrigin.Current);
             writer.Write(length);
-            writer.Seek(length, SeekOrigin.Current);
+            writer.Seek(length + 1, SeekOrigin.Current);*/
 
             // Add Leaf to Tree
-            tree.Add(key, pos);
+            tree.Add(key, pos - 4);
         }
 
         public void Flush()

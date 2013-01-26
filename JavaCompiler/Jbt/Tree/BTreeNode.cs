@@ -34,5 +34,23 @@ namespace JavaCompiler.Jbt.Tree
                 Values[i].Write(writer);
             }
         }
+
+        public void Read(EndianBinaryReader reader)
+        {
+            EntryCount = reader.ReadInt32();
+            if (EntryCount == 0) return;
+
+            for (var i = 0; i < EntryCount; i++)
+            {
+                Entries[i] = new BTreeEntry(0, null);
+                Entries[i].Read(reader);
+            }
+
+            for (var i = 0; i < EntryCount + 1; i++)
+            {
+                Values[i] = new BTreeNode(0);
+                Values[i].Read(reader);
+            }
+        }
     }
 }

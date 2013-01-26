@@ -53,7 +53,7 @@ namespace JavaCompiler.Compilation
             ThisClass = reader.ReadInt16();
             SuperClass = reader.ReadInt16();
 
-            Name = GetClass(ThisClass).GetDescriptor(false);
+            Name = GetClass(ThisClass).GetDescriptor(true);
 
             ReadInterfaces(reader);
             ReadFields(reader);
