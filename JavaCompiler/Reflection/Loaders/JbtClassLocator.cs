@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using JavaCompiler.Jbt.IO;
-using JavaCompiler.Reflection.Types;
+﻿using System;
+using System.Collections.Generic;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Reflection.Loaders
 {
@@ -15,7 +15,7 @@ namespace JavaCompiler.Reflection.Loaders
 
         public List<Type> Search(string s, List<string> imports)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

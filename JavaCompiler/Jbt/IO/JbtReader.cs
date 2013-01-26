@@ -28,7 +28,7 @@ namespace JavaCompiler.Jbt.IO
             }
 
             tree = new BTree();
-            tree.Read(reader);
+            // tree.Read(reader);
         }
 
         public Stream Find(string type)

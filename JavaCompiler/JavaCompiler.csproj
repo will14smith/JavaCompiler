@@ -120,6 +120,8 @@
     <Compile Include="Jbt\IO\JbtWriter.cs" />
     <Compile Include="Jbt\JbtConverter.cs" />
     <Compile Include="Jbt\Tree\BTree.cs" />
+    <Compile Include="Jbt\Tree\BTreeEntry.cs" />
+    <Compile Include="Jbt\Tree\BTreeNode.cs" />
     <Compile Include="Reflection\AccessibleObject.cs" />
     <Compile Include="Reflection\Enums\ClassModifier.cs" />
     <Compile Include="Reflection\Loaders\ClassLoader.cs" />

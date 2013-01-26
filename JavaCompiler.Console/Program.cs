@@ -9,14 +9,14 @@ namespace JavaCompiler.Console
     {
         static void Main(string[] args)
         {
-            var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
+            /*var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {
                 CompileFile(file);
-            }
+            }*/
 
-            // CompileFile(@"Tests\Tutorial1\Exercise1.java");
+            CompileFile(@"Tests\Tutorial1\Exercise1.java");
             //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
             //ConvertJar(@"E:\Projects\picture_processing\junit.jar");
         }

@@ -6,90 +6,32 @@ namespace JavaCompiler.Jbt.Tree
 {
     public class BTree
     {
-        private const int BlockSize = 4;
-        private static readonly int HalfBlockSize = (int)Math.Ceiling(BlockSize / 2d);
+        internal const int Order = 3;
 
-        private Node root;
+        internal static readonly int SplitMedian = (int)Math.Floor(Order / 2d);
+        internal static readonly int SplitUpper = SplitMedian + 1;
+
+        private BTreeNode root;
 
         public int Height { get; private set; }
         public int Size { get; private set; }
 
-        private class Node
-        {
-            public int M;
-            public readonly Entry[] Children = new Entry[BlockSize];
-
-            public Node(int k)
-            {
-                M = k;
-            }
-
-            public void Write(EndianBinaryWriter writer, int ht)
-            {
-                writer.Write(ht);
-                writer.Write(M);
-                for (var i = 0; i < M; i++)
-                {
-                    var child = Children[i];
-                    child.Write(writer, ht - 1);
-                }
-            }
-        }
-
-        private class Entry
-        {
-            public int Key;
-            public readonly List<long> Value;
-
-            public Node Next;
-
-            public Entry(int key, List<long> value, Node next)
-            {
-                Key = key;
-                Value = value;
-
-                Next = next;
-            }
-
-            public void Write(EndianBinaryWriter writer,int ht)
-            {
-                if(ht == 0)
-                {
-                    writer.Write(Key);
-                }
-                else
-                {
-                    Next.Write(writer, ht);
-                }
-            }
-        }
-
         // constructor
-        public BTree() { root = new Node(0); }
+        public BTree() { root = new BTreeNode(0); }
 
-        public List<long> Get(int key) { return Search(root, key, Height); }
-        private static List<long> Search(Node x, int key, int ht)
+        public List<long> Get(int key) { return Search(root, key); }
+        private static List<long> Search(BTreeNode x, int key)
         {
-            var children = x.Children;
-
-            // external node
-            if (ht == 0)
+            for (var j = 0; j < x.EntryCount; j++)
             {
-                for (var j = 0; j < x.M; j++)
+                if (key == x.Entries[j].Key)
                 {
-                    if (key == children[j].Key) return children[j].Value;
+                    return x.Entries[j].Value;
                 }
-            }
 
-            // internal node
-            else
-            {
-                for (var j = 0; j < x.M; j++)
+                if (j + 1 == x.EntryCount || key < x.Entries[j + 1].Key)
                 {
-                    if (j + 1 == x.M || key < children[j + 1].Key)
-                    {
-                        return Search(children[j].Next, key, ht - 1);
-                    }
+                    return Search(x.Values[j + 1], key);
                 }
             }
 
@@ -106,10 +48,21 @@ namespace JavaCompiler.Jbt.Tree
             if (u == null) return;
 
             // need to split root
-            var t = new Node(2);
+            var t = new BTreeNode(1);
 
-            t.Children[0] = new Entry(root.Children[0].Key, null, root);
-            t.Children[1] = new Entry(u.Children[0].Key, new List<long>(), u);
+            t.Entries[0] = root.Entries[SplitMedian]; // median value
+
+            t.Values[0] = new BTreeNode(SplitMedian); // lt nodes
+            t.Values[1] = u; // gt nodes
+
+            for (var i = 0; i < SplitMedian; i++)
+            {
+                t.Values[0].Entries[i] = root.Entries[i];
+                t.Values[0].Values[i] = root.Values[i];
+            }
+
+            //t.Children[0] = new BTreeEntry(root.Children[0].Key, root);
+            //t.Children[1] = new BTreeEntry(u.Children[0].Key, u);
 
             root = t;
 
@@ -117,58 +70,85 @@ namespace JavaCompiler.Jbt.Tree
         }
 
 
-        private Node Insert(Node h, int key, long value, int ht)
+        private BTreeNode Insert(BTreeNode h, int key, long value, int ht)
         {
             int j;
-            var t = new Entry(key, new List<long> { value }, null);
+            var t = new BTreeEntry(key, new List<long> { value });
 
-            // external node
+            // external BTreeNode
             if (ht == 0)
             {
-                for (j = 0; j < h.M; j++)
+                for (j = 0; j < h.EntryCount; j++)
                 {
-                    if (key < h.Children[j].Key) break;
+                    if (key < h.Entries[j].Key) break;
                 }
             }
-
-            // internal node
+            // internal BTreeNode
             else
             {
-                for (j = 0; j < h.M; j++)
+                for (j = 0; j < h.EntryCount; j++)
                 {
-                    if ((j + 1 != h.M) && key >= h.Children[j + 1].Key) continue;
+                    if ((j + 1 != h.EntryCount) && key > h.Entries[j + 1].Key) continue;
 
-                    var u = Insert(h.Children[j++].Next, key, value, ht - 1);
+                    var offs = (key > h.Entries[j].Key ? 1 : 0);
+
+                    if (h.Values[j + offs] == null) h.Values[j + offs] = new BTreeNode(0);
+
+                    var u = Insert(h.Values[j + offs], key, value, ht - 1);
                     if (u == null) return null;
 
-                    t.Key = u.Children[0].Key;
-                    t.Next = u;
+                    j = j + offs;
+
+                    if (j + 1 == Order)
+                    {
+                        var t1 = new BTreeNode(1);
+
+                        t1.Entries[0] = h.Values[j].Entries[SplitMedian]; // median value
+
+                        t1.Values[0] = new BTreeNode(SplitMedian); // lt nodes
+                        t1.Values[1] = u; // gt nodes
+
+                        for (var i = 0; i < SplitMedian; i++)
+                        {
+                            t1.Values[0].Entries[i] = h.Values[j].Entries[i];
+                            t1.Values[0].Values[i] = h.Values[j].Values[i];
+                        }
+
+                        return t1;
+                    }
+
+                    t = h.Values[j].Entries[SplitMedian];
+
+                    h.Values[j].EntryCount = SplitMedian;
+                    h.Values[j + 1] = u;
 
                     break;
                 }
             }
 
-            for (var i = h.M; i > j; i--)
+            for (var i = h.EntryCount; i > j; i--)
             {
-                h.Children[i] = h.Children[i - 1];
+                h.Entries[i] = h.Entries[i - 1];
+                h.Values[i] = h.Values[i - 1];
             }
 
-            h.Children[j] = t;
-            h.M++;
+            h.Entries[j] = t;
 
-            return h.M < BlockSize ? null : Split(h);
+            h.EntryCount++;
+
+            return h.EntryCount < Order ? null : Split(h);
         }
 
-        // split node in half
-        private static Node Split(Node h)
+        // split BTreeNode in half
+        private static BTreeNode Split(BTreeNode h)
         {
-            var t = new Node(BlockSize / 2);
+            var t = new BTreeNode(Order - SplitUpper);
 
-            h.M = BlockSize / 2;
+            h.EntryCount = SplitMedian;
 
-            for (var j = 0; j < BlockSize / 2; j++)
+            for (var j = SplitUpper; j < Order; j++)
             {
-                t.Children[j] = h.Children[BlockSize / 2 + j];
+                t.Entries[j - SplitUpper] = h.Entries[j];
             }
 
             return t;
@@ -180,24 +160,23 @@ namespace JavaCompiler.Jbt.Tree
             return ToString(root, Height, "") + "\n";
         }
 
-        private static String ToString(Node h, int ht, String indent)
+        private static String ToString(BTreeNode h, int ht, String indent)
         {
             var s = "";
-            var children = h.Children;
 
             if (ht == 0)
             {
-                for (var j = 0; j < h.M; j++)
+                for (var j = 0; j < h.EntryCount; j++)
                 {
-                    s += indent + children[j].Key + " " + children[j].Value + "\n";
+                    s += indent + h.Entries[j].Key + " " + h.Entries[j].Value + "\n";
                 }
             }
             else
             {
-                for (var j = 0; j < h.M; j++)
+                for (var j = 0; j < h.EntryCount; j++)
                 {
-                    if (j > 0) s += indent + "(" + children[j].Key + ")\n";
-                    s += ToString(children[j].Next, ht - 1, indent + "     ");
+                    if (j > 0) s += indent + "(" + h.Entries[j].Key + ")\n";
+                    s += ToString(h.Values[j], ht - 1, indent + "     ");
                 }
             }
             return s;
@@ -205,7 +184,7 @@ namespace JavaCompiler.Jbt.Tree
 
         public void Write(EndianBinaryWriter writer)
         {
-            root.Write(writer, Height);
+            root.Write(writer);
         }
     }
 }
