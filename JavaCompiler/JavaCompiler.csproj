@@ -34,6 +34,9 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>C:\Users\Will\Downloads\output\cs\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Antlr3.Runtime.Debug">
+      <HintPath>C:\Users\Will\Downloads\output\cs\Antlr3.Runtime.Debug.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>

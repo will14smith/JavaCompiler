@@ -8,7 +8,7 @@ namespace JavaCompiler.Utilities
     /// Equivalent of System.IO.BinaryWriter, but with either endianness, depending on
     /// the EndianBitConverter it is constructed with.
     /// </summary>
-    public class EndianBinaryWriter : IDisposable
+    public sealed class EndianBinaryWriter : IDisposable
     {
         #region Fields not directly related to properties
 

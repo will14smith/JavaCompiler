@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Enums;
@@ -741,7 +742,9 @@ namespace JavaCompiler.Compilation
                         return 7 + Locals.Sum(x => x.Length) + Stack.Sum(x => x.Length);
                     }
 
-                    throw new NotImplementedException();
+                    Debug.Fail("Unexpected!");
+
+                    return 0;
                 }
             }
 
@@ -1246,7 +1249,9 @@ namespace JavaCompiler.Compilation
                             return 2 + Values.Sum(x => x.Length);
                     }
 
-                    throw new NotImplementedException();
+                    Debug.Fail("Unexpected!");
+
+                    return 0;
                 }
             }
 

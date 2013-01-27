@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using JavaCompiler.Compilation;
 using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Jbt.IO
 {
-    public class JbtWriter
+    public class JbtWriter : IDisposable
     {
         private bool hasFlushed;
         private readonly BTree tree;
@@ -16,6 +16,8 @@ namespace JavaCompiler.Jbt.IO
         private readonly EndianBinaryWriter wrappedWriter;
 
         private readonly EndianBinaryWriter writer;
+
+        private int size;
 
         public JbtWriter(EndianBinaryWriter writer)
         {
@@ -53,20 +55,18 @@ namespace JavaCompiler.Jbt.IO
             var pos = writer.BaseStream.Position;
             // Write Type
             writer.Write(bytes);
-            //type.Write(writer);
-
-            /*var length = (int)(writer.BaseStream.Position - pos);
-
-            writer.Seek(-length - 1, SeekOrigin.Current);
-            writer.Write(length);
-            writer.Seek(length + 1, SeekOrigin.Current);*/
 
             // Add Leaf to Tree
             tree.Add(key, pos - 4);
+
+            size++;
         }
 
         public void Flush()
         {
+            Debug.Assert(size == tree.Size);
+            Debug.Assert(size == tree.ActualSize());
+
             if (hasFlushed) throw new InvalidOperationException();
 
             var treePointer = writer.BaseStream.Position;
@@ -88,6 +88,14 @@ namespace JavaCompiler.Jbt.IO
             }
 
             hasFlushed = true;
+        }
+
+        public void Dispose()
+        {
+            if (!hasFlushed)
+            {
+
+            }
         }
     }
 }

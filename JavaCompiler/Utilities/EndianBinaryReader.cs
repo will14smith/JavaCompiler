@@ -9,7 +9,7 @@ namespace JavaCompiler.Utilities
     /// the EndianBitConverter it is constructed with. No data is buffered in the
     /// reader; the client may seek within the stream at will.
     /// </summary>
-    public class EndianBinaryReader : IDisposable
+    public sealed class EndianBinaryReader : IDisposable
     {
         #region Fields not directly related to properties
 

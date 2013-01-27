@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Jbt.Tree
 {
     public class BTree
     {
-        internal const int Order = 3;
+        internal const int Order = 4;
 
         internal static readonly int SplitMedian = (int)Math.Floor(Order / 2d);
         internal static readonly int SplitUpper = SplitMedian + 1;
@@ -15,6 +17,47 @@ namespace JavaCompiler.Jbt.Tree
 
         public int Height { get; private set; }
         public int Size { get; private set; }
+
+        //DEBUG
+        public int ActualSize()
+        {
+            return ActualSize(root);
+        }
+        private static int ActualSize(BTreeNode node)
+        {
+            if (node == null) return 0;
+
+            var count = node.EntryCount;
+
+            for (var i = 0; i <= node.EntryCount; i++)
+            {
+                count += ActualSize(node.Values[i]);
+            }
+
+            return count;
+        }
+
+        public List<int> GetAll()
+        {
+            return GetAll(root);
+        }
+        private static List<int> GetAll(BTreeNode node)
+        {
+            if (node == null) return new List<int>();
+
+            var items = new List<int>();
+
+            for (var i = 0; i < node.EntryCount; i++)
+            {
+                items.AddRange(GetAll(node.Values[i]));
+
+                items.Add(node.Entries[i].Key);
+            }
+            items.AddRange(GetAll(node.Values[node.EntryCount]));
+
+            return items;
+        }
+        //ENDDEBUG
 
         // constructor
         public BTree() { root = new BTreeNode(0); }
@@ -35,7 +78,6 @@ namespace JavaCompiler.Jbt.Tree
                 {
                     return Search(x.Values[j], key);
                 }
-
             }
 
             return Search(x.Values[x.EntryCount], key);
@@ -46,9 +88,20 @@ namespace JavaCompiler.Jbt.Tree
         // add code to check for duplicate keys
         public void Add(int key, long value)
         {
+            var expected = GetAll().Concat(new[] { key }).Distinct().OrderBy(x => x).ToList();
+
             var u = Insert(root, key, value, Height);
             Size++;
-            if (u == null) return;
+            if (u == null)
+            {
+                var sorted = GetAll();
+                sorted.Sort();
+
+                Debug.Assert(sorted.SequenceEqual(GetAll()));
+                Debug.Assert(sorted.SequenceEqual(expected));
+
+                return;
+            }
 
             // need to split root
             var t = new BTreeNode(1);
@@ -58,18 +111,29 @@ namespace JavaCompiler.Jbt.Tree
             t.Values[0] = new BTreeNode(SplitMedian); // lt nodes
             t.Values[1] = u; // gt nodes
 
-            for (var i = 0; i <= SplitMedian; i++)
+            for (var i = 0; i < SplitMedian; i++)
             {
                 t.Values[0].Entries[i] = root.Entries[i];
                 t.Values[0].Values[i] = root.Values[i];
             }
+            t.Values[0].Values[SplitMedian] = root.Values[SplitMedian];
+
 
             //t.Children[0] = new BTreeEntry(root.Children[0].Key, root);
             //t.Children[1] = new BTreeEntry(u.Children[0].Key, u);
 
+            var sorted2 = GetAll(t);
+            sorted2.Sort();
+
+            Debug.Assert(sorted2.SequenceEqual(GetAll(t)));
+            Debug.Assert(sorted2.SequenceEqual(expected));
+
+            Debug.Assert(ActualSize(t) == Size);
+
             root = t;
 
             Height++;
+
         }
 
 
@@ -120,15 +184,15 @@ namespace JavaCompiler.Jbt.Tree
                     {
                         var t1 = new BTreeNode(1);
 
-                        t1.Entries[0] = h.Values[j].Entries[SplitMedian]; // median value
+                        t1.Entries[0] = h.Entries[SplitMedian]; // median value
 
                         t1.Values[0] = new BTreeNode(SplitMedian); // lt nodes
                         t1.Values[1] = u; // gt nodes
 
                         for (var i = 0; i < SplitMedian; i++)
                         {
-                            t1.Values[0].Entries[i] = h.Values[j].Entries[i];
-                            t1.Values[0].Values[i] = h.Values[j].Values[i];
+                            t1.Values[0].Entries[i] = h.Entries[i];
+                            t1.Values[0].Values[i] = h.Values[i];
                         }
 
                         return t1;
@@ -137,6 +201,11 @@ namespace JavaCompiler.Jbt.Tree
                     t = h.Values[j].Entries[SplitMedian];
 
                     h.Values[j].EntryCount = SplitMedian;
+                    
+                    for (var i = h.EntryCount + 1; i > j + 1; i--)
+                    {
+                        h.Values[i] = h.Values[i - 1];
+                    }
                     h.Values[j + 1] = u;
 
                     break;
@@ -146,7 +215,7 @@ namespace JavaCompiler.Jbt.Tree
             for (var i = h.EntryCount; i > j; i--)
             {
                 h.Entries[i] = h.Entries[i - 1];
-                h.Values[i] = h.Values[i - 1];
+                // h.Values[i] = h.Values[i - 1];
             }
 
             h.Entries[j] = t;
@@ -166,6 +235,7 @@ namespace JavaCompiler.Jbt.Tree
             for (var j = SplitUpper; j < Order; j++)
             {
                 t.Entries[j - SplitUpper] = h.Entries[j];
+                t.Values[j - SplitUpper] = h.Values[j];
             }
 
             return t;

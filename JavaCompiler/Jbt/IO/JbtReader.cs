@@ -2,13 +2,12 @@
 using System.IO;
 using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Reflection.Loaders;
-using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Jbt.IO
 {
-    class JbtReader
+    class JbtReader : IDisposable
     {
         private readonly BTree tree;
 
@@ -59,6 +58,16 @@ namespace JavaCompiler.Jbt.IO
             }
 
             return null;
+        }
+
+        public void Dispose()
+        {
+            reader.Dispose();
+
+            if (memoryStream != null)
+            {
+                memoryStream.Dispose();
+            }
         }
     }
 }
