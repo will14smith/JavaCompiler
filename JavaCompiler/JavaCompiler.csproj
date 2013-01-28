@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JavaCompiler</RootNamespace>
     <AssemblyName>JavaCompiler</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime">
@@ -121,9 +123,6 @@
     <Compile Include="Jbt\IO\JbtReader.cs" />
     <Compile Include="Jbt\IO\JbtWriter.cs" />
     <Compile Include="Jbt\JbtConverter.cs" />
-    <Compile Include="Jbt\Tree\BTree.cs" />
-    <Compile Include="Jbt\Tree\BTreeEntry.cs" />
-    <Compile Include="Jbt\Tree\BTreeNode.cs" />
     <Compile Include="Reflection\AccessibleObject.cs" />
     <Compile Include="Reflection\Enums\ClassModifier.cs" />
     <Compile Include="Reflection\Loaders\ClassLoader.cs" />
@@ -258,6 +257,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JavaCompiler.Jbt.Tree\JavaCompiler.Jbt.Tree.csproj">
+      <Project>{e8a9e32e-a25a-426a-9689-39ae300d3ad7}</Project>
+      <Name>JavaCompiler.Jbt.Tree</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

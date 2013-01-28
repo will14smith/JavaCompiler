@@ -34,12 +34,12 @@ namespace JavaCompiler.Jbt.IO
             reader.Seek((int)pos, SeekOrigin.Begin);
 
             tree = new BTree();
-            tree.Read(reader);
+            tree.Read(new BinaryReader(reader.BaseStream));
         }
 
         public Type Find(string typeName)
         {
-            var locations = tree.Get(typeName.GetHashCode());
+            var locations = tree.Find(typeName.GetHashCode());
             if (locations == null || locations.Count == 0) return null;
 
             foreach (var location in locations)

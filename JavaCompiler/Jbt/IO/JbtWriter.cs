@@ -17,8 +17,6 @@ namespace JavaCompiler.Jbt.IO
 
         private readonly EndianBinaryWriter writer;
 
-        private int size;
-
         public JbtWriter(EndianBinaryWriter writer)
         {
             if (writer.BaseStream.CanSeek)
@@ -57,21 +55,18 @@ namespace JavaCompiler.Jbt.IO
             writer.Write(bytes);
 
             // Add Leaf to Tree
-            tree.Add(key, pos - 4);
-
-            size++;
+            tree.Insert(key, pos - 4);
         }
 
         public void Flush()
         {
-            Debug.Assert(size == tree.Size);
-            Debug.Assert(size == tree.ActualSize());
-
             if (hasFlushed) throw new InvalidOperationException();
+
+            writer.Flush();
 
             var treePointer = writer.BaseStream.Position;
             // Write Tree
-            tree.Write(writer);
+            tree.Write(new BinaryWriter(writer.BaseStream));
             // Set pointer to Tree
             writer.Seek(0, SeekOrigin.Begin);
             writer.Write(treePointer);

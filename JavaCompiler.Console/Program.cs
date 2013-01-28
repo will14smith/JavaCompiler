@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using JavaCompiler.Jbt;
 using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Utilities;
@@ -9,14 +11,48 @@ namespace JavaCompiler.Console
     {
         static void Main(string[] args)
         {
-            /*var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
+            ConvertJar(@"C:\Program Files\Java\jre7\lib\rt2.jar");
+
+            var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {
                 CompileFile(file);
-            }*/
+            }
 
-            ConvertJar(@"C:\Program Files\Java\jre7\lib\rt2.jar");
+            //TestBTree();
+        }
+
+        private static void TestBTree()
+        {
+            var tree = new BTree(3);
+
+            for (var i = 0; i < 8; i++)
+            {
+                tree.Insert(i, i + 10);
+
+                for (var j = 0; j <= i; j++)
+                {
+                    Debug.Assert(tree.Find(j).SequenceEqual(new long[] { j + 10 }));
+                }
+            }
+
+            using (var file = File.OpenWrite("treetest.bin"))
+            {
+                tree.Write(new BinaryWriter(file));
+            }
+
+            var newTree = new BTree(3);
+
+            using (var file = File.OpenRead("treetest.bin"))
+            {
+                newTree.Read(new BinaryReader(file));
+            }
+
+            for (var i = 0; i < 8; i++)
+            {
+                Debug.Assert(tree.Find(i).SequenceEqual(new long[] { i + 10 }));
+            }
         }
 
         static void CompileFile(string filePath)

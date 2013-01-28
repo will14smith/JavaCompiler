@@ -5,19 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler", "JavaCompile
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler.Console", "JavaCompiler.Console\JavaCompiler.Console.csproj", "{EE24CB0E-95B9-4F2C-9AC1-582B9B4AA1C7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{672CA0FF-E873-4F70-AD92-7FEA4869EA3E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6324AFD-1277-4177-8CDE-5C808E5C14F6}"
-	ProjectSection(SolutionItems) = preProject
-		JavaCompiler.vsmdi = JavaCompiler.vsmdi
-		Local.testsettings = Local.testsettings
-		Performance1.psess = Performance1.psess
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler.Tests", "JavaCompiler.Tests\JavaCompiler.Tests.csproj", "{7F0C2153-6889-4CC2-B9D6-04353C548513}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler.IntegrationTests", "JavaCompiler.IntegrationTests\JavaCompiler.IntegrationTests.csproj", "{F14F626F-3DB6-41AA-A25E-15DB18F88056}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler.Jbt.Tree", "JavaCompiler.Jbt.Tree\JavaCompiler.Jbt.Tree.csproj", "{E8A9E32E-A25A-426A-9689-39AE300D3AD7}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -36,24 +24,12 @@ Global
 		{EE24CB0E-95B9-4F2C-9AC1-582B9B4AA1C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE24CB0E-95B9-4F2C-9AC1-582B9B4AA1C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE24CB0E-95B9-4F2C-9AC1-582B9B4AA1C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F0C2153-6889-4CC2-B9D6-04353C548513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F0C2153-6889-4CC2-B9D6-04353C548513}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F0C2153-6889-4CC2-B9D6-04353C548513}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F0C2153-6889-4CC2-B9D6-04353C548513}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F14F626F-3DB6-41AA-A25E-15DB18F88056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F14F626F-3DB6-41AA-A25E-15DB18F88056}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F14F626F-3DB6-41AA-A25E-15DB18F88056}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F14F626F-3DB6-41AA-A25E-15DB18F88056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8A9E32E-A25A-426A-9689-39AE300D3AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8A9E32E-A25A-426A-9689-39AE300D3AD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8A9E32E-A25A-426A-9689-39AE300D3AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8A9E32E-A25A-426A-9689-39AE300D3AD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B6324AFD-1277-4177-8CDE-5C808E5C14F6} = {672CA0FF-E873-4F70-AD92-7FEA4869EA3E}
-		{7F0C2153-6889-4CC2-B9D6-04353C548513} = {672CA0FF-E873-4F70-AD92-7FEA4869EA3E}
-		{F14F626F-3DB6-41AA-A25E-15DB18F88056} = {672CA0FF-E873-4F70-AD92-7FEA4869EA3E}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
