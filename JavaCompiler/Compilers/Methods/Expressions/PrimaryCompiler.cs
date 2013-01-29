@@ -149,6 +149,13 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 Item item = TryInstance(generator, c.Type as DefinedType, id);
                 if (item != null) return item;
             }
+            else if (scope is LocalItem)
+            {
+                var c = scope as LocalItem;
+
+                var item = TryInstance(generator, c.Type as DefinedType, id);
+                if (item != null) return item;
+            }
 
             throw new NotImplementedException();
         }

@@ -1,0 +1,3 @@
+class SuperNoConstructor extends Constructor {
+
+}

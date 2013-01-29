@@ -1,6 +1,8 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
 
@@ -27,6 +29,11 @@ namespace JavaCompiler.Compilers.Items
         protected Item(ByteCodeGenerator generator, Type type)
         {
             Generator = generator;
+
+            if (type is PlaceholderType)
+            {
+                type = ClassLocator.Find(type, generator.Manager.Imports);
+            }
 
             var definedType = type as DefinedType;
             if (definedType != null)
