@@ -3,7 +3,7 @@
     internal unsafe struct BTreeNode
     {
         internal void** Pointers;
-        internal int* Keys;
+        internal ulong* Keys;
         internal BTreeNode* Parent;
         internal bool IsLeaf;
         internal int NumKeys;

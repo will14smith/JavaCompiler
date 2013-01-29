@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using JavaCompiler.Jbt.Tree;
 using JavaCompiler.Utilities;
@@ -44,8 +43,7 @@ namespace JavaCompiler.Jbt.IO
         {
             if (hasFlushed) throw new InvalidOperationException();
 
-            //var key = type.GetHashCode();
-            var key = name.GetHashCode();
+            var key = name.Hash();
 
             // Placeholder for length
             writer.Write(bytes.Length);
@@ -55,7 +53,7 @@ namespace JavaCompiler.Jbt.IO
             writer.Write(bytes);
 
             // Add Leaf to Tree
-            tree.Insert(key, pos - 4);
+            tree.Insert(key, (ulong) (pos - 4));
         }
 
         public void Flush()

@@ -253,6 +253,7 @@
     <Compile Include="Utilities\JavaTextEncoding.cs" />
     <Compile Include="Utilities\LittleEndianBitConverter.cs" />
     <Compile Include="Utilities\StackList.cs" />
+    <Compile Include="Utilities\StringHashUtilities.cs" />
     <Compile Include="Utilities\TypeCodeHelper.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,6 @@
 {
     internal unsafe struct BTreeRecord
     {
-        public long* Value;
+        public ulong* Value;
     }
 }

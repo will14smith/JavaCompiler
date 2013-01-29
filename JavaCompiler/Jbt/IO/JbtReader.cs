@@ -39,14 +39,14 @@ namespace JavaCompiler.Jbt.IO
 
         public Type Find(string typeName)
         {
-            var locations = tree.Find(typeName.GetHashCode());
+            var locations = tree.Find(typeName.Hash());
             if (locations == null || locations.Count == 0) return null;
 
             foreach (var location in locations)
             {
                 var stream = reader.BaseStream;
 
-                reader.Seek((int)location, SeekOrigin.Begin);
+                reader.Seek((int) location, SeekOrigin.Begin);
 
                 var length = reader.ReadInt32();
 

@@ -19,11 +19,11 @@ namespace JavaCompiler.Jbt.Tree
 
         private unsafe BTreeNode* root;
 
-        public unsafe List<long> Find(int key)
+        public unsafe List<ulong> Find(ulong key)
         {
             return PointerToList(Find(root, key));
         }
-        private unsafe static long* Find(BTreeNode* root, int key)
+        private unsafe static ulong* Find(BTreeNode* root, ulong key)
         {
             int i;
 
@@ -39,7 +39,7 @@ namespace JavaCompiler.Jbt.Tree
             }
             return i == node->NumKeys ? null : (*((BTreeRecord*)node->Pointers[i])).Value;
         }
-        private static unsafe BTreeNode* FindLeaf(BTreeNode* root, int key)
+        private static unsafe BTreeNode* FindLeaf(BTreeNode* root, ulong key)
         {
             var node = root;
 
@@ -60,7 +60,7 @@ namespace JavaCompiler.Jbt.Tree
             return node;
         }
 
-        public unsafe void Insert(int key, long value)
+        public unsafe void Insert(ulong key, ulong value)
         {
             if (Find(root, key) != null)
             {
@@ -88,7 +88,7 @@ namespace JavaCompiler.Jbt.Tree
             }
         }
 
-        private static unsafe BTreeNode* InsertIntoLeaf(BTreeNode* leaf, int key, BTreeRecord* pointer)
+        private static unsafe BTreeNode* InsertIntoLeaf(BTreeNode* leaf, ulong key, BTreeRecord* pointer)
         {
             var insertionPoint = 0;
             while (insertionPoint < leaf->NumKeys && leaf->Keys[insertionPoint] < key)
@@ -109,17 +109,18 @@ namespace JavaCompiler.Jbt.Tree
 
             return leaf;
         }
-        private unsafe BTreeNode* InsertIntoLeafAfterSplitting(BTreeNode* root, BTreeNode* leaf, int key, BTreeRecord* pointer)
+        private unsafe BTreeNode* InsertIntoLeafAfterSplitting(BTreeNode* root, BTreeNode* leaf, ulong key, BTreeRecord* pointer)
         {
+            ulong newKey;
             BTreeNode* newLeaf;
-            int* tempKeys;
+            ulong* tempKeys;
             void** tempPointers;
 
-            int insertionIndex, split, newKey, i, j;
+            int insertionIndex, split, i, j;
 
             newLeaf = MakeLeaf();
 
-            tempKeys = (int*)Memory.Alloc<int>(Order);
+            tempKeys = (ulong*)Memory.Alloc<ulong>(Order);
             tempPointers = Memory.AllocVoid(Order + 1);
 
             insertionIndex = 0;
@@ -178,7 +179,7 @@ namespace JavaCompiler.Jbt.Tree
             return InsertIntoParent(root, leaf, newKey, newLeaf);
         }
 
-        private unsafe BTreeNode* InsertIntoParent(BTreeNode* root, BTreeNode* left, int key, BTreeNode* right)
+        private unsafe BTreeNode* InsertIntoParent(BTreeNode* root, BTreeNode* left, ulong key, BTreeNode* right)
         {
             int leftIndex;
             BTreeNode* parent;
@@ -202,7 +203,7 @@ namespace JavaCompiler.Jbt.Tree
             return InsertIntoNodeAfterSplitting(root, parent, leftIndex, key, right);
         }
 
-        private unsafe BTreeNode* InsertIntoNewRoot(BTreeNode* left, int key, BTreeNode* right)
+        private unsafe BTreeNode* InsertIntoNewRoot(BTreeNode* left, ulong key, BTreeNode* right)
         {
             BTreeNode* root = MakeNode();
 
@@ -219,7 +220,7 @@ namespace JavaCompiler.Jbt.Tree
 
             return root;
         }
-        private unsafe void InsertIntoNode(BTreeNode* node, int leftIndex, int key, BTreeNode* right)
+        private unsafe void InsertIntoNode(BTreeNode* node, int leftIndex, ulong key, BTreeNode* right)
         {
             int i;
 
@@ -234,14 +235,15 @@ namespace JavaCompiler.Jbt.Tree
 
             node->NumKeys++;
         }
-        private unsafe BTreeNode* InsertIntoNodeAfterSplitting(BTreeNode* root, BTreeNode* oldNode, int leftIndex, int key, BTreeNode* right)
+        private unsafe BTreeNode* InsertIntoNodeAfterSplitting(BTreeNode* root, BTreeNode* oldNode, int leftIndex, ulong key, BTreeNode* right)
         {
-            int i, j, split, kPrime;
+            int i, j, split;
+            ulong kPrime;
             BTreeNode* newNode, child;
-            int* tempKeys;
+            ulong* tempKeys;
             BTreeNode** tempPointers;
 
-            tempKeys = (int*)Memory.Alloc<int>(Order);
+            tempKeys = (ulong*)Memory.Alloc<ulong>(Order);
             tempPointers = (BTreeNode**)Memory.Alloc(typeof(BTreeNode*), Order + 1);
 
             for (i = 0, j = 0; i < oldNode->NumKeys; i++, j++)
@@ -298,7 +300,7 @@ namespace JavaCompiler.Jbt.Tree
             return InsertIntoParent(root, oldNode, kPrime, newNode);
         }
 
-        private unsafe BTreeNode* StartNewTree(int key, BTreeRecord* pointer)
+        private unsafe BTreeNode* StartNewTree(ulong key, BTreeRecord* pointer)
         {
             var root = MakeLeaf();
 
@@ -314,7 +316,7 @@ namespace JavaCompiler.Jbt.Tree
         {
             var node = (BTreeNode*)Memory.Alloc<BTreeNode>(1);
 
-            node->Keys = (int*)Memory.Alloc<int>(Order - 1);
+            node->Keys = (ulong*)Memory.Alloc<ulong>(Order - 1);
             node->Pointers = Memory.AllocVoid(Order);
             node->IsLeaf = false;
             node->NumKeys = 0;
@@ -330,11 +332,11 @@ namespace JavaCompiler.Jbt.Tree
 
             return leaf;
         }
-        private static unsafe BTreeRecord* MakeRecord(long value)
+        private static unsafe BTreeRecord* MakeRecord(ulong value)
         {
             var record = (BTreeRecord*)Memory.Alloc<BTreeRecord>(1);
 
-            record->Value = (long*)Memory.Alloc<long>(2);
+            record->Value = (ulong*)Memory.Alloc<ulong>(2);
 
             record->Value[0] = 1;
             record->Value[1] = value;
@@ -361,13 +363,13 @@ namespace JavaCompiler.Jbt.Tree
             }
             return length / 2 + 1;
         }
-        private static unsafe List<long> PointerToList(long* find)
+        private static unsafe List<ulong> PointerToList(ulong* find)
         {
-            var list = new List<long>();
+            var list = new List<ulong>();
 
             if (find == null) return list;
 
-            var count = find[0];
+            var count = (int)find[0];
             for (var i = 0; i < count; i++)
             {
                 list.Add(find[i + 1]);
@@ -407,7 +409,7 @@ namespace JavaCompiler.Jbt.Tree
 
         private unsafe void WriteValues(BinaryWriter writer, BTreeRecord* record)
         {
-            var count = record->Value[0];
+            var count = (int)record->Value[0];
             writer.Write(count);
 
             for (var i = 0; i < count; i++)
@@ -441,17 +443,11 @@ namespace JavaCompiler.Jbt.Tree
 
             for (var i = 0; i < numKeys; i++)
             {
-                node->Keys[i] = reader.ReadInt32();
+                node->Keys[i] = reader.ReadUInt64();
 
                 if (!node->IsLeaf)
                 {
                     var child = ReadKeys(reader, node);
-
-                    if (i > 0)
-                    {
-                        //var previous = (BTreeNode*)node->Pointers[i - 1];
-                        //previous->Pointers[previous->NumKeys] = child;
-                    }
 
                     node->Pointers[i] = child;
                 }
@@ -463,13 +459,13 @@ namespace JavaCompiler.Jbt.Tree
 
             if (!node->IsLeaf)
             {
-
                 var child = ReadKeys(reader, node);
 
-                //var previous = (BTreeNode*)node->Pointers[node->NumKeys - 1];
-                //previous->Pointers[previous->NumKeys] = child;
-
                 node->Pointers[node->NumKeys] = child;
+            }
+            else
+            {
+
             }
 
             return node;
@@ -478,15 +474,15 @@ namespace JavaCompiler.Jbt.Tree
         {
             var record = MakeRecord(0);
 
-            var count = (int)reader.ReadInt64();
+            var count = reader.ReadInt32();
 
             Memory.Free(record->Value);
-            record->Value = (long*)Memory.Alloc<long>(count + 1);
+            record->Value = (ulong*)Memory.Alloc<ulong>(count + 1);
 
-            record->Value[0] = count;
+            record->Value[0] = (ulong)count;
             for (var i = 0; i < count; i++)
             {
-                record->Value[i + 1] = reader.ReadInt64();
+                record->Value[i + 1] = reader.ReadUInt64();
             }
 
             return record;

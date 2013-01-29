@@ -11,7 +11,7 @@ namespace JavaCompiler.Console
     {
         static void Main(string[] args)
         {
-            // ConvertJar(@"C:\Program Files\Java\jre7\lib\rt2.jar");
+            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt2.jar");
 
             var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 
@@ -29,11 +29,11 @@ namespace JavaCompiler.Console
 
             for (var i = 0; i < 8; i++)
             {
-                tree.Insert(i, i + 10);
+                tree.Insert((ulong)i, (ulong)(i + 10));
 
                 for (var j = 0; j <= i; j++)
                 {
-                    Debug.Assert(tree.Find(j).SequenceEqual(new long[] { j + 10 }));
+                    Debug.Assert(tree.Find((ulong) j).SequenceEqual(new[] { (ulong)(j + 10) }));
                 }
             }
 
@@ -51,7 +51,7 @@ namespace JavaCompiler.Console
 
             for (var i = 0; i < 8; i++)
             {
-                Debug.Assert(tree.Find(i).SequenceEqual(new long[] { i + 10 }));
+                Debug.Assert(tree.Find((ulong) i).SequenceEqual(new[] { (ulong)(i + 10) }));
             }
         }
 
