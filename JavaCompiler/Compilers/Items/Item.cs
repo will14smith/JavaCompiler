@@ -77,12 +77,10 @@ namespace JavaCompiler.Compilers.Items
 
         public virtual void Duplicate()
         {
-            throw new InvalidOperationException();
         }
 
         public virtual void Drop()
         {
-            throw new InvalidOperationException();
         }
 
         public virtual Item Coerce(Type target)

@@ -54,6 +54,9 @@
     <Compile Include="Tests\Constructors\ConstructorsTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Tests\Constructors\SuperConstructorsTest.cs" />
+    <Compile Include="Tests\Integration\Tutorial1\Tutorial1Test.cs" />
+    <Compile Include="Tests\New\NewArrayTest.cs" />
+    <Compile Include="Tests\New\NewClassTest.cs" />
     <Compile Include="Tests\System\SystemTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +87,6 @@
     <Content Include="Tests\Constructors\SuperParamConstructor.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="OrderedTest1.orderedtest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Tests\New\NewClass.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -121,9 +121,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Tests\Integration\Tutorial1\Exercise4.java">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Tests\Integration\Tutorial1\Main.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

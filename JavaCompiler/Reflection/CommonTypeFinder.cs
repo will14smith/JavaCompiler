@@ -9,7 +9,7 @@ namespace JavaCompiler.Reflection
             if (c1 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
             if (c2 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
 
-            if (!(c1.IsAssignableTo(c2) || c2.CanAssignTo(c1)))
+            if (!(c1.IsAssignableTo(c2) || c2.CanAssignFrom(c1)))
             {
                 // No EASY common type found
                 // will have to search superclasses

@@ -9,7 +9,7 @@ public class Exercise2 {
     }
   }
   
-  public static Boolean isPalindrome(String s){
+  public static boolean isPalindrome(String s){
     int length = s.length();
     int loops = (int) Math.ceil(length / 2);
     

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JavaCompiler.Tests
 {
@@ -34,6 +35,7 @@ namespace JavaCompiler.Tests
                 {
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     FileName = "java",
 
                     CreateNoWindow = true,
@@ -46,7 +48,10 @@ namespace JavaCompiler.Tests
             p.Start();
 
             var output = p.StandardOutput.ReadToEnd();
+            var error = p.StandardError.ReadToEnd();
             p.WaitForExit();
+
+            Assert.AreEqual("", error);
 
             return output.TrimEnd('\r', '\n');
         }

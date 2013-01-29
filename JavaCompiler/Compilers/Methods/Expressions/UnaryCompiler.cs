@@ -84,13 +84,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         private Item CompilePostOp(ByteCodeGenerator generator, Item item)
         {
+            item.Duplicate();
+
             if (item is LocalItem && TypeCodeHelper.Truncate(item.TypeCode) == ItemTypeCode.Int)
             {
-                var res = item.Load();
+                //var res = item.Load();
 
                 ((LocalItem)item).Incr(node is UnaryNode.PostIncNode ? 1 : -1);
 
-                return res;
+                //return res;
+                return item;
             }
             else
             {

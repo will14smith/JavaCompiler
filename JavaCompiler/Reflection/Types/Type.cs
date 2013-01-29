@@ -25,7 +25,7 @@ namespace JavaCompiler.Reflection.Types
             return false;
         }
 
-        public bool CanAssignTo(Type c)
+        public bool CanAssignFrom(Type c)
         {
             return c.IsAssignableTo(this);
         }

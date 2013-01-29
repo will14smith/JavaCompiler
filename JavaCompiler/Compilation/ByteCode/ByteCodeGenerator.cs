@@ -1311,5 +1311,16 @@ namespace JavaCompiler.Compilation.ByteCode
 
         public CompileManager Manager { get; private set; }
         public Method Method { get; private set; }
+
+        private readonly Stack<bool> aliveState = new Stack<bool>();
+        public void Revive()
+        {
+            alive = aliveState.Count == 0 || aliveState.Pop();
+        }
+        public void Kill()
+        {
+            aliveState.Push(alive);
+            alive = false;
+        }
     }
 }

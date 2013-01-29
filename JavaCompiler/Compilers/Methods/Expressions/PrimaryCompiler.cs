@@ -146,14 +146,14 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var c = scope as ClassItem;
 
-                Item item = TryInstance(generator, c.Type as DefinedType, id);
+                Item item = TryInstance(generator, c.Type, id);
                 if (item != null) return item;
             }
             else if (scope is LocalItem)
             {
                 var c = scope as LocalItem;
 
-                var item = TryInstance(generator, c.Type as DefinedType, id);
+                var item = TryInstance(generator, c.Type, id);
                 if (item != null) return item;
             }
 
@@ -212,7 +212,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 meth.Resolve(generator.Manager.Imports);
 
-                if (meth.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignTo(a))).All(x => x))
+                if (meth.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignFrom(a))).All(x => x))
                 {
                     method = meth;
                     break;
@@ -239,15 +239,27 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             return localVariable != null ? new LocalItem(generator, localVariable) : null;
         }
-        private static Item TryInstance(ByteCodeGenerator generator, DefinedType type, PrimaryNode.TermIdentifierExpression id)
+        private static Item TryInstance(ByteCodeGenerator generator, Type type, PrimaryNode.TermIdentifierExpression id)
         {
+            if (type is Array)
+            {
+                if (id.Identifier == "length")
+                {
+                    generator.Emit(OpCodeValue.arraylength);
+                    return new StackItem(generator, PrimativeTypes.Int);
+                }
+            }
+
+            var definedType = type as DefinedType;
+            if (definedType == null) return null;
+
             // try instance
-            Field field = type.Fields.FirstOrDefault(x => x.Name == id.Identifier);
+            Field field = definedType.Fields.FirstOrDefault(x => x.Name == id.Identifier);
             if (field == null)
             {
                 if (type is Class && ((Class)type).Super != null)
                 {
-                    (type).Resolve(generator.Manager.Imports);
+                    definedType.Resolve(generator.Manager.Imports);
 
                     return TryInstance(generator, ((Class)type).Super, id);
                 }

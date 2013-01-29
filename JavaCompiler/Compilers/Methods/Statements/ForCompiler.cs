@@ -24,9 +24,9 @@ namespace JavaCompiler.Compilers.Methods.Statements
             var condition = new ConditionCompiler(node.Condition).Compile(generator);
             var falseLabel = condition.JumpFalse();
 
-            new StatementCompiler(node.Updater).Compile(generator);
             new StatementCompiler(node.Statement).Compile(generator);
 
+            new StatementCompiler(node.Updater).Compile(generator);
             generator.Emit(OpCodeValue.@goto, startOfFor);
             generator.PopScope();
 

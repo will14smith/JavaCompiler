@@ -17,7 +17,7 @@
         {
             var array = c as Array;
 
-            return array != null && ArrayType.CanAssignTo(array.ArrayType);
+            return array != null && ArrayType.CanAssignFrom(array.ArrayType);
         }
 
         public override string GetDescriptor(bool shortDescriptor = false)
