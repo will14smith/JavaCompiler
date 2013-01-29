@@ -19,6 +19,10 @@ namespace JavaCompiler.Reflection.Types
 
         internal static ItemTypeCode TypeCode(Type type)
         {
+            if (type is BooleanClass)
+            {
+                return ItemTypeCode.Byte;
+            } 
             if (type is ByteClass)
             {
                 return ItemTypeCode.Byte;

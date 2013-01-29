@@ -334,6 +334,8 @@ namespace JavaCompiler.Reflection.Loaders
                             {
                                 var typeName = "";
 
+                                i++;
+
                                 while (descriptor[i] != ';')
                                 {
                                     typeName += descriptor[i++];

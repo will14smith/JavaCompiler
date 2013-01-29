@@ -47,7 +47,7 @@ namespace JavaCompiler.Reflection
         {
             ReturnType = ClassLocator.Find(ReturnType, imports);
 
-            foreach (Parameter parameter in Parameters)
+            foreach (var parameter in Parameters)
             {
                 parameter.Resolve(imports);
             }
@@ -64,8 +64,7 @@ namespace JavaCompiler.Reflection
 
         public override string ToString()
         {
-            return string.Format("{0}({1})", Name,
-                                 Parameters.Aggregate("", (s, parameter) => s + ", " + parameter.Type.GetDescriptor()));
+            return string.Format("{0}({1})", Name, string.Join(", ", Parameters.Select(x => x.Type.GetDescriptor())));
         }
 
         public static explicit operator Constructor(Method method)

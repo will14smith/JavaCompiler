@@ -80,6 +80,10 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 return new PrimaryCompiler(node as PrimaryNode).Compile(generator);
             }
+            if(node is NewNode)
+            {
+                return new NewCompiler(node as NewNode).Compile(generator);
+            }
 
             throw new NotImplementedException();
         }

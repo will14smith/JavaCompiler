@@ -26,19 +26,19 @@ namespace JavaCompiler.Compilers.Items
                 case ItemTypeCode.Char:
                 case ItemTypeCode.Short:
                 case ItemTypeCode.Int:
-                    index = Generator.Manager.AddConstantInteger((int)value);
+                    index = Generator.Manager.AddConstantInteger(Convert.ToInt32(value));
                     break;
                 case ItemTypeCode.Float:
-                    index = Generator.Manager.AddConstantFloat((float)value);
+                    index = Generator.Manager.AddConstantFloat(Convert.ToSingle(value));
                     break;
                 case ItemTypeCode.Long:
-                    index = Generator.Manager.AddConstantLong((long)value);
+                    index = Generator.Manager.AddConstantLong(Convert.ToInt64(value));
                     break;
                 case ItemTypeCode.Double:
-                    index = Generator.Manager.AddConstantDouble((double)value);
+                    index = Generator.Manager.AddConstantDouble(Convert.ToDouble(value));
                     break;
                 case ItemTypeCode.Object:
-                    index = Generator.Manager.AddConstantString((string)value);
+                    index = Generator.Manager.AddConstantString(Convert.ToString(value));
                     break;
                 default:
                     throw new NotImplementedException();
@@ -66,7 +66,7 @@ namespace JavaCompiler.Compilers.Items
                 case ItemTypeCode.Byte:
                 case ItemTypeCode.Short:
                 case ItemTypeCode.Char:
-                    var ival = (int)value;
+                    var ival = Convert.ToInt32(value);
 
                     if (-1 <= ival && ival <= 5)
                     {

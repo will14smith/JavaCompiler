@@ -36,7 +36,7 @@ namespace JavaCompiler.Translators
             return typeRef;
         }
 
-        private static Type ProcessClass(ITree node)
+        public static Type ProcessClass(ITree node)
         {
             switch ((JavaNodeType)node.Type)
             {

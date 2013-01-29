@@ -20,7 +20,9 @@ namespace JavaCompiler.Compilers
 
             var manager = new CompileManager();
 
-            manager.Imports.Add(new Package {Name = type.Package == null ? "*" : type.Package.Name + ".*"});
+            manager.Imports.Add(new Package { Name = type.Package == null || string.IsNullOrEmpty(type.Package.Name) ? "*" : type.Package.Name + ".*" });
+
+            manager.Imports.AddRange(program.Imports);
 
             if (type is Class)
             {

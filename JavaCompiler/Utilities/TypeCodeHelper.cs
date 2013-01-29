@@ -5,6 +5,7 @@ using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
+using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Utilities
@@ -59,7 +60,7 @@ namespace JavaCompiler.Utilities
                                         "int", "long", "float", "double", "object", "byte", "char", "short", "void", "oops"
                                     };
 
-            return typecodeNames[(int) typeCode];
+            return typecodeNames[(int)typeCode];
         }
 
         public static Type Type(ItemTypeCode typeCode)
@@ -75,7 +76,7 @@ namespace JavaCompiler.Utilities
                 case ItemTypeCode.Double:
                     return PrimativeTypes.Double;
                 case ItemTypeCode.Object:
-                    return new PlaceholderType {Name = "java.lang.Object"};
+                    return new PlaceholderType { Name = "java.lang.Object" };
                 case ItemTypeCode.Byte:
                     return PrimativeTypes.Byte;
                 case ItemTypeCode.Char:
@@ -91,9 +92,9 @@ namespace JavaCompiler.Utilities
 
         public static Item StackItem(ByteCodeGenerator generator, Type type)
         {
-            if(type.Primitive)
+            if (type.Primitive)
             {
-                if(TypeCode(type) == ItemTypeCode.Void)
+                if (TypeCode(type) == ItemTypeCode.Void)
                 {
                     return new VoidItem(generator);
                 }
@@ -105,6 +106,22 @@ namespace JavaCompiler.Utilities
         public static int Width(IEnumerable<Type> typeCode)
         {
             return typeCode.Sum(x => Width(x));
+        }
+
+        public static byte ArrayCode(Type elemType)
+        {
+            if (elemType == PrimativeTypes.Byte) return 8;
+            if (elemType == PrimativeTypes.Boolean) return 4;
+            if (elemType == PrimativeTypes.Short) return 9;
+            if (elemType == PrimativeTypes.Char) return 5;
+            if (elemType == PrimativeTypes.Int) return 10;
+            if (elemType == PrimativeTypes.Long) return 11;
+            if (elemType == PrimativeTypes.Float) return 6;
+            if (elemType == PrimativeTypes.Double) return 7;
+            if (elemType is Array) return 1;
+            if (elemType is Class) return 0;
+
+            throw new NotImplementedException();
         }
     }
 }

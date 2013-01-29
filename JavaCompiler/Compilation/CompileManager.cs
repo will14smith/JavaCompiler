@@ -8,6 +8,7 @@ using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
 using Array = System.Array;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Compilation
 {
@@ -134,17 +135,16 @@ namespace JavaCompiler.Compilation
             return nameAndTypeConst.PoolIndex;
         }
 
-        public short AddConstantClass(DefinedType c)
+        public short AddConstantClass(Type c)
         {
             if (c == null) return 0;
 
-            short nameIndex = AddConstantUtf8(c.GetDescriptor(true));
-            CompileConstantClass classConst =
-                ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
+            var nameIndex = AddConstantUtf8(c.GetDescriptor(true));
+            var classConst = ConstantPool.OfType<CompileConstantClass>().FirstOrDefault(x => x.NameIndex == nameIndex);
 
             if (classConst == null)
             {
-                classConst = new CompileConstantClass {PoolIndex = nextConstantIndex++, NameIndex = nameIndex};
+                classConst = new CompileConstantClass { PoolIndex = nextConstantIndex++, NameIndex = nameIndex };
 
                 ConstantPool.Add(classConst);
             }
@@ -159,7 +159,7 @@ namespace JavaCompiler.Compilation
 
             if (intConst == null)
             {
-                intConst = new CompileConstantInteger {PoolIndex = nextConstantIndex++, Value = value};
+                intConst = new CompileConstantInteger { PoolIndex = nextConstantIndex++, Value = value };
 
                 ConstantPool.Add(intConst);
             }
@@ -174,7 +174,7 @@ namespace JavaCompiler.Compilation
 
             if (floatConst == null)
             {
-                floatConst = new CompileConstantFloat {PoolIndex = nextConstantIndex++, Value = value};
+                floatConst = new CompileConstantFloat { PoolIndex = nextConstantIndex++, Value = value };
 
                 ConstantPool.Add(floatConst);
             }
@@ -189,9 +189,12 @@ namespace JavaCompiler.Compilation
 
             if (longConst == null)
             {
-                longConst = new CompileConstantLong {PoolIndex = nextConstantIndex++, Value = value};
+                longConst = new CompileConstantLong { PoolIndex = nextConstantIndex++, Value = value };
+
+                nextConstantIndex++;
 
                 ConstantPool.Add(longConst);
+                ConstantPool.Add(null);
             }
 
             return longConst.PoolIndex;
@@ -204,9 +207,12 @@ namespace JavaCompiler.Compilation
 
             if (doubleConst == null)
             {
-                doubleConst = new CompileConstantDouble {PoolIndex = nextConstantIndex++, Value = value};
+                doubleConst = new CompileConstantDouble { PoolIndex = nextConstantIndex++, Value = value };
+
+                nextConstantIndex++;
 
                 ConstantPool.Add(doubleConst);
+                ConstantPool.Add(null);
             }
 
             return doubleConst.PoolIndex;
@@ -221,7 +227,7 @@ namespace JavaCompiler.Compilation
 
             if (stringConst == null)
             {
-                stringConst = new CompileConstantString {PoolIndex = nextConstantIndex++, StringIndex = utfIndex};
+                stringConst = new CompileConstantString { PoolIndex = nextConstantIndex++, StringIndex = utfIndex };
 
                 ConstantPool.Add(stringConst);
             }
@@ -237,7 +243,7 @@ namespace JavaCompiler.Compilation
 
             if (utf8Const == null)
             {
-                utf8Const = new CompileConstantUtf8 {PoolIndex = nextConstantIndex++, Value = value};
+                utf8Const = new CompileConstantUtf8 { PoolIndex = nextConstantIndex++, Value = value };
 
                 ConstantPool.Add(utf8Const);
             }
@@ -324,9 +330,9 @@ namespace JavaCompiler.Compilation
             var writer = new EndianBinaryWriter(EndianBitConverter.Big, program);
 
             // magic
-            writer.Write(new byte[] {0xCA, 0xFE, 0xBA, 0xBE});
+            writer.Write(new byte[] { 0xCA, 0xFE, 0xBA, 0xBE });
             // version (minor, major)
-            writer.Write(new byte[] {0x00, 0x00, 0x00, 0x33});
+            writer.Write(new byte[] { 0x00, 0x00, 0x00, 0x33 });
             // const pool
             WriteConstBytes(writer);
             // access flags
@@ -356,9 +362,9 @@ namespace JavaCompiler.Compilation
 
         private void WriteConstBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short) (ConstantPool.Count() + 1));
+            writer.Write(nextConstantIndex);
 
-            foreach (CompileConstant constant in ConstantPool)
+            foreach (var constant in ConstantPool.Where(constant => constant != null))
             {
                 writer.Write(constant.Tag);
                 constant.Write(writer);
@@ -367,14 +373,14 @@ namespace JavaCompiler.Compilation
 
         private void WriteModiferBytes(EndianBinaryWriter writer)
         {
-            var modifierValue = (short) ((int) Modifiers & 0x631);
+            var modifierValue = (short)((int)Modifiers & 0x631);
 
             writer.Write(modifierValue);
         }
 
         private void WriteInterfaceBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short) Interfaces.Count());
+            writer.Write((short)Interfaces.Count());
 
             foreach (short i in Interfaces)
             {
@@ -384,7 +390,7 @@ namespace JavaCompiler.Compilation
 
         private void WriteFieldBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short) Fields.Count());
+            writer.Write((short)Fields.Count());
 
             foreach (CompileFieldInfo field in Fields)
             {
@@ -394,7 +400,7 @@ namespace JavaCompiler.Compilation
 
         private void WriteMethodBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short) Methods.Count());
+            writer.Write((short)Methods.Count());
 
             foreach (CompileMethodInfo method in Methods)
             {
@@ -404,7 +410,7 @@ namespace JavaCompiler.Compilation
 
         private void WriteAttributeBytes(EndianBinaryWriter writer)
         {
-            writer.Write((short) Attributes.Count());
+            writer.Write((short)Attributes.Count());
 
             foreach (CompileAttribute attribute in Attributes)
             {

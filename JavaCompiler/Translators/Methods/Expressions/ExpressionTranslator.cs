@@ -91,7 +91,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
                 return new PrimaryTranslator(child).Walk();
             }
             // TODO: QUALIFIED
-            // TODO: NEW
+            if(child.IsNewExpression())
+            {
+                return new NewTranslator(child).Walk();
+            }
             // TODO: INNER NEW
             // TODO: NEW ARRAY
 

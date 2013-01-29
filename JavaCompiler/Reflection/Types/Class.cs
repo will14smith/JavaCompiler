@@ -18,6 +18,8 @@ namespace JavaCompiler.Reflection.Types
         public override bool IsAssignableTo(Type c)
         {
             //TODO: Improve
+            if (Name == "java.lang.Object") return !c.Primitive;
+
             return c.GetDescriptor() == GetDescriptor();
         }
 
