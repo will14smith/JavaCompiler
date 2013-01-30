@@ -124,19 +124,26 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var addNode = node as AdditiveNode;
 
-                AppendStrings(generator, sb, addNode.LeftChild.Child);
-                AppendStrings(generator, sb, addNode.RightChild.Child);
-            }
-            else
-            {
-                var item = new ExpressionCompiler(node).Compile(generator);
+                generator.Kill();
+                var addType = new AdditiveCompiler(addNode).Compile(generator).Type;
+                generator.Revive();
 
-                var appendMethod = sb.FindMethod(generator, "append", new List<Type> { item.Type });
-                if (appendMethod == null) throw new InvalidOperationException();
+                if (addType.Name == "java.lang.String")
+                {
+                    AppendStrings(generator, sb, addNode.LeftChild.Child);
+                    AppendStrings(generator, sb, addNode.RightChild.Child);
 
-                item.Load();
-                new MemberItem(generator, appendMethod, false).Invoke();
+                    return;
+                }
             }
+
+            var item = new ExpressionCompiler(node).Compile(generator);
+
+            var appendMethod = sb.FindMethod(generator, "append", new List<Type> { item.Type });
+            if (appendMethod == null) throw new InvalidOperationException();
+
+            item.Load();
+            new MemberItem(generator, appendMethod, false).Invoke();
         }
         private static void BufferToString(ByteCodeGenerator generator, DefinedType sb)
         {
