@@ -29,6 +29,8 @@ namespace JavaCompiler.Reflection.Types
 
         public virtual void Resolve(List<Package> imports)
         {
+            Fields.ForEach(x => x.Resolve(imports));
+            Methods.ForEach(x => x.Resolve(imports));
         }
     }
 }

@@ -99,31 +99,12 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var sb = ClassLocator.Find(new PlaceholderType { Name = "java.lang.StringBuilder" }, generator.Manager.Imports) as Class;
             if (sb == null) throw new InvalidOperationException();
 
-            var items = GetItems(generator, node.LeftChild.Child)
-                .Concat(GetItems(generator, node.RightChild.Child));
-
             MakeStringBuffer(generator, sb);
-            AppendStrings(generator, sb, items);
+            AppendStrings(generator, sb, node.LeftChild.Child);
+            AppendStrings(generator, sb, node.RightChild.Child);
             BufferToString(generator, sb);
 
             return new StackItem(generator, new PlaceholderType { Name = "java.lang.String" });
-        }
-
-        private static IEnumerable<Item> GetItems(ByteCodeGenerator generator, ExpressionNode node)
-        {
-            var addNode = node as AdditiveNode;
-            if (addNode != null)
-            {
-                var items = GetItems(generator, addNode.LeftChild.Child)
-                    .Concat(GetItems(generator, addNode.RightChild.Child));
-
-                foreach (var item in items)
-                {
-                    yield return item;
-                }
-            }
-
-            yield return new ExpressionCompiler(node).Compile(generator);
         }
 
         private static void MakeStringBuffer(ByteCodeGenerator generator, Class sb)
@@ -137,14 +118,20 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             new MemberItem(generator, sbInit, true).Invoke();
         }
-        private static void AppendStrings(ByteCodeGenerator generator, DefinedType sb, IEnumerable<Item> items)
+        private static void AppendStrings(ByteCodeGenerator generator, DefinedType sb, ExpressionNode node)
         {
-            var append = new Func<Type, Method>(t => sb.Methods.FirstOrDefault(
-                          x => x.Name == "append" && x.Parameters.Count == 1 && x.Parameters[0].Type.CanAssignFrom(t)));
-
-            foreach (var item in items)
+            if (node is AdditiveNode)
             {
-                var appendMethod = append(item.Type);
+                var addNode = node as AdditiveNode;
+
+                AppendStrings(generator, sb, addNode.LeftChild.Child);
+                AppendStrings(generator, sb, addNode.RightChild.Child);
+            }
+            else
+            {
+                var item = new ExpressionCompiler(node).Compile(generator);
+
+                var appendMethod = sb.FindMethod(generator, "append", new List<Type> { item.Type });
                 if (appendMethod == null) throw new InvalidOperationException();
 
                 item.Load();
@@ -153,7 +140,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         }
         private static void BufferToString(ByteCodeGenerator generator, DefinedType sb)
         {
-            var toString = sb.Methods.SingleOrDefault(x => x.Name == "toString" && x.Parameters.Count == 0);
+            var toString = sb.FindMethod(generator, "toString", null);
             if (toString == null) throw new InvalidOperationException();
 
             new MemberItem(generator, toString, false).Invoke();

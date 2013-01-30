@@ -13,7 +13,7 @@ namespace JavaCompiler.Reflection.Loaders
 
         static ClassLocator()
         {
-            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt2.jar" };
+            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt.jar" };
         }
 
         public static List<string> SearchPaths { get; private set; }

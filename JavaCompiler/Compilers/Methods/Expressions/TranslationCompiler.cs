@@ -28,6 +28,10 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             if (type == null) return item;
 
+            if (type.Primitive && item.Type.Primitive)
+            {
+                return item.Coerce(type);
+            }
 
             if (item.Type.IsAssignableTo(type))
             {

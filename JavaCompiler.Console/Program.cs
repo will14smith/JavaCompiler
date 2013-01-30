@@ -11,7 +11,7 @@ namespace JavaCompiler.Console
     {
         static void Main(string[] args)
         {
-            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt2.jar");
+            //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
 
             var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 

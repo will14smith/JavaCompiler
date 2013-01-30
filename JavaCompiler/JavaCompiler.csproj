@@ -129,7 +129,7 @@
     <Compile Include="Reflection\Enums\ClassModifier.cs" />
     <Compile Include="Reflection\Loaders\ClassLoader.cs" />
     <Compile Include="Reflection\Loaders\ClassLocator.cs" />
-    <Compile Include="Reflection\CommonTypeFinder.cs" />
+    <Compile Include="Reflection\CommonFinder.cs" />
     <Compile Include="Reflection\Constructor.cs" />
     <Compile Include="Reflection\Interfaces\IGenericDeclaration.cs" />
     <Compile Include="Reflection\Interfaces\IMember.cs" />

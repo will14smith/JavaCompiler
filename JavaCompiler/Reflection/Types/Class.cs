@@ -23,6 +23,8 @@ namespace JavaCompiler.Reflection.Types
 
         public override void Resolve(List<Package> imports)
         {
+            base.Resolve(imports);
+
             Super = ClassLocator.Find(Super, imports) as Class;
 
             if (Super != null) Super.Resolve(imports);

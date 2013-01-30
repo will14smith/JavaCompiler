@@ -167,20 +167,11 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         }
         private static Item CompileMethod(ByteCodeGenerator generator, DefinedType parentType, PrimaryNode.TermMethodExpression id)
         {
-            var name = id.Identifier;
-            var arguments = id.Arguments;
+            generator.Kill();
+            var args = id.Arguments.Select(parameter => new TranslationCompiler(parameter).Compile(generator).Type).ToList();
+            generator.Revive();
 
-            var sourceMethods = name == "<init>"
-                ? (parentType as Class).Constructors.Select(x => (Method)x).ToList()
-                : parentType.Methods.Where(x => x.Name == name);
-
-            var args = new List<Item>();
-            foreach (var parameter in id.Arguments)
-            {
-                args.Add(new TranslationCompiler(parameter).Compile(generator));
-            }
-
-            var method = TryMethod(generator, sourceMethods, args);
+            var method = parentType.FindMethod(generator, id.Identifier, args);
             if (method == null) throw new InvalidOperationException();
 
             bool isStatic = (method.Modifiers & Modifier.Static) == Modifier.Static;
@@ -198,28 +189,6 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             return item.Invoke();
         }
 
-        private static Method TryMethod(ByteCodeGenerator generator, IEnumerable<Method> sourceMethods, IList<Item> args)
-        {
-            var methods = sourceMethods.Where(x => x.Parameters.Count == args.Count).ToList();
-            if (!methods.Any()) return null;
-
-            var arguments = args.Select(x => ClassLocator.Find(x.Type, generator.Manager.Imports)).ToList();
-
-            Method method = null;
-            //TODO: Find best method
-            foreach (var meth in methods)
-            {
-                meth.Resolve(generator.Manager.Imports);
-
-                if (meth.Parameters.Zip(arguments, (p, a) => (a.IsAssignableTo(p.Type))).All(x => x))
-                {
-                    method = meth;
-                    break;
-                }
-            }
-
-            return method;
-        }
         private static Item CompileArray(ByteCodeGenerator generator, Item scope, PrimaryNode.TermArrayExpression array)
         {
             var item = new PrimaryCompiler(array.Child).Compile(generator, scope);
