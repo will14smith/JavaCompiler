@@ -20,13 +20,13 @@ namespace JavaCompiler.Translators.Methods.Expressions
         public AssignmentNode Walk()
         {
             PrimaryNode key = new PrimaryTranslator(node.GetChild(0)).Walk();
-            ExpressionNode value;
+            TranslateNode value;
 
             ITree child = node.GetChild(1);
             switch ((JavaNodeType) node.Type)
             {
                 case JavaNodeType.ASSIGN:
-                    value = new ExpressionTranslator(child).Walk();
+                    value = new TranslationTranslator(child).Walk();
                     break;
                 default:
                     throw new NotImplementedException();

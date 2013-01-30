@@ -2,7 +2,7 @@
 {
     public class UnaryNode : ExpressionNode
     {
-        public ExpressionNode Child { get; set; }
+        public TranslateNode Child { get; set; }
 
         public class PlusNode : UnaryNode
         {

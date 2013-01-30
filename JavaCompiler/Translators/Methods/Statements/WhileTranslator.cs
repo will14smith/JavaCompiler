@@ -21,8 +21,8 @@ namespace JavaCompiler.Translators.Methods.Statements
 
         public WhileNode Walk()
         {
-            ExpressionNode condition = new ExpressionTranslator(node.GetChild(0)).Walk();
-            MethodTreeNode statement = new StatementTranslator(node.GetChild(1)).Walk();
+            var condition = new TranslationTranslator(node.GetChild(0)).Walk();
+            var statement = new StatementTranslator(node.GetChild(1)).Walk();
 
             return new WhileNode
                        {

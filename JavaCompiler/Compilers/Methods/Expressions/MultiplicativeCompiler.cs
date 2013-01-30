@@ -20,33 +20,36 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-            var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
+            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
+            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
 
-            if (!lhs.Type.Primitive || !rhs.Type.Primitive)
+            var type = lType.FindCommonType(rType);
+
+            var lhs = new TranslationCompiler(node.LeftChild, type).Compile(generator);
+            var rhs = new TranslationCompiler(node.RightChild, type).Compile(generator);
+
+            if (!type.Primitive)
             {
                 throw new InvalidOperationException();
             }
 
-            var resultType = lhs.Type.FindCommonType(rhs.Type);
-
-            lhs.Coerce(resultType).Load();
-            rhs.Coerce(resultType).Load();
+            lhs.Load();
+            rhs.Load();
 
             if (node is MultiplicativeNode.MultiplicativeMultiplyNode)
             {
-                CompileMultiplication(generator, resultType);
+                CompileMultiplication(generator, type);
             }
             else if (node is MultiplicativeNode.MultiplicativeDivideNode)
             {
-                CompileDivide(generator, resultType);
+                CompileDivide(generator, type);
             } 
             else if (node is MultiplicativeNode.MultiplicativeModNode)
             {
-                CompileMod(generator, resultType);
+                CompileMod(generator, type);
             }
 
-            return new StackItem(generator, resultType);
+            return new StackItem(generator, type);
         }
 
         private static void CompileMultiplication(ByteCodeGenerator generator, Type type)

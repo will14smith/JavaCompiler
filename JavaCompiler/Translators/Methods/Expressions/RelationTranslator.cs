@@ -39,8 +39,8 @@ namespace JavaCompiler.Translators.Methods.Expressions
                     throw new NotImplementedException();
             }
 
-            relationNode.LeftChild = new ExpressionTranslator(node.GetChild(0)).Walk();
-            relationNode.RightChild = new ExpressionTranslator(node.GetChild(1)).Walk();
+            relationNode.LeftChild = new TranslationTranslator(node.GetChild(0)).Walk();
+            relationNode.RightChild = new TranslationTranslator(node.GetChild(1)).Walk();
 
             return relationNode;
         }

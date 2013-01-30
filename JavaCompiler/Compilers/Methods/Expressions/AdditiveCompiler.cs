@@ -24,31 +24,25 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            generator.Kill();
-            var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-            var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
-            generator.Revive();
+            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
+            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
 
-            if (lhs.Type.Primitive && rhs.Type.Primitive)
+            var type = lType.FindCommonType(rType);
+            if (type != null && type.Primitive)
             {
-                lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-                rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
-
-                var resultType = lhs.Type.FindCommonType(rhs.Type);
-
-                lhs.Coerce(resultType).Load();
-                rhs.Coerce(resultType).Load();
+                new TranslationCompiler(node.LeftChild, type).Compile(generator).Load();
+                new TranslationCompiler(node.RightChild, type).Compile(generator).Load();
 
                 if (node is AdditiveNode.AdditivePlusNode)
                 {
-                    CompileAddition(generator, resultType);
+                    CompileAddition(generator, type);
                 }
                 else
                 {
-                    CompileSubtraction(generator, resultType);
+                    CompileSubtraction(generator, type);
                 }
 
-                return new StackItem(generator, resultType);
+                return new StackItem(generator, type);
             }
 
             // string addition
@@ -105,8 +99,8 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var sb = ClassLocator.Find(new PlaceholderType { Name = "java.lang.StringBuilder" }, generator.Manager.Imports) as Class;
             if (sb == null) throw new InvalidOperationException();
 
-            var items = GetItems(generator, node.LeftChild)
-                .Concat(GetItems(generator, node.RightChild));
+            var items = GetItems(generator, node.LeftChild.Child)
+                .Concat(GetItems(generator, node.RightChild.Child));
 
             MakeStringBuffer(generator, sb);
             AppendStrings(generator, sb, items);
@@ -120,11 +114,16 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var addNode = node as AdditiveNode;
             if (addNode != null)
             {
-                return GetItems(generator, addNode.LeftChild)
-                    .Concat(GetItems(generator, addNode.RightChild));
+                var items = GetItems(generator, addNode.LeftChild.Child)
+                    .Concat(GetItems(generator, addNode.RightChild.Child));
+
+                foreach (var item in items)
+                {
+                    yield return item;
+                }
             }
 
-            return new[] { new ExpressionCompiler(node).Compile(generator) };
+            yield return new ExpressionCompiler(node).Compile(generator);
         }
 
         private static void MakeStringBuffer(ByteCodeGenerator generator, Class sb)

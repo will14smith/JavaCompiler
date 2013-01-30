@@ -21,7 +21,7 @@ namespace JavaCompiler.Translators.Methods.Statements
         {
             var ifNode = new IfNode
                              {
-                                 Condition = new ExpressionTranslator(node.GetChild(0)).Walk(),
+                                 Condition = new TranslationTranslator(node.GetChild(0)).Walk(),
                                  TrueBranch = new StatementTranslator(node.GetChild(1)).Walk()
                              };
 

@@ -79,12 +79,12 @@ namespace JavaCompiler.Translators.Methods.Expressions
         private PrimaryNode WalkMethodCall()
         {
             PrimaryNode key = new PrimaryTranslator(node.GetChild(0)).Walk();
-            var arguments = new List<ExpressionNode>();
+            var arguments = new List<TranslateNode>();
 
             ITree argumentList = node.GetChild(1);
             for (int i = 0; i < argumentList.ChildCount; i++)
             {
-                arguments.Add(new ExpressionTranslator(argumentList.GetChild(i)).Walk());
+                arguments.Add(new TranslationTranslator(argumentList.GetChild(i)).Walk());
             }
 
             PrimaryNode.TermMethodExpression meth;
@@ -123,11 +123,11 @@ namespace JavaCompiler.Translators.Methods.Expressions
         {
             bool isSuper = node.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL;
 
-            var arguments = new List<ExpressionNode>();
+            var arguments = new List<TranslateNode>();
             ITree argumentList = node.GetChild(0);
             for (int i = 0; i < argumentList.ChildCount; i++)
             {
-                arguments.Add(new ExpressionTranslator(argumentList.GetChild(i)).Walk());
+                arguments.Add(new TranslationTranslator(argumentList.GetChild(i)).Walk());
             }
 
             return new PrimaryNode.TermConstructorCallExpression

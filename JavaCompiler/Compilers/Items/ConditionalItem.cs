@@ -18,7 +18,7 @@ namespace JavaCompiler.Compilers.Items
             OpCode = opCode;
         }
         public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode, Label trueLabel, Label falseLabel)
-            : base(generator, PrimativeTypes.Byte)
+            : base(generator, PrimativeTypes.Boolean)
         {
             OpCode = opCode;
 

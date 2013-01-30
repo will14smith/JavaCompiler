@@ -5,7 +5,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Statements
 {
     public class IfNode : StatementNode
     {
-        public ExpressionNode Condition { get; set; }
+        public TranslateNode Condition { get; set; }
 
         public MethodTreeNode TrueBranch { get; set; }
         public MethodTreeNode FalseBranch { get; set; }

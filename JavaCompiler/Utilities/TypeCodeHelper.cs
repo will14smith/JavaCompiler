@@ -12,6 +12,10 @@ namespace JavaCompiler.Utilities
 {
     public static class TypeCodeHelper
     {
+        public static ItemTypeCode Truncate(Type type)
+        {
+            return Truncate(TypeCode(type));
+        }
         public static ItemTypeCode Truncate(ItemTypeCode tc)
         {
             switch (tc)

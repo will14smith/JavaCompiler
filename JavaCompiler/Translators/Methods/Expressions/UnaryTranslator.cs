@@ -45,7 +45,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
                     throw new NotImplementedException();
             }
 
-            unaryNode.Child = new ExpressionTranslator(node.GetChild(0)).Walk();
+            unaryNode.Child = new TranslationTranslator(node.GetChild(0)).Walk();
 
             return unaryNode;
         }

@@ -2,8 +2,8 @@
 {
     public abstract class AdditiveNode : ExpressionNode
     {
-        public ExpressionNode LeftChild { get; set; }
-        public ExpressionNode RightChild { get; set; }
+        public TranslateNode LeftChild { get; set; }
+        public TranslateNode RightChild { get; set; }
 
         #region Nested type: AdditiveMinusNode
 

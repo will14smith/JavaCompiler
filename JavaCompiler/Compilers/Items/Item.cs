@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
@@ -95,6 +96,11 @@ namespace JavaCompiler.Compilers.Items
             var typecode1 = TypeCodeHelper.Truncate(TypeCode);
             var targetcode1 = TypeCodeHelper.Truncate(targetCode);
 
+            if (typecode1 != ItemTypeCode.Object && targetcode1 == ItemTypeCode.Object)
+            {
+                return CoercePrimative(target as DefinedType);
+            }
+
             if (typecode1 != targetcode1)
             {
                 var offset = targetcode1 > typecode1 ? targetcode1 - 1 : targetcode1;
@@ -107,6 +113,29 @@ namespace JavaCompiler.Compilers.Items
                 var opcode = (int)OpCodeValue.i2b + targetCode - ItemTypeCode.Byte;
 
                 Generator.Emit((OpCodeValue)opcode);
+            }
+
+            return TypeCodeHelper.StackItem(Generator, target);
+        }
+
+        private Item CoercePrimative(DefinedType target)
+        {
+            var typecode1 = TypeCodeHelper.Truncate(TypeCode);
+
+            switch (typecode1)
+            {
+                case ItemTypeCode.Int:
+                    if (target.Name != "java.lang.Integer")
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    var valueOf = target.Methods.Single(x => x.Name == "valueOf" && x.Parameters.Count == 1 && x.Parameters.First().Type == PrimativeTypes.Int);
+                    var valueOfIndex = Generator.Manager.AddConstantMethodref(valueOf);
+
+                    Generator.EmitInvokestatic(valueOfIndex, valueOf);
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
 
             return TypeCodeHelper.StackItem(Generator, target);

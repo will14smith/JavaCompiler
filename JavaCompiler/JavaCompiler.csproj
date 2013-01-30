@@ -85,6 +85,7 @@
     <Compile Include="Compilers\Methods\Expressions\AndCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\ArrayInitialiserCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\AssignmentCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\BoxingHelper.cs" />
     <Compile Include="Compilers\Methods\Expressions\ConditionalCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\EqualityCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\ExpressionCompiler.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Compilers\Methods\Expressions\QualifiedCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\RelationCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\ShiftCompiler.cs" />
+    <Compile Include="Compilers\Methods\Expressions\TranslationCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\UnaryCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\UnaryOtherCompiler.cs" />
     <Compile Include="Compilers\Methods\Expressions\VariableInitialiserCompiler.cs" />
@@ -186,6 +188,8 @@
     <Compile Include="Translators\Methods\Statements\WhileTranslator.cs" />
     <Compile Include="Translators\Methods\Expressions\ExpressionTranslator.cs" />
     <Compile Include="Translators\Methods\BlockStatements\StatementTranslator.cs" />
+    <Compile Include="Translators\Methods\TranslationTranslator.cs" />
+    <Compile Include="Translators\Methods\Tree\Expressions\TranslateNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\AssertNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\BreakNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\ContinueNode.cs" />

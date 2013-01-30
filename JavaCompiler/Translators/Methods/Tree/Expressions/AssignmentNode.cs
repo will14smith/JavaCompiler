@@ -3,6 +3,6 @@
     public class AssignmentNode : ExpressionNode
     {
         public PrimaryNode Left { get; set; }
-        public ExpressionNode Right { get; set; }
+        public TranslateNode Right { get; set; }
     }
 }

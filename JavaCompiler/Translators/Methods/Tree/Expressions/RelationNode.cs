@@ -2,8 +2,8 @@
 {
     public class RelationNode : ExpressionNode
     {
-        public ExpressionNode LeftChild { get; set; }
-        public ExpressionNode RightChild { get; set; }
+        public TranslateNode LeftChild { get; set; }
+        public TranslateNode RightChild { get; set; }
 
         public class LessThanEqNode : RelationNode
         {

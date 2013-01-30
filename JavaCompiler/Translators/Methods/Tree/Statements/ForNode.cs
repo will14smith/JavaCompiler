@@ -7,7 +7,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Statements
     public class ForNode : StatementNode
     {
         public MethodTree Initialiser { get; set; }
-        public ExpressionNode Condition { get; set; }
+        public TranslateNode Condition { get; set; }
         public MethodTree Updater { get; set; }
 
         public MethodTreeNode Statement { get; set; }

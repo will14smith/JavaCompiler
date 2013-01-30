@@ -5,7 +5,6 @@ using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
-using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Reflection.Types.Internal;
@@ -178,7 +177,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var args = new List<Item>();
             foreach (var parameter in id.Arguments)
             {
-                args.Add(new ExpressionCompiler(parameter).Compile(generator));
+                args.Add(new TranslationCompiler(parameter).Compile(generator));
             }
 
             var method = TryMethod(generator, sourceMethods, args);
@@ -191,9 +190,9 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                        : new MemberItem(generator, method, method.Name == "<init>");
 
 
-            foreach (var arg in method.Parameters.Zip(args, (dst, src) => new { dst, src }))
+            foreach (var arg in method.Parameters.Zip(id.Arguments, (dst, src) => new { dst, src }))
             {
-                arg.src.Coerce(arg.dst.Type).Load();
+                new TranslationCompiler(arg.src, arg.dst.Type).Compile(generator).Load();
             }
 
             return item.Invoke();
@@ -212,14 +211,14 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 meth.Resolve(generator.Manager.Imports);
 
-                if (meth.Parameters.Zip(arguments, (p, a) => (p.Type.CanAssignFrom(a))).All(x => x))
+                if (meth.Parameters.Zip(arguments, (p, a) => (a.IsAssignableTo(p.Type))).All(x => x))
                 {
                     method = meth;
                     break;
                 }
             }
 
-            return method ?? null;
+            return method;
         }
         private static Item CompileArray(ByteCodeGenerator generator, Item scope, PrimaryNode.TermArrayExpression array)
         {

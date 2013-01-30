@@ -14,7 +14,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         public class NewClassNode : NewNode
         {
             public Type Type { get; set; }
-            public List<ExpressionNode> Arguments { get; set; }
+            public List<TranslateNode> Arguments { get; set; }
         }
     }
 }

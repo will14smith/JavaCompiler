@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Translators.Methods.Expressions;
+using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Translators.Methods.Tree.Statements;
 
 namespace JavaCompiler.Translators.Methods.Statements
@@ -22,7 +23,7 @@ namespace JavaCompiler.Translators.Methods.Statements
 
             if (node.ChildCount > 0)
             {
-                returnNode.Value = new ExpressionTranslator(node.GetChild(0)).Walk();
+                returnNode.Value = new TranslationTranslator(node.GetChild(0)).Walk();
             }
 
             return returnNode;

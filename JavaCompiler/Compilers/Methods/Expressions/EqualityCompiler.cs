@@ -1,6 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
+using JavaCompiler.Reflection;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -16,8 +17,13 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-            var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
+            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
+            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
+
+            var type = lType.FindCommonType(rType);
+
+            var lhs = new TranslationCompiler(node.LeftChild, type).Compile(generator);
+            var rhs = new TranslationCompiler(node.RightChild, type).Compile(generator);
 
             lhs.Load();
             rhs.Load();
@@ -30,7 +36,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             OpCodeValue opcode;
             if (node is EqualityNode.EqualityEqualNode)
             {
-                if (lhs.Type.Primitive && rhs.Type.Primitive)
+                if (type.Primitive)
                 {
                     opcode = OpCodeValue.if_icmpeq;
                 }
@@ -41,14 +47,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             }
             else if (node is EqualityNode.EqualityNotEqualNode)
             {
-                if (lhs.Type.Primitive && rhs.Type.Primitive)
-                {
-                    opcode = OpCodeValue.if_icmpne;
-                }
-                else
-                {
-                    opcode = OpCodeValue.if_acmpne;
-                }
+                opcode = type.Primitive ? OpCodeValue.if_icmpne : OpCodeValue.if_acmpne;
             }
             else
             {

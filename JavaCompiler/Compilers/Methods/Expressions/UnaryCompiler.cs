@@ -19,7 +19,8 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var item = new ExpressionCompiler(node.Child).Compile(generator);
+            //TODO
+            var item = new ExpressionCompiler(node.Child.Child).Compile(generator);
 
             if (node is UnaryNode.PlusNode)
             {

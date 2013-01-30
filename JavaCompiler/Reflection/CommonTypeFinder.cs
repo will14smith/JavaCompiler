@@ -6,9 +6,6 @@ namespace JavaCompiler.Reflection
     {
         public static Type FindCommonType(this Type c1, Type c2)
         {
-            if (c1 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
-            if (c2 is PrimativeTypes.CompileTimeClass) return PrimativeTypes.CompileTime;
-
             if (!(c1.IsAssignableTo(c2) || c2.CanAssignFrom(c1)))
             {
                 // No EASY common type found

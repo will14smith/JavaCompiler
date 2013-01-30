@@ -31,7 +31,7 @@ namespace JavaCompiler.Compilers.Methods.Statements
                 return new VoidItem(generator);
             }
 
-            var value = new ExpressionCompiler(node.Value).Compile(generator);
+            var value = new TranslationCompiler(node.Value, generator.Method.ReturnType).Compile(generator);
             value.Load();
 
             CompileReturn(generator, value.Type);

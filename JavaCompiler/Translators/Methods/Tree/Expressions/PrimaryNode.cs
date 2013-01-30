@@ -55,7 +55,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         public class TermConstructorCallExpression : PrimaryNode
         {
             public bool IsSuper { get; set; }
-            public List<ExpressionNode> Arguments { get; set; }
+            public List<TranslateNode> Arguments { get; set; }
 
             public override string ToString()
             {
@@ -170,7 +170,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             }
 
             public string Identifier { get; set; }
-            public List<ExpressionNode> Arguments { get; set; }
+            public List<TranslateNode> Arguments { get; set; }
 
             public override string ToString()
             {

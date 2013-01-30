@@ -33,8 +33,8 @@ namespace JavaCompiler.Translators.Methods.Expressions
                     throw new NotImplementedException();
             }
 
-            additiveNode.LeftChild = new ExpressionTranslator(node.GetChild(0)).Walk();
-            additiveNode.RightChild = new ExpressionTranslator(node.GetChild(1)).Walk();
+            additiveNode.LeftChild = new TranslationTranslator(node.GetChild(0)).Walk();
+            additiveNode.RightChild = new TranslationTranslator(node.GetChild(1)).Walk();
 
             return additiveNode;
         }

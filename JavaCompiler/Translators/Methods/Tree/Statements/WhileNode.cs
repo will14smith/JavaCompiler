@@ -5,7 +5,7 @@ namespace JavaCompiler.Translators.Methods.Tree.Statements
 {
     public class WhileNode : StatementNode
     {
-        public ExpressionNode Expression { get; set; }
+        public TranslateNode Expression { get; set; }
         public MethodTreeNode Statement { get; set; }
     }
 }

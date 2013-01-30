@@ -5,6 +5,6 @@ namespace JavaCompiler.Translators.Methods.Tree.Statements
 {
     public class ReturnNode : StatementNode
     {
-        public ExpressionNode Value { get; set; }
+        public TranslateNode Value { get; set; }
     }
 }

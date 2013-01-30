@@ -21,11 +21,12 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
             if (node.Initialiser != null)
             {
-               var assign = new AssignmentCompiler(new AssignmentNode
-                                           {
-                                               Left = new PrimaryNode.TermIdentifierExpression {Identifier = node.Name},
-                                               Right = node.Initialiser
-                                           }).Compile(generator);
+                var assign = new AssignmentCompiler(
+                    new AssignmentNode
+                    {
+                        Left = new PrimaryNode.TermIdentifierExpression { Identifier = node.Name },
+                        Right = new TranslateNode { Child = node.Initialiser }
+                    }).Compile(generator);
 
                 new LocalItem(generator, variable).Store();
             }

@@ -41,11 +41,11 @@ namespace JavaCompiler.Translators.Methods.Expressions
             }
             if (child.Type == (int)JavaNodeType.ARGUMENT_LIST)
             {
-                var arguments = new List<ExpressionNode>();
+                var arguments = new List<TranslateNode>();
 
                 for (var i = 0; i < child.ChildCount; i++)
                 {
-                    arguments.Add(new ExpressionTranslator(child.GetChild(i)).Walk());
+                    arguments.Add(new TranslationTranslator(child.GetChild(i)).Walk());
                 }
 
                 return new NewNode.NewClassNode

@@ -1,6 +1,7 @@
 ﻿using System;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
+using JavaCompiler.Reflection;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -16,17 +17,19 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lhs = new ExpressionCompiler(node.LeftChild).Compile(generator);
-            var rhs = new ExpressionCompiler(node.RightChild).Compile(generator);
+            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
+            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
 
-            lhs.Load();
-            rhs.Load();
+            var type = lType.FindCommonType(rType);
 
-            if (!(lhs.Type.Primitive && rhs.Type.Primitive))
+            if (!type.Primitive)
             {
                 throw new InvalidOperationException();
             }
 
+            new TranslationCompiler(node.LeftChild, type).Compile(generator).Load();
+            new TranslationCompiler(node.RightChild, type).Compile(generator).Load();
+            
             OpCodeValue opcode;
             if (node is RelationNode.LessThanEqNode)
             {

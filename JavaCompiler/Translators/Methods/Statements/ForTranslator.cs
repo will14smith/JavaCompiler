@@ -59,12 +59,12 @@ namespace JavaCompiler.Translators.Methods.Statements
             }
             return exprs;
         }
-        private static ExpressionNode WalkCond(ITree condNode)
+        private static TranslateNode WalkCond(ITree condNode)
         {
             Debug.Assert(condNode.Type == (int)JavaNodeType.FOR_CONDITION);
 
             return condNode.ChildCount == 1
-                ? new ExpressionTranslator(condNode.GetChild(0)).Walk()
+                ? new TranslationTranslator(condNode.GetChild(0)).Walk()
                 : null;
         }
         private static MethodTree WalkUpdater(ITree updaterNode)
