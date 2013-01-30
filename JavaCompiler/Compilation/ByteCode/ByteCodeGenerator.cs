@@ -261,7 +261,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             UpdateStack2(opcode, s);
         }
-        public void Emit(OpCodeValue opcode, Label l)
+        public void Emit(OpCodeValue opcode, Label l, bool kill = true)
         {
             var capacity = opcode == OpCodeValue.goto_w || opcode == OpCodeValue.jsr_w ? 5 : 3;
 
@@ -289,7 +289,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 EmitShort((short)i);
             }
 
-            UpdateStackBranch(opcode);
+            UpdateStackBranch(opcode, kill);
         }
 
         public void EmitWide(OpCodeValue opcode, short s)
@@ -1050,13 +1050,13 @@ namespace JavaCompiler.Compilation.ByteCode
 
         }
 
-        private void UpdateStackBranch(OpCodeValue opcode)
+        private void UpdateStackBranch(OpCodeValue opcode, bool kill)
         {
             switch (opcode)
             {
                 case OpCodeValue.@goto:
                 case OpCodeValue.goto_w:
-                    MarkDead();
+                    if (kill) MarkDead();
                     break;
                 case OpCodeValue.jsr:
                 case OpCodeValue.jsr_w:
@@ -1313,10 +1313,11 @@ namespace JavaCompiler.Compilation.ByteCode
         public Method Method { get; private set; }
 
         private readonly Stack<bool> aliveState = new Stack<bool>();
-        public void Revive()
+        public void Revive(bool force = false)
         {
-            alive = aliveState.Count == 0 || aliveState.Pop();
+            alive = force || aliveState.Count == 0 || aliveState.Pop();
         }
+
         public void Kill()
         {
             aliveState.Push(alive);

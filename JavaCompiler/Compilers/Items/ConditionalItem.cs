@@ -36,6 +36,7 @@ namespace JavaCompiler.Compilers.Items
                 Generator.Emit(OpCodeValue.iconst_1);
 
                 trueChain = Generator.DefineLabel();
+                Generator.Emit(OpCodeValue.@goto, trueChain, false);
             }
             if (falseChain != null)
             {

@@ -60,7 +60,7 @@ namespace JavaCompiler.Reflection.Types
                 return ItemTypeCode.Void;
             }
 
-            throw new InvalidOperationException();
+            return ItemTypeCode.Object;
         }
         public static Type UnboxType(Type type)
         {

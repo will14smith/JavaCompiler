@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
@@ -174,17 +173,14 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             var method = parentType.FindMethod(generator, id.Identifier, args);
             if (method == null) throw new InvalidOperationException();
 
-            bool isStatic = (method.Modifiers & Modifier.Static) == Modifier.Static;
-
-            var item = isStatic
-                       ? (Item)new StaticItem(generator, method)
-                       : new MemberItem(generator, method, method.Name == "<init>");
-
-
             foreach (var arg in method.Parameters.Zip(id.Arguments, (dst, src) => new { dst, src }))
             {
                 new TranslationCompiler(arg.src, arg.dst.Type).Compile(generator).Load();
             }
+
+            var item = method.Modifiers.HasFlag(Modifier.Static)
+               ? (Item)new StaticItem(generator, method)
+               : new MemberItem(generator, method, method.Name == "<init>");
 
             return item.Invoke();
         }

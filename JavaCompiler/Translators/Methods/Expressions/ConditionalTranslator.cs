@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Antlr.Runtime.Tree;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
@@ -11,14 +10,20 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         public ConditionalTranslator(ITree node)
         {
-            Debug.Assert(node.Type == (int) JavaNodeType.QUESTION);
+            Debug.Assert(node.Type == (int)JavaNodeType.QUESTION);
 
             this.node = node;
         }
 
         public ConditionalNode Walk()
         {
-            throw new NotImplementedException();
+            return new ConditionalNode
+            {
+                Condition = new TranslationTranslator(node.GetChild(0)).Walk(),
+
+                ThenExpression = new ExpressionTranslator(node.GetChild(1)).Walk(),
+                ElseExpression = new ExpressionTranslator(node.GetChild(2)).Walk()
+            };
         }
     }
 }

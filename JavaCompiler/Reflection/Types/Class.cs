@@ -17,7 +17,7 @@ namespace JavaCompiler.Reflection.Types
         // is this assignable to c?
         public override bool IsAssignableTo(Type c)
         {
-            //TODO: Improve
+            //TODO: Improve?
             return c.GetDescriptor() == GetDescriptor() || (Super != null && Super.IsAssignableTo(c));
         }
 

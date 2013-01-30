@@ -9,9 +9,14 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         public class UnaryCastNode : UnaryOtherNode
         {
             public Type Type { get; set; }
-            public ExpressionNode Expression { get; set; }
+            public TranslateNode Expression { get; set; }
         }
 
         #endregion
+
+        public class UnaryNotNode : UnaryOtherNode
+        {
+            public TranslateNode Expression { get; set; }
+        }
     }
 }

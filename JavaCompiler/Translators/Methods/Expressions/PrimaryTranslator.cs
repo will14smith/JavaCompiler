@@ -29,6 +29,8 @@ namespace JavaCompiler.Translators.Methods.Expressions
             {
                 case JavaNodeType.THIS:
                     return new PrimaryNode.TermThisExpression();
+                case JavaNodeType.SUPER:
+                    return new PrimaryNode.TermSuperExpression();
                 case JavaNodeType.IDENT:
                     return new PrimaryNode.TermIdentifierExpression(node);
                 case JavaNodeType.DOT:
