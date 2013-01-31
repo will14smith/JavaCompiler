@@ -16,27 +16,30 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var endOfIf = generator.DefineLabel();
+            Chain thenExit = null;
 
             var item = new ConditionCompiler(node.Condition).Compile(generator);
-            var falseLabel = item.JumpFalse();
+            var elseChain = item.JumpFalse();
 
-            generator.PushScope();
-            var tb = new ExpressionCompiler(node.ThenExpression).Compile(generator);
-            tb.Load();
-            generator.Emit(OpCodeValue.@goto, endOfIf);
-            generator.PopScope();
+            Item x = null;
+            if (!item.IsFalse())
+            {
+                generator.ResolveChain(item.TrueJumps);
 
-            generator.MarkLabel(falseLabel);
+                x = new ExpressionCompiler(node.ThenExpression).Compile(generator).Load();
 
-            generator.PushScope();
-            var fb = new ExpressionCompiler(node.ElseExpression).Compile(generator);
-            fb.Load();
-            generator.PopScope();
+                thenExit = generator.Branch(OpCodeValue.@goto);
+            }
+            if (elseChain != null)
+            {
+                generator.ResolveChain(elseChain);
 
-            generator.MarkLabel(endOfIf);
+                x = new ExpressionCompiler(node.ElseExpression).Compile(generator).Load();
+            }
+            generator.ResolveChain(thenExit);
 
-            var type = tb.Type.FindCommonType(fb.Type);
+            //var type = tb.Type.FindCommonType(fb.Type);
+            var type = x.Type;
 
             return new StackItem(generator, type);
         }

@@ -302,7 +302,7 @@ namespace JavaCompiler.Utilities
             return GetEnumerator();
         }
 
-        public int Count { get; private set; }
+        public int Count { get; protected set; }
 
         public object SyncRoot
         {
@@ -321,6 +321,7 @@ namespace JavaCompiler.Utilities
         public T this[int i]
         {
             get { return array[i]; }
+            set { array[i] = value; }
         }
     }
 }

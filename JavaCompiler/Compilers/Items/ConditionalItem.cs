@@ -9,42 +9,42 @@ namespace JavaCompiler.Compilers.Items
     {
         public OpCodeValue OpCode { get; private set; }
 
-        public Label TrueLabel { get; private set; }
-        public Label FalseLabel { get; private set; }
+        public Chain TrueJumps { get; private set; }
+        public Chain FalseJumps { get; private set; }
 
         public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode)
             : this(generator, opCode, null, null)
         {
             OpCode = opCode;
         }
-        public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode, Label trueLabel, Label falseLabel)
+        public ConditionalItem(ByteCodeGenerator generator, OpCodeValue opCode, Chain trueChain, Chain falseChain)
             : base(generator, PrimativeTypes.Boolean)
         {
             OpCode = opCode;
 
-            TrueLabel = trueLabel;
-            FalseLabel = falseLabel;
+            TrueJumps = trueChain;
+            FalseJumps = falseChain;
         }
 
         public override Item Load()
         {
-            Label trueChain = null;
-            Label falseChain = JumpFalse();
+            Chain trueChain = null;
+            Chain falseChain = JumpFalse();
+
             if (!IsFalse())
             {
-                Generator.MarkLabel(TrueLabel);
+                Generator.ResolveChain(TrueJumps);
                 Generator.Emit(OpCodeValue.iconst_1);
 
-                trueChain = Generator.DefineLabel();
-                Generator.Emit(OpCodeValue.@goto, trueChain, false);
+                trueChain = Generator.Branch(OpCodeValue.@goto);
             }
             if (falseChain != null)
             {
-                Generator.MarkLabel(falseChain);
+                Generator.ResolveChain(falseChain);
                 Generator.Emit(OpCodeValue.iconst_0);
             }
 
-            Generator.MarkLabel(trueChain);
+            Generator.ResolveChain(trueChain);
 
             return TypeCodeHelper.StackItem(Generator, Type);
         }
@@ -68,26 +68,18 @@ namespace JavaCompiler.Compilers.Items
             return this;
         }
 
-        public Label JumpTrue()
+        public Chain JumpTrue()
         {
-            var label = Generator.DefineLabel();
-
-            Generator.Emit(OpCode, label);
-
-            return label;
+            return ByteCodeGenerator.MergeChains(TrueJumps, Generator.Branch(OpCode));
         }
-        public Label JumpFalse()
+        public Chain JumpFalse()
         {
-            var label = Generator.DefineLabel();
-
-            Generator.Emit(OpCodes.Negate(OpCode), label);
-
-            return label;
+            return ByteCodeGenerator.MergeChains(FalseJumps, Generator.Branch(OpCodes.Negate(OpCode)));
         }
 
         public ConditionalItem Negate()
         {
-            var c = new ConditionalItem(Generator, OpCodes.Negate(OpCode), FalseLabel, TrueLabel);
+            var c = new ConditionalItem(Generator, OpCodes.Negate(OpCode), FalseJumps, TrueJumps);
             return c;
         }
 
@@ -99,11 +91,12 @@ namespace JavaCompiler.Compilers.Items
 
         private bool IsTrue()
         {
-            return FalseLabel == null && OpCode == OpCodeValue.@goto;
+            return FalseJumps == null && OpCode == OpCodeValue.@goto;
         }
-        private bool IsFalse()
+
+        public bool IsFalse()
         {
-            return TrueLabel == null && OpCode == OpCodeValue.jsr;
+            return TrueJumps == null && OpCode == OpCodeValue.jsr;
         }
 
         public new String ToString()

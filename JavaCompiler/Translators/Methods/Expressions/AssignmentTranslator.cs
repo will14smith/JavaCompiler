@@ -23,7 +23,7 @@ namespace JavaCompiler.Translators.Methods.Expressions
             TranslateNode value;
 
             ITree child = node.GetChild(1);
-            switch ((JavaNodeType) node.Type)
+            switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.ASSIGN:
                     value = new TranslationTranslator(child).Walk();
@@ -33,10 +33,10 @@ namespace JavaCompiler.Translators.Methods.Expressions
             }
 
             return new AssignmentNode
-                       {
-                           Left = key,
-                           Right = value
-                       };
+            {
+                Left = key,
+                Right = value
+            };
         }
     }
 }

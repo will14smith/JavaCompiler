@@ -47,10 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compilation\ByteCode\ByteCodeGenerator.cs" />
+    <Compile Include="Compilation\ByteCode\Chain.cs" />
     <Compile Include="Compilation\ByteCode\Label.cs" />
     <Compile Include="Compilation\ByteCode\OpCode.cs" />
     <Compile Include="Compilation\ByteCode\OpCodes.cs" />
     <Compile Include="Compilation\ByteCode\OpCodeValue.cs" />
+    <Compile Include="Compilation\ByteCode\State.cs" />
     <Compile Include="Compilation\ByteCode\TypeStack.cs" />
     <Compile Include="Compilation\ByteCode\UninitializedType.cs" />
     <Compile Include="Compilation\ByteCode\Variable.cs" />

@@ -19,6 +19,8 @@ namespace JavaCompiler.Compilation.ByteCode
         private byte[] byteCodeStream;
         private int length;
 
+        private State state;
+
         public ByteCodeGenerator(CompileManager manager, Method method)
         {
             Manager = manager;
@@ -26,10 +28,6 @@ namespace JavaCompiler.Compilation.ByteCode
 
             byteCodeStream = new byte[64];
             length = 0;
-
-            labelCount = 0;
-            labelList = null;
-            labelRefs = new Dictionary<int, List<Tuple<int, int>>>();
 
             variableList = new Variable[256];
             if (method.Modifiers.HasFlag(Modifier.Static))
@@ -46,84 +44,8 @@ namespace JavaCompiler.Compilation.ByteCode
             }
             variableListStack = new Stack<Tuple<short, Variable[]>>();
 
-            stack = new TypeStack();
+            state = new State();
         }
-
-        #region Labels
-
-        private int labelCount;
-        private int[] labelList;
-        private readonly Dictionary<int, List<Tuple<int, int>>> labelRefs;
-
-        public Label DefineLabel()
-        {
-            if (labelList == null)
-            {
-                labelList = new int[4];
-            }
-            if (labelCount >= labelList.Length)
-            {
-                labelList = EnlargeArray(labelList);
-            }
-
-            labelList[labelCount] = -1;
-
-            labelRefs.Add(labelCount, new List<Tuple<int, int>>());
-
-            return new Label(labelCount++);
-        }
-
-        public Label MarkLabel()
-        {
-            var loc = DefineLabel();
-
-            MarkLabel(loc);
-
-            return loc;
-        }
-        public void MarkLabel(Label loc)
-        {
-            if (loc == null) return;
-
-            var labelValue = loc.GetLabelValue();
-
-            if (labelValue < 0 || labelValue >= labelList.Length)
-            {
-                throw new ArgumentException("Argument_InvalidLabel");
-            }
-            if (labelList[labelValue] != -1)
-            {
-                throw new ArgumentException("Argument_RedefinedLabel");
-            }
-
-            labelList[labelValue] = length;
-
-            ResolveLabel(labelValue);
-            labelRefs.Remove(labelValue);
-        }
-
-        private void ResolveLabel(int labelValue)
-        {
-            var refs = labelRefs[labelValue];
-
-            pendingStackMap = true;
-
-            foreach (var l in refs)
-            {
-                var pos = l.Item1;
-                var i = labelList[labelValue] - (pos - 1);
-
-                if (l.Item2 == 4)
-                {
-                    byteCodeStream[pos++] = (byte)((i >> 24) & 0xff);
-                    byteCodeStream[pos++] = (byte)((i >> 16) & 0xff);
-                }
-                byteCodeStream[pos++] = (byte)((i >> 8) & 0xff);
-                byteCodeStream[pos] = (byte)(i & 0xff);
-            }
-        }
-
-        #endregion
 
         #region Variables
 
@@ -163,6 +85,8 @@ namespace JavaCompiler.Compilation.ByteCode
                 throw new StackOverflowException("Cannot define any more local variables!");
 
             short index = FindFreeVariableIndex();
+
+            if (pendingJumps != null) ResolvePendingJumps();
 
             variableList[index] = new Variable(index, name, type);
             variableCount++;
@@ -213,14 +137,14 @@ namespace JavaCompiler.Compilation.ByteCode
         public void PushScope()
         {
             aliveScope.Push(alive);
-            //stack.PushScope();
+            //state.PushScope();
 
             PushVariables();
         }
         public void PopScope()
         {
             alive = aliveScope.Pop();
-            //stack.PopScope();
+            //state.PopScope();
 
             PopVariables();
         }
@@ -261,36 +185,56 @@ namespace JavaCompiler.Compilation.ByteCode
 
             UpdateStack2(opcode, s);
         }
-        public void Emit(OpCodeValue opcode, Label l, bool kill = true)
+        public void Emit(OpCodeValue opcode, int b)
         {
-            var capacity = opcode == OpCodeValue.goto_w || opcode == OpCodeValue.jsr_w ? 5 : 3;
-
-            EnsureCapacity(capacity);
-
-            var labelValue = l.GetLabelValue();
-            var i = labelList[labelValue] - length;
+            EnsureCapacity(2);
 
             EmitOp(opcode);
-
             if (!alive) return;
-            if (labelList[labelValue] == -1)
-            {
-                labelRefs[labelValue].Add(new Tuple<int, int>(length, capacity - 1));
+            EmitInt(b);
 
-                i = int.MaxValue;
-            }
-
-            if (capacity == 5)
+            switch (opcode)
             {
-                EmitInt(i);
+                case OpCodeValue.goto_w:
+                    MarkDead();
+                    break;
+                case OpCodeValue.jsr_w:
+                    break;
+                default:
+                    throw new InvalidOperationException();
             }
-            else
-            {
-                EmitShort((short)i);
-            }
-
-            UpdateStackBranch(opcode, kill);
         }
+
+        //public void Emit(OpCodeValue opcode, Label l)
+        //{
+        //    var capacity = opcode == OpCodeValue.goto_w || opcode == OpCodeValue.jsr_w ? 5 : 3;
+
+        //    EnsureCapacity(capacity);
+
+        //    var labelValue = l.GetLabelValue();
+        //    var i = labelList[labelValue] - length;
+
+        //    EmitOp(opcode);
+
+        //    if (!alive) return;
+        //    if (labelList[labelValue] == -1)
+        //    {
+        //        labelRefs[labelValue].Add(new Tuple<int, int>(length, capacity - 1));
+
+        //        i = int.MaxValue;
+        //    }
+
+        //    if (capacity == 5)
+        //    {
+        //        EmitInt(i);
+        //    }
+        //    else
+        //    {
+        //        EmitShort((short)i);
+        //    }
+
+        //    UpdateStackBranch(opcode);
+        //}
 
         public void EmitWide(OpCodeValue opcode, short s)
         {
@@ -342,8 +286,8 @@ namespace JavaCompiler.Compilation.ByteCode
             EmitShort(type);
             EmitByte(ndims);
 
-            stack.Pop(ndims);
-            stack.Push(arrayType);
+            state.Pop(ndims);
+            state.Push(arrayType);
         }
         public void EmitNewarray(byte elemcode, Type arrayType)
         {
@@ -352,8 +296,8 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EmitByte(elemcode);
 
-            stack.Pop(1); // count
-            stack.Push(arrayType);
+            state.Pop(1); // count
+            state.Push(arrayType);
         }
         public void EmitAnewarray(short od, Type arrayType)
         {
@@ -362,8 +306,8 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EmitShort(od);
 
-            stack.Pop(1);
-            stack.Push(arrayType);
+            state.Pop(1);
+            state.Push(arrayType);
         }
 
         public void EmitGetstatic(short f, Field field)
@@ -373,7 +317,7 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(f);
 
-            stack.Push(field.ReturnType);
+            state.Push(field.ReturnType);
         }
         public void EmitPutstatic(short f, Field field)
         {
@@ -382,7 +326,7 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(f);
 
-            stack.Pop(field.ReturnType);
+            state.Pop(field.ReturnType);
         }
         public void EmitGetfield(short f, Field field)
         {
@@ -391,8 +335,8 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(f);
 
-            stack.Pop(1); // object ref
-            stack.Push(field.ReturnType);
+            state.Pop(1); // object ref
+            state.Push(field.ReturnType);
         }
         public void EmitPutfield(short f, Field field)
         {
@@ -401,8 +345,8 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(f);
 
-            stack.Pop(field.ReturnType);
-            stack.Pop(1); // object ref
+            state.Pop(field.ReturnType);
+            state.Pop(1); // object ref
         }
 
         public void EmitNew(short cp, Type type)
@@ -412,7 +356,7 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(cp);
 
-            stack.Push(UninitializedType.UninitializedObject(type, length - 3));
+            state.Push(UninitializedType.UninitializedObject(type, length - 3));
         }
         public void EmitCheckcast(short f, Type type)
         {
@@ -421,10 +365,9 @@ namespace JavaCompiler.Compilation.ByteCode
             if (!alive) return;
             EmitShort(f);
 
-            stack.Pop(1); // object ref
-            stack.Push(type);
+            state.Pop(1); // object ref
+            state.Push(type);
         }
-
 
         public void EmitInvokeinterface(short meth, Method method)
         {
@@ -437,8 +380,8 @@ namespace JavaCompiler.Compilation.ByteCode
             EmitByte((byte)(argsize + 1));
             EmitByte(0);
 
-            stack.Pop(argsize + 1);
-            stack.Push(method.ReturnType);
+            state.Pop(argsize + 1);
+            state.Push(method.ReturnType);
         }
         public void EmitInvokespecial(short meth, Method method)
         {
@@ -449,13 +392,13 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EmitShort(meth);
 
-            stack.Pop(argsize);
+            state.Pop(argsize);
 
             //TODO: if (method.Name == "<init>")
             //    state.markInitialized((UninitializedType)state.peek());
 
-            stack.Pop(1);
-            stack.Push(method.ReturnType);
+            state.Pop(1);
+            state.Push(method.ReturnType);
         }
         public void EmitInvokestatic(short meth, Method method)
         {
@@ -466,8 +409,8 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EmitShort(meth);
 
-            stack.Pop(argsize);
-            stack.Push(method.ReturnType);
+            state.Pop(argsize);
+            state.Push(method.ReturnType);
         }
         public void EmitInvokevirtual(short meth, Method method)
         {
@@ -478,8 +421,8 @@ namespace JavaCompiler.Compilation.ByteCode
 
             EmitShort(meth);
 
-            stack.Pop(argsize + 1);
-            stack.Push(method.ReturnType);
+            state.Pop(argsize + 1);
+            state.Push(method.ReturnType);
         }
         public void EmitInvokedynamic(short desc, Method method)
         {
@@ -493,12 +436,16 @@ namespace JavaCompiler.Compilation.ByteCode
             EmitShort(desc);
             EmitShort(0);
 
-            stack.Pop(argsize);
-            stack.Push(method.ReturnType);
+            state.Pop(argsize);
+            state.Push(method.ReturnType);
         }
 
         private void EmitOp(OpCodeValue opcode)
         {
+            if (pendingJumps != null)
+            {
+                ResolvePendingJumps();
+            }
             if (!alive) return;
 
             if (pendingStackMap)
@@ -540,7 +487,166 @@ namespace JavaCompiler.Compilation.ByteCode
 
         private void PostOp()
         {
-            Debug.Assert(alive || stack.Count == 0);
+            Debug.Assert(alive || state.StackSize == 0);
+        }
+        #endregion
+
+        #region Branching
+
+        private bool fatcode;
+        private bool fixedPc;
+
+        private Chain pendingJumps;
+
+        public Chain Branch(OpCodeValue opcode)
+        {
+            Chain result = null;
+
+            if (opcode == OpCodeValue.@goto)
+            {
+                result = pendingJumps;
+                pendingJumps = null;
+            }
+            if (opcode != OpCodeValue.jsr && alive)
+            {
+                result = new Chain(EmitJump(opcode), result, state.Clone());
+
+                fixedPc = fatcode;
+
+                if (opcode == OpCodeValue.@goto) alive = false;
+            }
+
+            return result;
+        }
+        public int EmitJump(OpCodeValue opcode)
+        {
+            if (fatcode)
+            {
+                if (opcode == OpCodeValue.@goto || opcode == OpCodeValue.jsr)
+                {
+                    Emit((OpCodeValue)(opcode + (byte)OpCodeValue.@goto_w - OpCodeValue.@goto), (int)0);
+                }
+                else
+                {
+                    Emit(OpCodes.Negate(opcode), (short)8);
+                    Emit(OpCodeValue.@goto_w, (int)0);
+                    alive = true;
+                    pendingStackMap = true;
+                }
+                return length - 5;
+            }
+
+            Emit(opcode, (short)0);
+            return length - 3;
+        }
+
+        public void ResolvePendingJumps()
+        {
+            var x = pendingJumps;
+            pendingJumps = null;
+
+            ResolveChain(x, length);
+        }
+        public void ResolveChain(Chain chain, int target)
+        {
+            var changed = false;
+            var newState = state;
+
+            for (; chain != null; chain = chain.Next)
+            {
+                Debug.Assert(state != chain.State && (target > chain.PC || state.StackSize == 0));
+                if (target >= length)
+                {
+                    target = length;
+                }
+                else if (byteCodeStream[target] == (byte)OpCodeValue.@goto)
+                {
+                    if (fatcode)
+                    {
+                        target = target + (byteCodeStream[target + 1] << 24)
+                                        + (byteCodeStream[target + 2] << 16)
+                                        + (byteCodeStream[target + 3] << 8)
+                                        + (byteCodeStream[target + 4]);
+                    }
+                    else
+                    {
+                        target = target + (byteCodeStream[target + 1] << 8) + (byteCodeStream[target + 2]);
+                    }
+                }
+                if (byteCodeStream[chain.PC] == (byte)OpCodeValue.@goto && chain.PC + 3 == target && target == length && !fixedPc)
+                {
+                    length = length - 3;
+                    target = target - 3;
+                    if (chain.Next == null)
+                    {
+                        alive = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    var value = target - chain.PC;
+
+                    if (fatcode)
+                    {
+                        byteCodeStream[chain.PC + 1] = (byte)((value >> 24) & 0xFF);
+                        byteCodeStream[chain.PC + 2] = (byte)((value >> 16) & 0xFF);
+                        byteCodeStream[chain.PC + 3] = (byte)((value >> 8) & 0xFF);
+                        byteCodeStream[chain.PC + 4] = (byte)(value & 0xFF);
+                    }
+                    else if (value < short.MinValue || value > short.MaxValue)
+                    {
+                        fatcode = true;
+                    }
+                    else
+                    {
+                        byteCodeStream[chain.PC + 1] = (byte)((value >> 8) & 0xFF);
+                        byteCodeStream[chain.PC + 2] = (byte)(value & 0xFF);
+                    }
+                    Debug.Assert(!alive || chain.State.StackSize == newState.StackSize);
+                }
+
+                fixedPc = true;
+                if (length != target) continue;
+
+                changed = true;
+
+                if (alive)
+                {
+                    newState = chain.State.Join(newState);
+                }
+                else
+                {
+                    newState = chain.State;
+                    alive = true;
+                }
+            }
+
+            Debug.Assert(!changed || state != newState);
+            if (state == newState) return;
+
+            state = newState;
+            pendingStackMap = true;
+        }
+        public void ResolveChain(Chain chain)
+        {
+            Debug.Assert(!alive || chain == null ||
+                state.StackSize == chain.State.StackSize);
+
+            pendingJumps = MergeChains(chain, pendingJumps);
+        }
+
+        public static Chain MergeChains(Chain chain1, Chain chain2)
+        {
+            // recursive merge sort
+            if (chain2 == null) return chain1;
+            if (chain1 == null) return chain2;
+
+            Debug.Assert(chain1.State.StackSize == chain2.State.StackSize);
+
+            return chain1.PC < chain2.PC
+                ? new Chain(chain2.PC, MergeChains(chain1, chain2.Next), chain2.State)
+                : new Chain(chain1.PC, MergeChains(chain1.Next, chain2), chain1.State);
         }
         #endregion
 
@@ -572,9 +678,8 @@ namespace JavaCompiler.Compilation.ByteCode
             }
         }
 
-        private bool pendingStackMap = false;
-        public short MaxStack { get { return (short)stack.MaxStack; } }
-        private TypeStack stack;
+        private bool pendingStackMap;
+        public short MaxStack { get { return state.MaxStackSize; } }
 
         private void UpdateStack0(OpCodeValue opcode)
         {
@@ -582,16 +687,16 @@ namespace JavaCompiler.Compilation.ByteCode
             {
                 case OpCodeValue.aaload:
                     {
-                        stack.Pop(1);// index
+                        state.Pop(1);// index
 
-                        var a = stack[stack.Count - 1];
+                        var a = state.Peek();
 
-                        stack.Pop(1);
+                        state.Pop(1);
 
                         //sometimes 'null type' is treated as a one-dimensional array type
                         //see Gen.visitLiteral - we should handle this case OpCodeValue.OpCodeValue.accordingly
                         var stackType = a == PrimativeTypes.Void ? new PlaceholderType { Name = "java.lang.Object" } : a;
-                        stack.Push(stackType);
+                        state.Push(stackType);
                     }
                     break;
                 case OpCodeValue.@goto:
@@ -604,7 +709,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.dneg:
                     break;
                 case OpCodeValue.aconst_null:
-                    stack.Push(PrimativeTypes.Void);
+                    state.Push(PrimativeTypes.Void);
                     break;
                 case OpCodeValue.iconst_m1:
                 case OpCodeValue.iconst_0:
@@ -617,7 +722,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.iload_1:
                 case OpCodeValue.iload_2:
                 case OpCodeValue.iload_3:
-                    stack.Push(PrimativeTypes.Int);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.lconst_0:
                 case OpCodeValue.lconst_1:
@@ -625,7 +730,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.lload_1:
                 case OpCodeValue.lload_2:
                 case OpCodeValue.lload_3:
-                    stack.Push(PrimativeTypes.Long);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.fconst_0:
                 case OpCodeValue.fconst_1:
@@ -634,7 +739,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.fload_1:
                 case OpCodeValue.fload_2:
                 case OpCodeValue.fload_3:
-                    stack.Push(PrimativeTypes.Float);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.dconst_0:
                 case OpCodeValue.dconst_1:
@@ -642,38 +747,38 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.dload_1:
                 case OpCodeValue.dload_2:
                 case OpCodeValue.dload_3:
-                    stack.Push(PrimativeTypes.Double);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.aload_0:
-                    stack.Push(GetVariable(0).Type);
+                    state.Push(GetVariable(0).Type);
                     break;
                 case OpCodeValue.aload_1:
-                    stack.Push(GetVariable(1).Type);
+                    state.Push(GetVariable(1).Type);
                     break;
                 case OpCodeValue.aload_2:
-                    stack.Push(GetVariable(2).Type);
+                    state.Push(GetVariable(2).Type);
                     break;
                 case OpCodeValue.aload_3:
-                    stack.Push(GetVariable(3).Type);
+                    state.Push(GetVariable(3).Type);
                     break;
                 case OpCodeValue.iaload:
                 case OpCodeValue.baload:
                 case OpCodeValue.caload:
                 case OpCodeValue.saload:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.laload:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Long);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.faload:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Float);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.daload:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Double);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.istore_0:
                 case OpCodeValue.istore_1:
@@ -691,17 +796,17 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.lshr:
                 case OpCodeValue.lshl:
                 case OpCodeValue.lushr:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 case OpCodeValue.areturn:
                 case OpCodeValue.ireturn:
                 case OpCodeValue.freturn:
                     //TODO: Assert.check(state.nlocks == 0);
-                    stack.Pop(1);
+                    state.Pop(1);
                     MarkDead();
                     break;
                 case OpCodeValue.athrow:
-                    stack.Pop(1);
+                    state.Pop(1);
                     MarkDead();
                     break;
                 case OpCodeValue.lstore_0:
@@ -713,24 +818,24 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.dstore_2:
                 case OpCodeValue.dstore_3:
                 case OpCodeValue.pop2:
-                    stack.Pop(2);
+                    state.Pop(2);
                     break;
                 case OpCodeValue.lreturn:
                 case OpCodeValue.dreturn:
                     //TODO: Assert.check(state.nlocks == 0);
-                    stack.Pop(2);
+                    state.Pop(2);
                     MarkDead();
                     break;
                 case OpCodeValue.dup:
-                    stack.Push(stack[stack.Count - 1]);
+                    state.Push(state.Peek());
                     break;
                 case OpCodeValue.@return:
                     //TODO: Assert.check(state.nlocks == 0);
                     MarkDead();
                     break;
                 case OpCodeValue.arraylength:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.isub:
                 case OpCodeValue.iadd:
@@ -743,10 +848,10 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.iand:
                 case OpCodeValue.ior:
                 case OpCodeValue.ixor:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 case OpCodeValue.aastore:
-                    stack.Pop(3);
+                    state.Pop(3);
                     break;
                 case OpCodeValue.land:
                 case OpCodeValue.lor:
@@ -756,76 +861,76 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.lmul:
                 case OpCodeValue.lsub:
                 case OpCodeValue.ladd:
-                    stack.Pop(2);
+                    state.Pop(2);
                     break;
                 case OpCodeValue.lcmp:
-                    stack.Pop(4);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(4);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.l2i:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.i2l:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Long);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.i2f:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Float);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.i2d:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Double);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.l2f:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Float);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.l2d:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Double);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.f2i:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.f2l:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Long);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.f2d:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Double);
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.d2i:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.d2l:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Long);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.d2f:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Float);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.tableswitch:
                 case OpCodeValue.lookupswitch:
-                    stack.Pop(1);
+                    state.Pop(1);
                     // the caller is responsible for patching up the state
                     break;
                 case OpCodeValue.dup_x1:
                     {
-                        Type val1 = stack.Pop1();
-                        Type val2 = stack.Pop1();
-                        stack.Push(val1);
-                        stack.Push(val2);
-                        stack.Push(val1);
+                        Type val1 = state.Pop1();
+                        Type val2 = state.Pop1();
+                        state.Push(val1);
+                        state.Push(val2);
+                        state.Push(val1);
                         break;
                     }
                 case OpCodeValue.bastore:
-                    stack.Pop(3);
+                    state.Pop(3);
                     break;
                 case OpCodeValue.i2b:
                 case OpCodeValue.i2c:
@@ -836,159 +941,159 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.fsub:
                 case OpCodeValue.fdiv:
                 case OpCodeValue.frem:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 case OpCodeValue.castore:
                 case OpCodeValue.iastore:
                 case OpCodeValue.fastore:
                 case OpCodeValue.sastore:
-                    stack.Pop(3);
+                    state.Pop(3);
                     break;
                 case OpCodeValue.lastore:
                 case OpCodeValue.dastore:
-                    stack.Pop(4);
+                    state.Pop(4);
                     break;
                 case OpCodeValue.dup2:
-                    if (stack[stack.Count - 1] != null)
+                    if (state.Peek() != null)
                     {
-                        var value1 = stack.Pop1();
-                        var value2 = stack.Pop1();
+                        var value1 = state.Pop1();
+                        var value2 = state.Pop1();
 
-                        stack.Push(value2);
-                        stack.Push(value1);
-                        stack.Push(value2);
-                        stack.Push(value1);
+                        state.Push(value2);
+                        state.Push(value1);
+                        state.Push(value2);
+                        state.Push(value1);
                     }
                     else
                     {
-                        var value = stack.Pop2();
+                        var value = state.Pop2();
 
-                        stack.Push(value);
-                        stack.Push(value);
+                        state.Push(value);
+                        state.Push(value);
                     }
                     break;
                 case OpCodeValue.dup2_x1:
-                    if (stack[stack.Count - 1] != null)
+                    if (state.Peek() != null)
                     {
-                        var value1 = stack.Pop1();
-                        var value2 = stack.Pop1();
-                        var value3 = stack.Pop1();
+                        var value1 = state.Pop1();
+                        var value2 = state.Pop1();
+                        var value3 = state.Pop1();
 
-                        stack.Push(value2);
-                        stack.Push(value1);
-                        stack.Push(value3);
-                        stack.Push(value2);
-                        stack.Push(value1);
+                        state.Push(value2);
+                        state.Push(value1);
+                        state.Push(value3);
+                        state.Push(value2);
+                        state.Push(value1);
                     }
                     else
                     {
-                        var value1 = stack.Pop2();
-                        var value2 = stack.Pop1();
+                        var value1 = state.Pop2();
+                        var value2 = state.Pop1();
 
-                        stack.Push(value1);
-                        stack.Push(value2);
-                        stack.Push(value1);
+                        state.Push(value1);
+                        state.Push(value2);
+                        state.Push(value1);
                     }
                     break;
                 case OpCodeValue.dup2_x2:
-                    if (stack[stack.Count - 1] != null)
+                    if (state.Peek() != null)
                     {
-                        var value1 = stack.Pop1();
-                        var value2 = stack.Pop1();
+                        var value1 = state.Pop1();
+                        var value2 = state.Pop1();
 
-                        if (stack[stack.Count - 1] != null)
+                        if (state.Peek() != null)
                         {
                             // form 1
-                            var value3 = stack.Pop1();
-                            var value4 = stack.Pop1();
+                            var value3 = state.Pop1();
+                            var value4 = state.Pop1();
 
-                            stack.Push(value2);
-                            stack.Push(value1);
-                            stack.Push(value4);
-                            stack.Push(value3);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value2);
+                            state.Push(value1);
+                            state.Push(value4);
+                            state.Push(value3);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                         else
                         {
                             // form 3
-                            var value3 = stack.Pop2();
+                            var value3 = state.Pop2();
 
-                            stack.Push(value2);
-                            stack.Push(value1);
-                            stack.Push(value3);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value2);
+                            state.Push(value1);
+                            state.Push(value3);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                     }
                     else
                     {
-                        var value1 = stack.Pop2();
+                        var value1 = state.Pop2();
 
-                        if (stack[stack.Count - 1] != null)
+                        if (state.Peek() != null)
                         {
                             // form 2
-                            var value2 = stack.Pop1();
-                            var value3 = stack.Pop1();
+                            var value2 = state.Pop1();
+                            var value3 = state.Pop1();
 
-                            stack.Push(value1);
-                            stack.Push(value3);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value1);
+                            state.Push(value3);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                         else
                         {
                             // form 4
-                            var value2 = stack.Pop2();
+                            var value2 = state.Pop2();
 
-                            stack.Push(value1);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value1);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                     }
                     break;
                 case OpCodeValue.dup_x2:
                     {
-                        var value1 = stack.Pop1();
+                        var value1 = state.Pop1();
 
-                        if (stack[stack.Count - 1] != null)
+                        if (state.Peek() != null)
                         {
                             // form 1
-                            var value2 = stack.Pop1();
-                            var value3 = stack.Pop1();
+                            var value2 = state.Pop1();
+                            var value3 = state.Pop1();
 
-                            stack.Push(value1);
-                            stack.Push(value3);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value1);
+                            state.Push(value3);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                         else
                         {
                             // form 2
-                            var value2 = stack.Pop2();
+                            var value2 = state.Pop2();
 
-                            stack.Push(value1);
-                            stack.Push(value2);
-                            stack.Push(value1);
+                            state.Push(value1);
+                            state.Push(value2);
+                            state.Push(value1);
                         }
                     }
                     break;
                 case OpCodeValue.fcmpl:
                 case OpCodeValue.fcmpg:
-                    stack.Pop(2);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(2);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.dcmpl:
                 case OpCodeValue.dcmpg:
-                    stack.Pop(4);
-                    stack.Push(PrimativeTypes.Int);
+                    state.Pop(4);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.swap:
                     {
-                        Type value1 = stack.Pop1();
-                        Type value2 = stack.Pop1();
-                        stack.Push(value1);
-                        stack.Push(value2);
+                        Type value1 = state.Pop1();
+                        Type value2 = state.Pop1();
+                        state.Push(value1);
+                        state.Push(value2);
                         break;
                     }
                 case OpCodeValue.dadd:
@@ -996,7 +1101,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.dmul:
                 case OpCodeValue.ddiv:
                 case OpCodeValue.drem:
-                    stack.Pop(2);
+                    state.Pop(2);
                     break;
                 case OpCodeValue.ret:
                     MarkDead();
@@ -1006,7 +1111,7 @@ namespace JavaCompiler.Compilation.ByteCode
                     return;
                 case OpCodeValue.monitorenter:
                 case OpCodeValue.monitorexit:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -1017,10 +1122,10 @@ namespace JavaCompiler.Compilation.ByteCode
             switch (opcode)
             {
                 case OpCodeValue.bipush:
-                    stack.Push(PrimativeTypes.Int);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.ldc:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
+                    state.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
                     break;
                 default:
                     throw new NotImplementedException();
@@ -1032,34 +1137,7 @@ namespace JavaCompiler.Compilation.ByteCode
             {
                 case OpCodeValue.@new:
                 case OpCodeValue.sipush:
-                    stack.Push(PrimativeTypes.Int);
-                    break;
-                case OpCodeValue.ldc2_w:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
-                    break;
-                case OpCodeValue.instanceof:
-                    stack.Pop(1);
-                    stack.Push(PrimativeTypes.Int);
-                    break;
-                case OpCodeValue.ldc_w:
-                    stack.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
-        }
-
-        private void UpdateStackBranch(OpCodeValue opcode, bool kill)
-        {
-            switch (opcode)
-            {
-                case OpCodeValue.@goto:
-                case OpCodeValue.goto_w:
-                    if (kill) MarkDead();
-                    break;
-                case OpCodeValue.jsr:
-                case OpCodeValue.jsr_w:
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.ifnull:
                 case OpCodeValue.ifnonnull:
@@ -1069,7 +1147,7 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.ifge:
                 case OpCodeValue.ifgt:
                 case OpCodeValue.ifle:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 case OpCodeValue.if_icmpeq:
                 case OpCodeValue.if_icmpne:
@@ -1079,39 +1157,56 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.if_icmple:
                 case OpCodeValue.if_acmpeq:
                 case OpCodeValue.if_acmpne:
-                    stack.Pop(2);
+                    state.Pop(2);
+                    break;
+                case OpCodeValue.@goto:
+                    MarkDead();
+                    break;
+                case OpCodeValue.ldc2_w:
+                    state.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
+                    break;
+                case OpCodeValue.instanceof:
+                    state.Pop(1);
+                    state.Push(PrimativeTypes.Int);
+                    break;
+                case OpCodeValue.ldc_w:
+                    state.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
+                    break;
+                case OpCodeValue.jsr:
                     break;
                 default:
                     throw new NotImplementedException();
             }
+
         }
+
         private void UpdateStackWide(OpCodeValue opcode, int s)
         {
             switch (opcode)
             {
                 case OpCodeValue.iload:
-                    stack.Push(PrimativeTypes.Int);
+                    state.Push(PrimativeTypes.Int);
                     break;
                 case OpCodeValue.lload:
-                    stack.Push(PrimativeTypes.Long);
+                    state.Push(PrimativeTypes.Long);
                     break;
                 case OpCodeValue.fload:
-                    stack.Push(PrimativeTypes.Float);
+                    state.Push(PrimativeTypes.Float);
                     break;
                 case OpCodeValue.dload:
-                    stack.Push(PrimativeTypes.Double);
+                    state.Push(PrimativeTypes.Double);
                     break;
                 case OpCodeValue.aload:
-                    stack.Push(GetVariable(s).Type);
+                    state.Push(GetVariable(s).Type);
                     break;
                 case OpCodeValue.lstore:
                 case OpCodeValue.dstore:
-                    stack.Pop(2);
+                    state.Pop(2);
                     break;
                 case OpCodeValue.istore:
                 case OpCodeValue.fstore:
                 case OpCodeValue.astore:
-                    stack.Pop(1);
+                    state.Pop(1);
                     break;
                 case OpCodeValue.ret:
                     MarkDead();
@@ -1191,7 +1286,7 @@ namespace JavaCompiler.Compilation.ByteCode
             var stackCount = 0;
             for (var i = 0; i < stackCount; i++)
             {
-                if (stack[i] != null)
+                if (state.GetStack(i) != null)
                 {
                     stackCount++;
                 }
@@ -1201,9 +1296,9 @@ namespace JavaCompiler.Compilation.ByteCode
             stackCount = 0;
             for (var i = 0; i < stackCount; i++)
             {
-                if (stack[i] != null)
+                if (state.GetStack(i) != null)
                 {
-                    frame.Stack[stackCount++] = stack[i];
+                    frame.Stack[stackCount++] = state.GetStack(i);
                 }
             }
 
@@ -1322,6 +1417,25 @@ namespace JavaCompiler.Compilation.ByteCode
         {
             aliveState.Push(alive);
             alive = false;
+        }
+
+        public int EntryPoint()
+        {
+            var pc = CurrentPC();
+
+            alive = true;
+            pendingStackMap = true;
+
+            return pc;
+        }
+
+        public int CurrentPC()
+        {
+            if (pendingJumps != null) ResolvePendingJumps();
+
+            fixedPc = true;
+
+            return length;
         }
     }
 }

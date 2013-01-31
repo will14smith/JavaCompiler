@@ -32,7 +32,7 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
             }
             else if (node is IfNode)
             {
-                item = new IfCompiler(node as IfNode).Compile(generator);
+                new IfCompiler(node as IfNode).Compile(generator);
             }
             else if (node is ForNode)
             {

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using JavaCompiler.Translators.Methods.Tree.BlockStatements;
+﻿using JavaCompiler.Translators.Methods.Tree.BlockStatements;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Translators.Methods.Tree.Statements
@@ -10,6 +9,6 @@ namespace JavaCompiler.Translators.Methods.Tree.Statements
         public TranslateNode Condition { get; set; }
         public MethodTree Updater { get; set; }
 
-        public MethodTreeNode Statement { get; set; }
+        public MethodTreeNode Body { get; set; }
     }
 }

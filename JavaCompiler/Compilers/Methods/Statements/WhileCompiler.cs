@@ -1,5 +1,4 @@
 ﻿using JavaCompiler.Compilation.ByteCode;
-using JavaCompiler.Compilers.Items;
 using JavaCompiler.Compilers.Methods.BlockStatements;
 using JavaCompiler.Translators.Methods.Tree.Statements;
 
@@ -15,22 +14,24 @@ namespace JavaCompiler.Compilers.Methods.Statements
 
         public void Compile(ByteCodeGenerator generator)
         {
-            var startOfWhile = generator.MarkLabel();
+            var start = generator.EntryPoint();
 
             // Test Condition
-            var condItem = new ConditionCompiler(node.Expression).Compile(generator);
-            var endOfWhile = condItem.JumpFalse();
+            var item = new ConditionCompiler(node.Expression).Compile(generator);
+            var loopDone = item.JumpFalse();
+
+            generator.ResolveChain(item.TrueJumps);
 
             // Run Body
             generator.PushScope();
 
             new StatementCompiler(node.Statement).Compile(generator);
-            generator.Emit(OpCodeValue.@goto, startOfWhile);
+            generator.ResolveChain(generator.Branch(OpCodeValue.@goto), start);
 
             generator.PopScope();
 
             // End
-            generator.MarkLabel(endOfWhile);
+            generator.ResolveChain(loopDone);
         }
     }
 }

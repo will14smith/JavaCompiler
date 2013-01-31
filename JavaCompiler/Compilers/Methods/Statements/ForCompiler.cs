@@ -16,21 +16,24 @@ namespace JavaCompiler.Compilers.Methods.Statements
 
         public void Compile(ByteCodeGenerator generator)
         {
-
             generator.PushScope();
+
+            var start = generator.CurrentPC();
             new StatementCompiler(node.Initialiser).Compile(generator);
 
-            var startOfFor = generator.MarkLabel();
-            var condition = new ConditionCompiler(node.Condition).Compile(generator);
-            var falseLabel = condition.JumpFalse();
+            var item = new ConditionCompiler(node.Condition).Compile(generator);
+            var loopDone = item.JumpFalse();
 
-            new StatementCompiler(node.Statement).Compile(generator);
+            generator.ResolveChain(item.TrueJumps);
 
+            new StatementCompiler(node.Body).Compile(generator);
             new StatementCompiler(node.Updater).Compile(generator);
-            generator.Emit(OpCodeValue.@goto, startOfFor);
+
+            generator.ResolveChain(generator.Branch(OpCodeValue.@goto), start);
+
             generator.PopScope();
 
-            generator.MarkLabel(falseLabel);
+            generator.ResolveChain(loopDone);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace JavaCompiler.Translators.Methods.Statements
                 Condition = WalkCond(node.GetChild(1)),
                 Updater = WalkUpdater(node.GetChild(2)),
 
-                Statement = new StatementTranslator(node.GetChild(3)).Walk()
+                Body = new StatementTranslator(node.GetChild(3)).Walk()
             };
 
         }

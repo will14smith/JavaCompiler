@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
 using JavaCompiler.Utilities;
@@ -75,7 +76,7 @@ namespace JavaCompiler.Compilation.ByteCode
             Pop(TypeCodeHelper.Width(type));
         }
 
-        private readonly Stack<Type[]> stackScope = new Stack<Type[]>();
+        private Stack<Type[]> stackScope = new Stack<Type[]>();
         public void PushScope()
         {
             var newArray = array.Clone() as Type[];
@@ -91,6 +92,19 @@ namespace JavaCompiler.Compilation.ByteCode
 
             array = oldArray;
             version++;
+        }
+
+        public TypeStack Clone()
+        {
+            var stack = new TypeStack
+            {
+                array = (Type[])array.Clone(),
+                MaxStack = MaxStack,
+                stackScope = new Stack<Type[]>(stackScope.Reverse()),
+                version = version,
+                Count = Count
+            };
+            return stack;
         }
     }
 }

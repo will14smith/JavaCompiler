@@ -13,30 +13,33 @@ namespace JavaCompiler.Compilers.Methods.Statements
             this.node = node;
         }
 
-        public Item Compile(ByteCodeGenerator generator)
+        public void Compile(ByteCodeGenerator generator)
         {
-            var endOfIf = generator.DefineLabel();
-
             var item = new ConditionCompiler(node.Condition).Compile(generator);
-            var falseLabel = item.JumpFalse();
+            var elseChain = item.JumpFalse();
 
-            generator.PushScope();
-            new StatementCompiler(node.TrueBranch).Compile(generator);
-            generator.Emit(OpCodeValue.@goto, endOfIf);
-            generator.PopScope();
-
-            generator.MarkLabel(falseLabel);
-
-            if (node.FalseBranch != null)
+            Chain thenExit = null;
+            if (!item.IsFalse())
             {
+                generator.ResolveChain(item.TrueJumps);
+
+                generator.PushScope();
+
+                new StatementCompiler(node.TrueBranch).Compile(generator);
+                thenExit = generator.Branch(OpCodeValue.@goto);
+
+                generator.PopScope();
+            }
+            if (elseChain != null)
+            {
+                generator.ResolveChain(elseChain);
+
                 generator.PushScope();
                 new StatementCompiler(node.FalseBranch).Compile(generator);
                 generator.PopScope();
             }
 
-            generator.MarkLabel(endOfIf);
-
-            return null;
+            generator.ResolveChain(thenExit);
         }
     }
 }
