@@ -191,6 +191,7 @@
     <Compile Include="Translators\Methods\Expressions\ExpressionTranslator.cs" />
     <Compile Include="Translators\Methods\BlockStatements\StatementTranslator.cs" />
     <Compile Include="Translators\Methods\TranslationTranslator.cs" />
+    <Compile Include="Translators\Methods\Tree\Expressions\BinaryNode.cs" />
     <Compile Include="Translators\Methods\Tree\Expressions\TranslateNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\AssertNode.cs" />
     <Compile Include="Translators\Methods\Tree\Statements\BreakNode.cs" />

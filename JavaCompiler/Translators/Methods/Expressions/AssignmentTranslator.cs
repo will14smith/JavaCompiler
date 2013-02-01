@@ -19,24 +19,26 @@ namespace JavaCompiler.Translators.Methods.Expressions
 
         public AssignmentNode Walk()
         {
-            PrimaryNode key = new PrimaryTranslator(node.GetChild(0)).Walk();
-            TranslateNode value;
+            var key = new PrimaryTranslator(node.GetChild(0)).Walk();
+            var value = new TranslationTranslator(node.GetChild(1)).Walk();
 
-            ITree child = node.GetChild(1);
             switch ((JavaNodeType)node.Type)
             {
                 case JavaNodeType.ASSIGN:
-                    value = new TranslationTranslator(child).Walk();
-                    break;
+                    return new AssignmentNode.NormalAssignNode { Left = key, Right = value };
+                case JavaNodeType.PLUS_ASSIGN:
+                    return new AssignmentNode.AddAssignNode { Left = key, Right = value };
+                case JavaNodeType.MINUS_ASSIGN:
+                    return new AssignmentNode.MinusAssignNode { Left = key, Right = value };
+                case JavaNodeType.STAR_ASSIGN:
+                    return new AssignmentNode.MultiplyAssignNode { Left = key, Right = value };
+                case JavaNodeType.DIV_ASSIGN:
+                    return new AssignmentNode.DivideAssignNode { Left = key, Right = value };
+                case JavaNodeType.MOD_ASSIGN:
+                    return new AssignmentNode.ModAssignNode { Left = key, Right = value };
                 default:
                     throw new NotImplementedException();
             }
-
-            return new AssignmentNode
-            {
-                Left = key,
-                Right = value
-            };
         }
     }
 }

@@ -21,8 +21,8 @@ namespace JavaCompiler.Compilers.Methods.BlockStatements
 
             if (node.Initialiser != null)
             {
-                var assign = new AssignmentCompiler(
-                    new AssignmentNode
+                new AssignmentCompiler(
+                    new AssignmentNode.NormalAssignNode
                     {
                         Left = new PrimaryNode.TermIdentifierExpression { Identifier = node.Name },
                         Right = new TranslateNode { Child = node.Initialiser }

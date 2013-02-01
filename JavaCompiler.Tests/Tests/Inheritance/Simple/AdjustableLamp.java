@@ -18,7 +18,7 @@
 	}
 
 	public String toString() {
-		return “AdjustableLamp("
+		return "AdjustableLamp("
 			+ (isOn ? "on" : "off")
 			+ ", " + brightness + ")";
 	}

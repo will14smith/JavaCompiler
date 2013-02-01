@@ -3,8 +3,8 @@
 		AdjustableLamp lamp = new AdjustableLamp(true);
 		System.out.println(lamp);
 
-		lamp.dim();
 		lamp.pressSwitch();
+		lamp.dim();
 
 		System.out.println(lamp);
 	}

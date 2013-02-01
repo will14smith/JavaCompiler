@@ -14,7 +14,7 @@ namespace JavaCompiler.Tests
             return Run(folder, className, args);
         }
 
-        protected void Compile(string filePath)
+        protected static void Compile(string filePath)
         {
             var directory = Path.GetDirectoryName(filePath);
             var fileName = Path.GetFileNameWithoutExtension(filePath);

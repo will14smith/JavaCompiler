@@ -10,13 +10,6 @@ namespace JavaCompiler.Reflection
     {
         public static Type FindCommonType(this Type c1, Type c2)
         {
-            if (!(c1.IsAssignableTo(c2) || c2.CanAssignFrom(c1)))
-            {
-                // No EASY common type found
-                // will have to search superclasses
-                return null;
-            }
-
             if (c1.IsAssignableTo(c2))
             {
                 return c2;
@@ -26,6 +19,8 @@ namespace JavaCompiler.Reflection
                 return c1;
             }
 
+            // No EASY common type found
+            // will have to look harder??
             return null;
         }
 

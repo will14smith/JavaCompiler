@@ -16,7 +16,11 @@ namespace JavaCompiler.Compilation.ByteCode
         }
 
         public int StackSize { get { return stack.Count; } }
-        public short MaxStackSize { get { return (short)stack.MaxStack; } }
+        public short MaxStackSize
+        {
+            get { return (short)stack.MaxStack; }
+            set { stack.MaxStack = value; }
+        }
 
         public State Clone()
         {
@@ -33,6 +37,10 @@ namespace JavaCompiler.Compilation.ByteCode
         public Type Peek()
         {
             return stack.Peek();
+        }
+        public Type Peek(int n)
+        {
+            return stack.Peek(n);
         }
         public Type Pop1()
         {

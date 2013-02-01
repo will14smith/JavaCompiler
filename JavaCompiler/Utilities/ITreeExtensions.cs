@@ -133,6 +133,7 @@ namespace JavaCompiler.Utilities
             return
                 child.Type == (int)JavaNodeType.IDENT ||
                 child.Type == (int)JavaNodeType.PARENTESIZED_EXPR ||
+                child.Type == (int)JavaNodeType.SUPER ||
                 child.Type == (int)JavaNodeType.SUPER_CONSTRUCTOR_CALL ||
                 child.Type == (int)JavaNodeType.ARRAY_ELEMENT_ACCESS ||
                 child.Type == (int)JavaNodeType.METHOD_CALL ||

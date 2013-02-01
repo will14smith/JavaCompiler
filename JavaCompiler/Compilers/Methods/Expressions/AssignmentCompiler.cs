@@ -1,6 +1,10 @@
-﻿using JavaCompiler.Compilation.ByteCode;
+﻿using System;
+using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
+using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Loaders;
+using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -16,11 +20,73 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            Item lhs = new ExpressionCompiler(node.Left).Compile(generator);
+            if (node is AssignmentNode.NormalAssignNode)
+            {
+                return CompileAssign(generator);
+            }
+            return CompileAssignOp(generator);
+        }
 
+        private Item CompileAssign(ByteCodeGenerator generator)
+        {
+            var lhs = new ExpressionCompiler(node.Left).Compile(generator);
             var type = ClassLocator.Find(lhs.Type, generator.Manager.Imports);
 
             new TranslationCompiler(node.Right, type).Compile(generator).Load();
+
+            return new AssignItem(generator, lhs);
+        }
+        private Item CompileAssignOp(ByteCodeGenerator generator)
+        {
+            generator.Kill();
+            var lType = new TranslationCompiler(new TranslateNode { Child = node.Left }).GetType(generator, false);
+            var rType = new TranslationCompiler(node.Right).GetType(generator, false);
+            generator.Revive();
+
+            var type = lType.FindCommonType(rType);
+
+            Item lhs;
+            if (lType.Name == "java.lang.String")
+            {
+                var sb = ClassLocator.Find(new PlaceholderType { Name = "java.lang.StringBuilder" }, generator.Manager.Imports) as Class;
+                if (sb == null) throw new InvalidOperationException();
+
+                AdditiveCompiler.MakeStringBuffer(generator, sb);
+
+                lhs = new ExpressionCompiler(node.Left).Compile(generator);
+                if (lhs.Width() > 0)
+                {
+                    generator.Emit(OpCodeValue.dup_x1 + (byte)(3 * (lhs.Width() - 1)));
+                }
+
+                lhs.Load();
+
+                AdditiveCompiler.AppendStrings(generator, sb, node.Left);
+                AdditiveCompiler.AppendStrings(generator, sb, node.Right.Child);
+
+                AdditiveCompiler.BufferToString(generator, sb);
+            }
+            else
+            {
+                lhs = new ExpressionCompiler(node.Left).Compile(generator);
+                lhs.Duplicate();
+
+                lhs.Coerce(type).Load();
+
+                new TranslationCompiler(node.Right, type).Compile(generator).Load();
+                if (node is AssignmentNode.AddAssignNode)
+                {
+                    AdditiveCompiler.CompileAddition(generator, type);
+                }
+                else if (node is AssignmentNode.MinusAssignNode)
+                {
+                    AdditiveCompiler.CompileSubtraction(generator, type);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
 
             return new AssignItem(generator, lhs);
         }

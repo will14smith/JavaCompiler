@@ -2,6 +2,7 @@
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
+using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
@@ -30,7 +31,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Store()
         {
-            var field = (Field) member;
+            var field = (Field)member;
             short index = Generator.Manager.AddConstantFieldref(field);
 
             Generator.EmitPutfield(index, field);
@@ -63,7 +64,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Duplicate()
         {
-            TypeCodeHelper.StackItem(Generator, Type).Duplicate();
+            TypeCodeHelper.StackItem(Generator, new PlaceholderType { Name = "java.lang.Object" }).Duplicate();
         }
 
         public override void Drop()

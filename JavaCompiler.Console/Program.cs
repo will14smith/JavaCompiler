@@ -15,7 +15,9 @@ namespace JavaCompiler.Console
 
             CompileFile("Tests\\Lamp.java");
             CompileFile("Tests\\AdjustableLamp.java");
-            //CompileFile("Tests\\Simple1.java");
+            CompileFile("Tests\\Simple1.java");
+            //CompileFile("Tests\\Simple2.java");
+            //CompileFile("Tests\\Simple3.java");
             
             /*var files = Directory.GetFiles("Tests", "*.java", SearchOption.AllDirectories);
 

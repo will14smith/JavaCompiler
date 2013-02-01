@@ -11,7 +11,7 @@ namespace JavaCompiler.Compilation.ByteCode
 {
     class TypeStack : StackList<Type>
     {
-        public int MaxStack { get; private set; }
+        public int MaxStack { get; internal set; }
 
         public override void Push(Type type)
         {
@@ -105,6 +105,11 @@ namespace JavaCompiler.Compilation.ByteCode
                 Count = Count
             };
             return stack;
+        }
+
+        public Type Peek(int i)
+        {
+            return Count - i < 0 ? null : array[Count - i];
         }
     }
 }

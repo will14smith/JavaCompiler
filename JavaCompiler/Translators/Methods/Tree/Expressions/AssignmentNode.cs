@@ -1,8 +1,52 @@
 ﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    public class AssignmentNode : ExpressionNode
+    public abstract class AssignmentNode : ExpressionNode
     {
         public PrimaryNode Left { get; set; }
         public TranslateNode Right { get; set; }
+
+        public class NormalAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " = " + Right;
+            }
+        }
+
+        public class AddAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " += " + Right;
+            }
+        }
+        public class MinusAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " -= " + Right;
+            }
+        }
+        public class MultiplyAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " *= " + Right;
+            }
+        }
+        public class DivideAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " /= " + Right;
+            }
+        }
+        public class ModAssignNode : AssignmentNode
+        {
+            public override string ToString()
+            {
+                return Left + " %= " + Right;
+            }
+        }
     }
 }

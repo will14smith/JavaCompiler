@@ -1,4 +1,4 @@
-﻿public class Simple1 {
+﻿public class Simple3 {
 	public static void main(String[] args) {
 		Lamp l = new AdjustableLamp(true);
 		System.out.println(l);

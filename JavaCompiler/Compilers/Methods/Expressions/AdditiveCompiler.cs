@@ -49,7 +49,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             return CompileString(generator);
         }
 
-        private static void CompileAddition(ByteCodeGenerator generator, Type type)
+        internal static void CompileAddition(ByteCodeGenerator generator, Type type)
         {
             var typeCode = TypeCodeHelper.Truncate(PrimativeTypes.TypeCode(type));
 
@@ -71,7 +71,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                     throw new InvalidOperationException();
             }
         }
-        private static void CompileSubtraction(ByteCodeGenerator generator, Type type)
+        internal static void CompileSubtraction(ByteCodeGenerator generator, Type type)
         {
             var typeCode = TypeCodeHelper.Truncate(PrimativeTypes.TypeCode(type));
 
@@ -107,7 +107,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             return new StackItem(generator, new PlaceholderType { Name = "java.lang.String" });
         }
 
-        private static void MakeStringBuffer(ByteCodeGenerator generator, Class sb)
+        public static void MakeStringBuffer(ByteCodeGenerator generator, Class sb)
         {
             var sbInit = (Method)sb.Constructors.First(x => x.Parameters.Count == 0);
 
@@ -118,7 +118,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             new MemberItem(generator, sbInit, true).Invoke();
         }
-        private static void AppendStrings(ByteCodeGenerator generator, DefinedType sb, ExpressionNode node)
+        public static void AppendStrings(ByteCodeGenerator generator, DefinedType sb, ExpressionNode node)
         {
             if (node is AdditiveNode)
             {
@@ -145,7 +145,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             item.Load();
             new MemberItem(generator, appendMethod, false).Invoke();
         }
-        private static void BufferToString(ByteCodeGenerator generator, DefinedType sb)
+        public static void BufferToString(ByteCodeGenerator generator, DefinedType sb)
         {
             var toString = sb.FindMethod(generator, "toString", null);
             if (toString == null) throw new InvalidOperationException();

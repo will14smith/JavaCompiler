@@ -1,10 +1,7 @@
 ﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    public abstract class AdditiveNode : ExpressionNode
+    public abstract class AdditiveNode : BinaryNode
     {
-        public TranslateNode LeftChild { get; set; }
-        public TranslateNode RightChild { get; set; }
-
         #region Nested type: AdditiveMinusNode
 
         public class AdditiveMinusNode : AdditiveNode

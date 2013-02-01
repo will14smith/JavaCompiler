@@ -395,7 +395,7 @@ namespace JavaCompiler.Compilation.ByteCode
             state.Pop(argsize);
 
             //TODO: if (method.Name == "<init>")
-            //    state.markInitialized((UninitializedType)state.peek());
+            //    state.markInitialized((UninitializedType)state.Peek());
 
             state.Pop(1);
             state.Push(method.ReturnType);
@@ -625,6 +625,8 @@ namespace JavaCompiler.Compilation.ByteCode
             Debug.Assert(!changed || state != newState);
             if (state == newState) return;
 
+            newState.MaxStackSize = Math.Max(newState.MaxStackSize, state.MaxStackSize);
+
             state = newState;
             pendingStackMap = true;
         }
@@ -644,9 +646,13 @@ namespace JavaCompiler.Compilation.ByteCode
 
             Debug.Assert(chain1.State.StackSize == chain2.State.StackSize);
 
-            return chain1.PC < chain2.PC
+            var chain = chain1.PC < chain2.PC
                 ? new Chain(chain2.PC, MergeChains(chain1, chain2.Next), chain2.State)
                 : new Chain(chain1.PC, MergeChains(chain1.Next, chain2), chain1.State);
+
+            chain.State.MaxStackSize = Math.Max(chain1.State.MaxStackSize, chain2.State.MaxStackSize);
+
+            return chain;
         }
         #endregion
 
@@ -1284,7 +1290,7 @@ namespace JavaCompiler.Compilation.ByteCode
             }
 
             var stackCount = 0;
-            for (var i = 0; i < stackCount; i++)
+            for (var i = 0; i < state.StackSize; i++)
             {
                 if (state.GetStack(i) != null)
                 {
@@ -1294,7 +1300,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
             frame.Stack = new Type[stackCount];
             stackCount = 0;
-            for (var i = 0; i < stackCount; i++)
+            for (var i = 0; i < state.StackSize; i++)
             {
                 if (state.GetStack(i) != null)
                 {

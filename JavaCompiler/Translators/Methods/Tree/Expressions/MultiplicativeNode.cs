@@ -1,10 +1,7 @@
 ﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    public abstract class MultiplicativeNode : ExpressionNode
+    public abstract class MultiplicativeNode : BinaryNode
     {
-        public TranslateNode LeftChild { get; set; }
-        public TranslateNode RightChild { get; set; }
-
         #region Nested type: MultiplicativeDivideNode
 
         public class MultiplicativeDivideNode : MultiplicativeNode

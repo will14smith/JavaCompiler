@@ -34,9 +34,12 @@ namespace JavaCompiler.Compilers.Methods.Statements
             {
                 generator.ResolveChain(elseChain);
 
-                generator.PushScope();
-                new StatementCompiler(node.FalseBranch).Compile(generator);
-                generator.PopScope();
+                if (node.FalseBranch != null)
+                {
+                    generator.PushScope();
+                    new StatementCompiler(node.FalseBranch).Compile(generator);
+                    generator.PopScope();
+                }
             }
 
             generator.ResolveChain(thenExit);

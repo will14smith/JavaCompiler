@@ -178,9 +178,15 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 new TranslationCompiler(arg.src, arg.dst.Type).Compile(generator).Load();
             }
 
+            var isSuper = false;
+            if (generator.Method.DeclaringType is Class)
+            {
+                isSuper = parentType == ((Class)generator.Method.DeclaringType).Super;
+            }
+
             var item = method.Modifiers.HasFlag(Modifier.Static)
                ? (Item)new StaticItem(generator, method)
-               : new MemberItem(generator, method, method.Name == "<init>");
+               : new MemberItem(generator, method, method.Name == "<init>" || isSuper);
 
             return item.Invoke();
         }
