@@ -43,6 +43,10 @@ namespace JavaCompiler.Compilers.Items
             {
                 Generator.Emit((OpCodeValue)((byte)OpCodeValue.istore_0 + (byte)TypeCodeHelper.Truncate(TypeCode) * 4 + reg));
             }
+            else if(reg <= 255)
+            {
+                Generator.Emit(OpCodeValue.istore + (byte)TypeCodeHelper.Truncate(TypeCode), (byte) reg);
+            }
             else
             {
                 Generator.Emit(OpCodeValue.istore + (byte)TypeCodeHelper.Truncate(TypeCode), reg);

@@ -1,8 +1,17 @@
-﻿namespace JavaCompiler.Translators.Methods.Tree.Expressions
+﻿using JavaCompiler.Compilation;
+using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
+
+namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
-    public class UnaryNode : ExpressionNode
+    public abstract class UnaryNode : ExpressionNode
     {
         public TranslateNode Child { get; set; }
+
+        public override Type GetType(ByteCodeGenerator manager)
+        {
+            return Child.GetType(manager, false, true);
+        }
 
         public class PlusNode : UnaryNode
         {

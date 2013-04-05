@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr.Runtime.Tree;
+using JavaCompiler.Compilation;
+using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
+using Type = JavaCompiler.Reflection.Types.Type;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
@@ -24,6 +29,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return Value.ToString();
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Boolean;
+            }
         }
 
         #endregion
@@ -38,6 +48,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return Value.ToString();
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Char;
+            }
         }
 
         #endregion
@@ -46,6 +61,10 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         public class TermClassLiteralExpression : PrimaryNode
         {
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         #endregion
@@ -73,12 +92,18 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
                 return (IsSuper ? "super" : "this") + "(" + arguments + ")";
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Void;
+            }
         }
 
         #endregion
 
         #region Nested type: TermDecimalLiteralExpression
 
+        //TODO: Is int correct??
         public class TermDecimalLiteralExpression : PrimaryNode
         {
             public int Value { get; set; }
@@ -86,6 +111,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             public override string ToString()
             {
                 return Value.ToString();
+            }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Int;
             }
         }
 
@@ -101,6 +131,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return Child + "." + SecondChild;
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         #endregion
@@ -114,6 +149,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             public override string ToString()
             {
                 return Value.ToString();
+            }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Float;
             }
         }
 
@@ -138,6 +178,19 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return Identifier;
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                var variable = manager.GetVariable(Identifier);
+                var field = manager.Method.DeclaringType.Fields.FirstOrDefault(x => x.Name == Identifier);
+
+                if (variable == null && field == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return variable == null ? field.ReturnType : variable.Type;
+            }
         }
 
         #endregion
@@ -151,6 +204,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             public override string ToString()
             {
                 return string.Format("{0}[{1}]", Child, Index);
+            }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                throw new System.NotImplementedException();
             }
         }
 
@@ -176,6 +234,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return Identifier;
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         #endregion
@@ -187,6 +250,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             public override string ToString()
             {
                 return "null";
+            }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return BuiltinTypes.Null;
             }
         }
 
@@ -202,6 +270,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return string.Format("\"{0}\"", Value);
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return BuiltinTypes.String;
+            }
         }
 
         #endregion
@@ -214,6 +287,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             {
                 return "super";
             }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return BuiltinTypes.Super;
+            }
         }
 
         #endregion
@@ -225,6 +303,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
             public override string ToString()
             {
                 return "this";
+            }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return BuiltinTypes.This;
             }
         }
 

@@ -13,6 +13,7 @@ namespace JavaCompiler.Console
         {
             //ConvertJar(@"C:\Program Files\Java\jre7\lib\rt.jar");
 
+            CompileFile("Tests\\Boxing.java");
             CompileFile("Tests\\Lamp.java");
             CompileFile("Tests\\AdjustableLamp.java");
             CompileFile("Tests\\Simple1.java");

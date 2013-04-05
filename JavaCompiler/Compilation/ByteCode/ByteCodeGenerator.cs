@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
+using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
 using Array = System.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
@@ -83,6 +83,8 @@ namespace JavaCompiler.Compilation.ByteCode
         {
             if (variableCount >= variableList.Length)
                 throw new StackOverflowException("Cannot define any more local variables!");
+
+            type = ClassLocator.Find(type, Manager.Imports);
 
             short index = FindFreeVariableIndex();
 
@@ -701,7 +703,7 @@ namespace JavaCompiler.Compilation.ByteCode
 
                         //sometimes 'null type' is treated as a one-dimensional array type
                         //see Gen.visitLiteral - we should handle this case OpCodeValue.OpCodeValue.accordingly
-                        var stackType = a == PrimativeTypes.Void ? new PlaceholderType { Name = "java.lang.Object" } : a;
+                        var stackType = a == PrimativeTypes.Void ? BuiltinTypes.Object : a;
                         state.Push(stackType);
                     }
                     break;
@@ -1133,6 +1135,15 @@ namespace JavaCompiler.Compilation.ByteCode
                 case OpCodeValue.ldc:
                     state.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
                     break;
+                case OpCodeValue.lstore:
+                case OpCodeValue.dstore:
+                    state.Pop(2);
+                    break;
+                case OpCodeValue.istore:
+                case OpCodeValue.fstore:
+                case OpCodeValue.astore:
+                    state.Pop(1);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -1179,6 +1190,15 @@ namespace JavaCompiler.Compilation.ByteCode
                     state.Push(TypeForConstant(Manager.ConstantPool[s - 1]));
                     break;
                 case OpCodeValue.jsr:
+                    break;
+                case OpCodeValue.lstore:
+                case OpCodeValue.dstore:
+                    state.Pop(2);
+                    break;
+                case OpCodeValue.istore:
+                case OpCodeValue.fstore:
+                case OpCodeValue.astore:
+                    state.Pop(1);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -1230,7 +1250,7 @@ namespace JavaCompiler.Compilation.ByteCode
         {
             if (constant is CompileConstantInteger) return PrimativeTypes.Int;
             if (constant is CompileConstantFloat) return PrimativeTypes.Float;
-            if (constant is CompileConstantString) return new PlaceholderType { Name = "java.lang.String" };
+            if (constant is CompileConstantString) return BuiltinTypes.String;
             if (constant is CompileConstantLong) return PrimativeTypes.Long;
             if (constant is CompileConstantDouble) return PrimativeTypes.Double;
 

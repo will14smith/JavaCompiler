@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JavaCompiler.Reflection.Types.Internal;
 using Array = JavaCompiler.Reflection.Types.Array;
@@ -13,7 +13,7 @@ namespace JavaCompiler.Reflection.Loaders
 
         static ClassLocator()
         {
-            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt.jar" };
+            SearchPaths = new List<string> { @"C:\Program Files\Java\jre7\lib\rt.jar", @"D:\Program Files\Java\jre6\lib\rt.jar" };
         }
 
         public static List<string> SearchPaths { get; private set; }
@@ -65,9 +65,21 @@ namespace JavaCompiler.Reflection.Loaders
 
                 foreach (string location in SearchPaths.Distinct())
                 {
-                    IClassLocator locator = location.EndsWith(".jar", StringComparison.CurrentCultureIgnoreCase)
-                                                ? new JarClassLocator(location)
-                                                : (IClassLocator)new DirectoryClassLocator(location);
+                    IClassLocator locator;
+
+                    if (location.EndsWith(".jar"))
+                    {
+                        if (!File.Exists(location))
+                        {
+                            continue;
+                        }
+
+                        locator = new JarClassLocator(location);
+                    }
+                    else
+                    {
+                        locator = new DirectoryClassLocator(location);
+                    }
 
                     results.AddRange(locator.Search(s, imports));
                 }

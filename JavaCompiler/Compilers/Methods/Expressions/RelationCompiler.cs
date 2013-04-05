@@ -19,10 +19,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
-            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
-
-            var type = lType.FindCommonType(rType);
+            var type = node.GetType(generator);
 
             if (!type.Primitive)
             {

@@ -55,31 +55,5 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
             throw new InvalidOperationException();
         }
-
-        public Type GetType(ByteCodeGenerator generator, bool boxing)
-        {
-            generator.Kill();
-
-            var item = new ExpressionCompiler(expression).Compile(generator);
-
-            var type = item.Type;
-
-            if (boxing && type.Primitive)
-            {
-                // try boxing
-                var primative = type as PrimativeTypes.PrimativeType;
-
-                type = primative.Box(generator, item).Type;
-            }
-            else if (!boxing && !type.Primitive)
-            {
-                // try to unbox
-                type = PrimativeTypes.UnboxType(type);
-            }
-
-            generator.Revive();
-
-            return type;
-        }
     }
 }

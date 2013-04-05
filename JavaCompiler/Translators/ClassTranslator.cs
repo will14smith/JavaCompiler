@@ -4,7 +4,6 @@ using Antlr.Runtime.Tree;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree;
 
 namespace JavaCompiler.Translators
@@ -45,7 +44,7 @@ namespace JavaCompiler.Translators
             }
             else
             {
-                @class.Super = new PlaceholderType { Name = "java.lang.Object" };
+                @class.Super = BuiltinTypes.Object;
             }
 
             if ((JavaNodeType)child.Type == JavaNodeType.IMPLEMENTS_CLAUSE)

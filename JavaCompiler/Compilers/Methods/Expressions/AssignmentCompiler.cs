@@ -4,7 +4,6 @@ using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 
 namespace JavaCompiler.Compilers.Methods.Expressions
@@ -38,18 +37,15 @@ namespace JavaCompiler.Compilers.Methods.Expressions
         }
         private Item CompileAssignOp(ByteCodeGenerator generator)
         {
-            generator.Kill();
-            var lType = new TranslationCompiler(new TranslateNode { Child = node.Left }).GetType(generator, false);
-            var rType = new TranslationCompiler(node.Right).GetType(generator, false);
-            generator.Revive();
+            var lType = new TranslateNode { Child = node.Left }.GetType(generator, false, true);
+            var rType = node.Right.GetType(generator, false, true);
 
             var type = lType.FindCommonType(rType);
 
             Item lhs;
-            if (lType.Name == "java.lang.String")
+            if (lType.Name == BuiltinTypes.String.Name)
             {
-                var sb = ClassLocator.Find(new PlaceholderType { Name = "java.lang.StringBuilder" }, generator.Manager.Imports) as Class;
-                if (sb == null) throw new InvalidOperationException();
+                var sb = BuiltinTypes.StringBuilder;
 
                 AdditiveCompiler.MakeStringBuffer(generator, sb);
 

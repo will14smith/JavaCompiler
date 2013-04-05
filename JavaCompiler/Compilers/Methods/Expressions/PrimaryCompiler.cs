@@ -6,7 +6,6 @@ using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Enums;
 using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
@@ -84,7 +83,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             {
                 var s = node as PrimaryNode.TermStringLiteralExpression;
 
-                return new ImmediateItem(generator, new PlaceholderType { Name = "java.lang.String" }, s.Value);
+                return new ImmediateItem(generator, BuiltinTypes.String, s.Value);
             }
             if (node is PrimaryNode.TermMethodExpression)
             {

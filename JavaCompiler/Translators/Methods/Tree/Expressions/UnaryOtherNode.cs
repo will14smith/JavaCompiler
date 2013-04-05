@@ -1,4 +1,6 @@
-﻿using JavaCompiler.Reflection.Types;
+﻿using JavaCompiler.Compilation;
+using JavaCompiler.Compilation.ByteCode;
+using JavaCompiler.Reflection.Types;
 
 namespace JavaCompiler.Translators.Methods.Tree.Expressions
 {
@@ -8,8 +10,13 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
 
         public class UnaryCastNode : UnaryOtherNode
         {
-            public Type Type { get; set; }
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return Type;
+            }
+
             public TranslateNode Expression { get; set; }
+            public Type Type { get; set; }
         }
 
         #endregion
@@ -17,6 +24,11 @@ namespace JavaCompiler.Translators.Methods.Tree.Expressions
         public class UnaryNotNode : UnaryOtherNode
         {
             public TranslateNode Expression { get; set; }
+
+            public override Type GetType(ByteCodeGenerator manager)
+            {
+                return PrimativeTypes.Boolean;
+            }
         }
     }
 }

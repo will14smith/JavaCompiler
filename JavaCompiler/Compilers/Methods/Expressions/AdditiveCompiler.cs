@@ -4,9 +4,7 @@ using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection;
-using JavaCompiler.Reflection.Loaders;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Translators.Methods.Tree.Expressions;
 using JavaCompiler.Utilities;
 using Type = JavaCompiler.Reflection.Types.Type;
@@ -24,10 +22,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         public Item Compile(ByteCodeGenerator generator)
         {
-            var lType = new TranslationCompiler(node.LeftChild).GetType(generator, false);
-            var rType = new TranslationCompiler(node.RightChild).GetType(generator, false);
-
-            var type = lType.FindCommonType(rType);
+            var type = node.GetType(generator);
             if (type != null && type.Primitive)
             {
                 new TranslationCompiler(node.LeftChild, type).Compile(generator).Load();
@@ -96,7 +91,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         private Item CompileString(ByteCodeGenerator generator)
         {
-            var sb = ClassLocator.Find(new PlaceholderType { Name = "java.lang.StringBuilder" }, generator.Manager.Imports) as Class;
+            var sb = BuiltinTypes.StringBuilder;
             if (sb == null) throw new InvalidOperationException();
 
             MakeStringBuffer(generator, sb);
@@ -104,7 +99,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             AppendStrings(generator, sb, node.RightChild.Child);
             BufferToString(generator, sb);
 
-            return new StackItem(generator, new PlaceholderType { Name = "java.lang.String" });
+            return new StackItem(generator, BuiltinTypes.String);
         }
 
         public static void MakeStringBuffer(ByteCodeGenerator generator, Class sb)
@@ -128,7 +123,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
                 var addType = new AdditiveCompiler(addNode).Compile(generator).Type;
                 generator.Revive();
 
-                if (addType.Name == "java.lang.String")
+                if (addType.Name == BuiltinTypes.String.Name)
                 {
                     AppendStrings(generator, sb, addNode.LeftChild.Child);
                     AppendStrings(generator, sb, addNode.RightChild.Child);

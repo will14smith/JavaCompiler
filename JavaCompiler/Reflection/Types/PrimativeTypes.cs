@@ -64,15 +64,15 @@ namespace JavaCompiler.Reflection.Types
         }
         public static Type UnboxType(Type type)
         {
-            if (type.Name == "java.lang.Character") return Char;
-            if (type.Name == "java.lang.Byte") return Byte;
-            if (type.Name == "java.lang.Short") return Short;
-            if (type.Name == "java.lang.Integer") return Int;
-            if (type.Name == "java.lang.Long") return Long;
-            if (type.Name == "java.lang.Float") return Float;
-            if (type.Name == "java.lang.Double") return Double;
-            if (type.Name == "java.lang.Boolean") return Boolean;
-            if (type.Name == "java.lang.Void") return Void;
+            if (type.Name == BuiltinTypes.Character.Name) return Char;
+            if (type.Name == BuiltinTypes.Byte.Name) return Byte;
+            if (type.Name == BuiltinTypes.Short.Name) return Short;
+            if (type.Name == BuiltinTypes.Integer.Name) return Int;
+            if (type.Name == BuiltinTypes.Long.Name) return Long;
+            if (type.Name == BuiltinTypes.Float.Name) return Float;
+            if (type.Name == BuiltinTypes.Double.Name) return Double;
+            if (type.Name == BuiltinTypes.Boolean.Name) return Boolean;
+            if (type.Name == BuiltinTypes.Void.Name) return Void;
 
             return type;
         }
@@ -82,6 +82,8 @@ namespace JavaCompiler.Reflection.Types
             public abstract Item Box(ByteCodeGenerator generator, Item item);
             public abstract Item Box(ByteCodeGenerator generator, Item item, DefinedType destType);
             public abstract Item Unbox(ByteCodeGenerator generator, Item item);
+
+            public abstract Type BoxedType { get; }
         }
 
         #region Nested type: BooleanClass
@@ -133,6 +135,11 @@ namespace JavaCompiler.Reflection.Types
             {
                 throw new NotImplementedException();
             }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Boolean; }
+            }
         }
 
         #endregion
@@ -180,6 +187,11 @@ namespace JavaCompiler.Reflection.Types
             public override Item Unbox(ByteCodeGenerator generator, Item item)
             {
                 throw new NotImplementedException();
+            }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Byte; }
             }
         }
 
@@ -229,6 +241,11 @@ namespace JavaCompiler.Reflection.Types
             public override Item Unbox(ByteCodeGenerator generator, Item item)
             {
                 throw new NotImplementedException();
+            }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Character; }
             }
         }
 
@@ -283,6 +300,11 @@ namespace JavaCompiler.Reflection.Types
             {
                 throw new NotImplementedException();
             }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Double; }
+            }
         }
 
         #endregion
@@ -335,6 +357,11 @@ namespace JavaCompiler.Reflection.Types
             {
                 throw new NotImplementedException();
             }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Float; }
+            }
         }
 
         #endregion
@@ -361,7 +388,7 @@ namespace JavaCompiler.Reflection.Types
             public override bool IsAssignableTo(Type c)
             {
                 //TODO: Integer
-                if (c.Name == "java.lang.Object") return true;
+                if (c.Name == BuiltinTypes.Object.Name) return true;
                 if (!c.Primitive) return false;
 
                 if (c is ByteClass) return false;
@@ -380,7 +407,7 @@ namespace JavaCompiler.Reflection.Types
             public override Item Box(ByteCodeGenerator generator, Item item, DefinedType destType)
             {
                 if (TypeCodeHelper.Truncate(item.Type) != ItemTypeCode.Int) throw new InvalidOperationException();
-                if (destType.Name != "java.lang.Integer") throw new InvalidOperationException();
+                if (destType.Name != BuiltinTypes.Integer.Name) throw new InvalidOperationException();
 
                 // do conversion
                 var valueOf = destType.Methods.Single(x => x.Name == "valueOf" && x.Parameters.Count == 1 && x.Parameters.Single().Type == Int);
@@ -392,7 +419,7 @@ namespace JavaCompiler.Reflection.Types
 
             public override Item Unbox(ByteCodeGenerator generator, Item item)
             {
-                if (item.Type.Name != "java.lang.Integer") throw new InvalidOperationException();
+                if (item.Type.Name != BuiltinTypes.Integer.Name) throw new InvalidOperationException();
 
                 var definedType = item.Type as DefinedType;
 
@@ -401,6 +428,11 @@ namespace JavaCompiler.Reflection.Types
                 item.Load();
 
                 return new MemberItem(generator, valueOf, valueOf.Modifiers.HasFlag(Modifier.Private)).Invoke();
+            }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Integer; }
             }
         }
 
@@ -453,6 +485,11 @@ namespace JavaCompiler.Reflection.Types
             {
                 throw new NotImplementedException();
             }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Long; }
+            }
         }
 
         #endregion
@@ -502,6 +539,11 @@ namespace JavaCompiler.Reflection.Types
             {
                 throw new NotImplementedException();
             }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Short; }
+            }
         }
 
         #endregion
@@ -543,6 +585,11 @@ namespace JavaCompiler.Reflection.Types
             public override Item Unbox(ByteCodeGenerator generator, Item item)
             {
                 throw new NotImplementedException();
+            }
+
+            public override Type BoxedType
+            {
+                get { return BuiltinTypes.Void; }
             }
         }
 

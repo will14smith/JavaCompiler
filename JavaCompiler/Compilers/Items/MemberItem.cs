@@ -2,7 +2,6 @@
 using JavaCompiler.Reflection;
 using JavaCompiler.Reflection.Interfaces;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using JavaCompiler.Utilities;
 
 namespace JavaCompiler.Compilers.Items
@@ -64,7 +63,7 @@ namespace JavaCompiler.Compilers.Items
 
         public override void Duplicate()
         {
-            TypeCodeHelper.StackItem(Generator, new PlaceholderType { Name = "java.lang.Object" }).Duplicate();
+            TypeCodeHelper.StackItem(Generator, BuiltinTypes.Object).Duplicate();
         }
 
         public override void Drop()

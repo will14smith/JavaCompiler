@@ -21,7 +21,7 @@ namespace JavaCompiler.Compilers.Methods.Expressions
             if (node is UnaryOtherNode.UnaryCastNode)
             {
                 var cast = node as UnaryOtherNode.UnaryCastNode;
-                var type = ClassLocator.Find(cast.Type, generator.Manager.Imports);
+                var type = cast.GetType(generator);
 
                 return new TranslationCompiler(cast.Expression, type).Compile(generator).Load();
             }

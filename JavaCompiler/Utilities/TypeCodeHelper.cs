@@ -4,7 +4,6 @@ using System.Linq;
 using JavaCompiler.Compilation.ByteCode;
 using JavaCompiler.Compilers.Items;
 using JavaCompiler.Reflection.Types;
-using JavaCompiler.Reflection.Types.Internal;
 using Array = JavaCompiler.Reflection.Types.Array;
 using Type = JavaCompiler.Reflection.Types.Type;
 
@@ -80,7 +79,7 @@ namespace JavaCompiler.Utilities
                 case ItemTypeCode.Double:
                     return PrimativeTypes.Double;
                 case ItemTypeCode.Object:
-                    return new PlaceholderType { Name = "java.lang.Object" };
+                    return BuiltinTypes.Object;
                 case ItemTypeCode.Byte:
                     return PrimativeTypes.Byte;
                 case ItemTypeCode.Char:

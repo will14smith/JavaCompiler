@@ -35,8 +35,8 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         private static Item CompileNewArray(ByteCodeGenerator generator, NewNode.NewArrayNode node)
         {
-            var elemType = node.Type;
-            var type = node.Type;
+            var elemType = node.GetType(generator);
+            var type = node.GetType(generator);
 
             foreach (var expression in node.Dimensions)
             {
@@ -66,14 +66,14 @@ namespace JavaCompiler.Compilers.Methods.Expressions
 
         private static Item CompileNewClass(ByteCodeGenerator generator, NewNode.NewClassNode node)
         {
-            node.Type = ClassLocator.Find(node.Type, generator.Manager.Imports);
+            node.Type = ClassLocator.Find(node.GetType(generator), generator.Manager.Imports);
 
-            generator.Emit(OpCodeValue.@new, generator.Manager.AddConstantClass(node.Type as DefinedType));
+            generator.Emit(OpCodeValue.@new, generator.Manager.AddConstantClass(node.GetType(generator) as DefinedType));
             generator.Emit(OpCodeValue.dup);
 
-            new PrimaryCompiler(new PrimaryNode.TermMethodExpression { Identifier = "<init>", Arguments = node.Arguments }).Compile(generator, new StackItem(generator, node.Type));
+            new PrimaryCompiler(new PrimaryNode.TermMethodExpression { Identifier = "<init>", Arguments = node.Arguments }).Compile(generator, new StackItem(generator, node.GetType(generator)));
 
-            return new StackItem(generator, node.Type);
+            return new StackItem(generator, node.GetType(generator));
         }
     }
 }
